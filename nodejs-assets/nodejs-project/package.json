@@ -1,0 +1,11 @@
+{
+  "name": "telios-mobile-backend",
+  "version": "1.0.0",
+  "description": "The nodejs backend for telios-mobile",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rangermauve <ranger@mauve.moe> (https://mauve.moe/)",
+  "license": "MIT"
+}
