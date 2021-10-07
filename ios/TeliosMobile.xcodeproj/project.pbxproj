@@ -11,7 +11,9 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		63DF99DA19F2CCF9AD513865 /* libPods-TeliosMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 72CC7B09BFFEEE2050F8A366 /* libPods-TeliosMobile.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		B0B13952792D458DF3A06406 /* libPods-TeliosMobile-TeliosMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B35FE68A10A494711D6936F /* libPods-TeliosMobile-TeliosMobileTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,7 +36,13 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeliosMobile/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TeliosMobile/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TeliosMobile/main.m; sourceTree = "<group>"; };
+		3B35FE68A10A494711D6936F /* libPods-TeliosMobile-TeliosMobileTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeliosMobile-TeliosMobileTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5722C53AEA1D94E843930702 /* Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig"; path = "Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig"; sourceTree = "<group>"; };
+		603ECB7BD5F9E257D58202F0 /* Pods-TeliosMobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeliosMobile.release.xcconfig"; path = "Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile.release.xcconfig"; sourceTree = "<group>"; };
+		72CC7B09BFFEEE2050F8A366 /* libPods-TeliosMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeliosMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TeliosMobile/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		89DC7B1847467511EC18B5C9 /* Pods-TeliosMobile-TeliosMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeliosMobile-TeliosMobileTests.release.xcconfig"; path = "Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests.release.xcconfig"; sourceTree = "<group>"; };
+		DEB6623DDC4915BC121E87CA /* Pods-TeliosMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeliosMobile.debug.xcconfig"; path = "Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -43,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0B13952792D458DF3A06406 /* libPods-TeliosMobile-TeliosMobileTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63DF99DA19F2CCF9AD513865 /* libPods-TeliosMobile.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +100,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				72CC7B09BFFEEE2050F8A366 /* libPods-TeliosMobile.a */,
+				3B35FE68A10A494711D6936F /* libPods-TeliosMobile-TeliosMobileTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -109,6 +121,7 @@
 				00E356EF1AD99517003FC87E /* TeliosMobileTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				FBEE58D59E5A603AB4501D73 /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -124,6 +137,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FBEE58D59E5A603AB4501D73 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DEB6623DDC4915BC121E87CA /* Pods-TeliosMobile.debug.xcconfig */,
+				603ECB7BD5F9E257D58202F0 /* Pods-TeliosMobile.release.xcconfig */,
+				5722C53AEA1D94E843930702 /* Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig */,
+				89DC7B1847467511EC18B5C9 /* Pods-TeliosMobile-TeliosMobileTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -131,9 +156,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "TeliosMobileTests" */;
 			buildPhases = (
+				4B798EDB6D8B7021AC3F6EF3 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
+				5B442AF76D61B2778B888496 /* [CP] Embed Pods Frameworks */,
+				993723CD4B2F36E19897A347 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -149,11 +177,18 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "TeliosMobile" */;
 			buildPhases = (
+				F472B191C1D0B2F4B114D609 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				6893FD30A624AF381C1DBE0B /* [CP] Embed Pods Frameworks */,
+				5B94840FA7BD508723DBEDC4 /* [CP] Copy Pods Resources */,
+				6EEE53B88F8C1369489CD686 /* [CP-User] [NODEJS MOBILE] Copy Node.js Project files */,
+				FA4E3A049C697ACE2FCFD529 /* [CP-User] [NODEJS MOBILE] Build Native Modules */,
+				ABBFE86FE1B5467C7412088C /* [CP-User] [NODEJS MOBILE] Sign Native Modules */,
+				2DF04586BB033D148CAA0EAD /* [CP-User] [NODEJS MOBILE] Remove Simulator Strip */,
 			);
 			buildRules = (
 			);
@@ -234,6 +269,158 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
+		2DF04586BB033D148CAA0EAD /* [CP-User] [NODEJS MOBILE] Remove Simulator Strip */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] [NODEJS MOBILE] Remove Simulator Strip";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nset -e\nFRAMEWORK_BINARY_PATH=\"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/NodeMobile.framework/NodeMobile\"\nFRAMEWORK_STRIPPED_PATH=\"$FRAMEWORK_BINARY_PATH-strip\"\nif [ \"$PLATFORM_NAME\" != \"iphonesimulator\" ]; then\n  if $(lipo \"$FRAMEWORK_BINARY_PATH\" -verify_arch \"x86_64\") ; then\n    lipo -output \"$FRAMEWORK_STRIPPED_PATH\" -remove \"x86_64\" \"$FRAMEWORK_BINARY_PATH\"\n    rm \"$FRAMEWORK_BINARY_PATH\"\n    mv \"$FRAMEWORK_STRIPPED_PATH\" \"$FRAMEWORK_BINARY_PATH\"\n    echo \"Removed simulator strip from NodeMobile.framework\"\n  fi\nfi\n";
+		};
+		4B798EDB6D8B7021AC3F6EF3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TeliosMobile-TeliosMobileTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5B442AF76D61B2778B888496 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5B94840FA7BD508723DBEDC4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6893FD30A624AF381C1DBE0B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6EEE53B88F8C1369489CD686 /* [CP-User] [NODEJS MOBILE] Copy Node.js Project files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] [NODEJS MOBILE] Copy Node.js Project files";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nset -e\nNODEJS_ASSETS_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../nodejs-assets/ && pwd )\"\nNODEJS_BUILT_IN_MODULES_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../node_modules/nodejs-mobile-react-native/install/resources/nodejs-modules/ && pwd )\"\nif [ -d \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" ]\nthen\nrm -rf \"$CODESIGNING_FOLDER_PATH/nodejs-project/\"\nfi\nif [ -d \"$CODESIGNING_FOLDER_PATH/builtin_modules/\" ]\nthen\nrm -rf \"$CODESIGNING_FOLDER_PATH/builtin_modules/\"\nfi\nrsync -av --delete \"$NODEJS_ASSETS_DIR/nodejs-project\" \"$CODESIGNING_FOLDER_PATH\"\nrsync -av --delete \"$NODEJS_BUILT_IN_MODULES_DIR/builtin_modules\" \"$CODESIGNING_FOLDER_PATH\"\n";
+		};
+		993723CD4B2F36E19897A347 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		ABBFE86FE1B5467C7412088C /* [CP-User] [NODEJS MOBILE] Sign Native Modules */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] [NODEJS MOBILE] Sign Native Modules";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nset -e\nif [ -z \"$NODEJS_MOBILE_BUILD_NATIVE_MODULES\" ]; then\n# If build native modules preference is not set, look for it in the project's\n#nodejs-assets/BUILD_NATIVE_MODULES.txt file.\nNODEJS_ASSETS_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../nodejs-assets/ && pwd )\"\nPREFERENCE_FILE_PATH=\"$NODEJS_ASSETS_DIR/BUILD_NATIVE_MODULES.txt\"\n  if [ -f \"$PREFERENCE_FILE_PATH\" ]; then\n    NODEJS_MOBILE_BUILD_NATIVE_MODULES=\"$(cat $PREFERENCE_FILE_PATH | xargs)\"\n  fi\nfi\nif [ -z \"$NODEJS_MOBILE_BUILD_NATIVE_MODULES\" ]; then\n# If build native modules preference is not set, try to find .gyp files\n#to turn it on.\n  gypfiles=($(find \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -type f -name \"*.gyp\"))\n  if [ ${#gypfiles[@]} -gt 0 ]; then\n    NODEJS_MOBILE_BUILD_NATIVE_MODULES=1\n  else\n    NODEJS_MOBILE_BUILD_NATIVE_MODULES=0\n  fi\nfi\nif [ \"1\" != \"$NODEJS_MOBILE_BUILD_NATIVE_MODULES\" ]; then exit 0; fi\n# Delete object files\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.o\" -type f -delete\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.a\" -type f -delete\n# Create Info.plist for each framework built and loader override.\nPATCH_SCRIPT_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../node_modules/nodejs-mobile-react-native/scripts/ && pwd )\"\nNODEJS_PROJECT_DIR=\"$( cd \"$CODESIGNING_FOLDER_PATH\" && cd nodejs-project/ && pwd )\"\nnode \"$PATCH_SCRIPT_DIR\"/ios-create-plists-and-dlopen-override.js $NODEJS_PROJECT_DIR\n# Embed every resulting .framework in the application and delete them afterwards.\nembed_framework()\n{\n    FRAMEWORK_NAME=\"$(basename \"$1\")\"\n    cp -r \"$1\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"\n    /usr/bin/codesign --force --sign $EXPANDED_CODE_SIGN_IDENTITY --preserve-metadata=identifier,entitlements,flags --timestamp=none \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/$FRAMEWORK_NAME\"\n}\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.framework\" -type d | while read frmwrk_path; do embed_framework \"$frmwrk_path\"; done\n\n#Delete gyp temporary .deps dependency folders from the project structure.\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -path \"*/.deps/*\" -delete\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \".deps\" -type d -delete\n\n#Delete frameworks from their build paths\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -path \"*/*.framework/*\" -delete\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.framework\" -type d -delete\n";
+		};
+		F472B191C1D0B2F4B114D609 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TeliosMobile-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FA4E3A049C697ACE2FCFD529 /* [CP-User] [NODEJS MOBILE] Build Native Modules */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] [NODEJS MOBILE] Build Native Modules";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nset -e\nif [ -z \"$NODEJS_MOBILE_BUILD_NATIVE_MODULES\" ]; then\n# If build native modules preference is not set, look for it in the project's\n#nodejs-assets/BUILD_NATIVE_MODULES.txt file.\nNODEJS_ASSETS_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../nodejs-assets/ && pwd )\"\nPREFERENCE_FILE_PATH=\"$NODEJS_ASSETS_DIR/BUILD_NATIVE_MODULES.txt\"\n  if [ -f \"$PREFERENCE_FILE_PATH\" ]; then\n    NODEJS_MOBILE_BUILD_NATIVE_MODULES=\"$(cat $PREFERENCE_FILE_PATH | xargs)\"\n  fi\nfi\nif [ -z \"$NODEJS_MOBILE_BUILD_NATIVE_MODULES\" ]; then\n# If build native modules preference is not set, try to find .gyp files\n#to turn it on.\n  gypfiles=($(find \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -type f -name \"*.gyp\"))\n  if [ ${#gypfiles[@]} -gt 0 ]; then\n    NODEJS_MOBILE_BUILD_NATIVE_MODULES=1\n  else\n    NODEJS_MOBILE_BUILD_NATIVE_MODULES=0\n  fi\nfi\nif [ \"1\" != \"$NODEJS_MOBILE_BUILD_NATIVE_MODULES\" ]; then exit 0; fi\n# Delete object files that may already come from within the npm package.\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.o\" -type f -delete\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.a\" -type f -delete\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.node\" -type f -delete\n# Delete bundle contents that may be there from previous builds.\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -path \"*/*.node/*\" -delete\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.node\" -type d -delete\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -path \"*/*.framework/*\" -delete\nfind \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" -name \"*.framework\" -type d -delete\n# Apply patches to the modules package.json\nif [ -d \"$CODESIGNING_FOLDER_PATH\"/nodejs-project/node_modules/ ]; then\n  PATCH_SCRIPT_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../node_modules/nodejs-mobile-react-native/scripts/ && pwd )\"\n  NODEJS_PROJECT_MODULES_DIR=\"$( cd \"$CODESIGNING_FOLDER_PATH\" && cd nodejs-project/node_modules/ && pwd )\"\n  node \"$PATCH_SCRIPT_DIR\"/patch-package.js $NODEJS_PROJECT_MODULES_DIR\nfi\n# Get the nodejs-mobile-gyp location\nif [ -d \"$PROJECT_DIR/../node_modules/nodejs-mobile-gyp/\" ]; then\n  NODEJS_MOBILE_GYP_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../node_modules/nodejs-mobile-gyp/ && pwd )\"\nelse\n  NODEJS_MOBILE_GYP_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../node_modules/nodejs-mobile-react-native/node_modules/nodejs-mobile-gyp/ && pwd )\"\nfi\nNODEJS_MOBILE_GYP_BIN_FILE=\"$NODEJS_MOBILE_GYP_DIR\"/bin/node-gyp.js\n# Support building neon-bindings (Rust) native modules\nif [ -f ~/.cargo/env ]; then\n  source ~/.cargo/env;\nfi\n# Rebuild modules with right environment\nNODEJS_HEADERS_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../node_modules/nodejs-mobile-react-native/ios/libnode/ && pwd )\"\npushd $CODESIGNING_FOLDER_PATH/nodejs-project/\nif [ \"$PLATFORM_NAME\" == \"iphoneos\" ]\nthen\n  GYP_DEFINES=\"OS=ios\" CARGO_BUILD_TARGET=\"aarch64-apple-ios\" npm_config_nodedir=\"$NODEJS_HEADERS_DIR\" npm_config_node_gyp=\"$NODEJS_MOBILE_GYP_BIN_FILE\" npm_config_platform=\"ios\" npm_config_format=\"make-ios\" npm_config_node_engine=\"chakracore\" npm_config_arch=\"arm64\" npm --verbose rebuild --build-from-source\nelse\n  GYP_DEFINES=\"OS=ios\" CARGO_BUILD_TARGET=\"x86_64-apple-ios\" npm_config_nodedir=\"$NODEJS_HEADERS_DIR\" npm_config_node_gyp=\"$NODEJS_MOBILE_GYP_BIN_FILE\" npm_config_platform=\"ios\" npm_config_format=\"make-ios\" npm_config_node_engine=\"chakracore\" npm_config_arch=\"x64\" npm --verbose rebuild --build-from-source\nfi\npopd\n";
+		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -286,6 +473,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5722C53AEA1D94E843930702 /* Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -312,6 +500,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 89DC7B1847467511EC18B5C9 /* Pods-TeliosMobile-TeliosMobileTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -335,6 +524,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DEB6623DDC4915BC121E87CA /* Pods-TeliosMobile.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -360,6 +550,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 603ECB7BD5F9E257D58202F0 /* Pods-TeliosMobile.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -414,6 +605,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -479,6 +671,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
