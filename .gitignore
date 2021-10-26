@@ -58,3 +58,9 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+# Bundled nodejs-mobile project
+nodejs-assets/nodejs-project/bundle.js
+
+# Compiled jniLibs for Android
+android/app/src/main/jniLibs

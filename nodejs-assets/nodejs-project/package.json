@@ -7,5 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "rangermauve <ranger@mauve.moe> (https://mauve.moe/)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@telios/client-sdk": "^1.0.10",
+    "sodium-native-nodejs-mobile": "^3.2.0-1",
+    "utp-native-nodejs-mobile": "^2.1.4-0"
+  }
 }

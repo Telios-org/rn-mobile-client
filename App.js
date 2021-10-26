@@ -56,7 +56,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    nodejs.start('main.js')
+    nodejs.start('bundle.js')
     nodejs.channel.addListener('message', (msg) => {
       console.log('From node: ', msg)
     })

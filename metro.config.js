@@ -6,11 +6,14 @@
  */
 
 module.exports = {
+  // Might help with some edge cases
+  // TODO: See if this can be disabled for perf improvements
+  resetCache: true,
   transformer: {
     getTransformOptions: async () => ({
       transform: {
         experimentalImportSupport: false,
-        inlineRequires: true
+        inlineRequires: false
       }
     })
   },
