@@ -21,6 +21,7 @@ A mobile client for [telios](https://telios.io).
 	- Set up XCode
 	- `sudo gem install cocoapods`
 	- `pod setup`
+	- `brew install autoconf automake libtool`
 	- `cd ios && pod install && cd ../`
 - Run `node postinstall.js` to set up patches
 
@@ -42,7 +43,7 @@ Hacks:
 	- [ ] sodium-native
 		- Check out how [Gateway Browser](https://gitlab.com/gateway-browser/gateway/-/blob/master/tools/build-backend.js) does it
 		- Maybe use sodium-native-nodejs-mobile? Needs updates? [diff](https://github.com/sodium-friends/sodium-native/compare/master...staltz:master)
-		- Automate setup
+		- Automate setup - Android
 			- `npm install` inside `nodejs-assets/nodejs-project`
 			- Delete `tar-fs/test/` since it has weird zip files which can mess with the APK
 			- Copy `.so` files from `lib` folder to android/app/src/main/jniLibs according to arch (a la [this scripts](https://gitlab.com/staltz/manyverse/-/blob/master/tools/backend/move-shared-libs-android.sh))
@@ -52,6 +53,8 @@ Hacks:
 			- Run another build but with the APK size not being at 5GB
 				- `yarn android`
 			- Patch `sodium-native` to require `sodium-native-nodejs-mobile`
+		- Automate setup - iOS
+			- Use `npm install --no-optional` with `PLATFORMNAME=iphoneos`
 	- [ ] utp-native
 		- Use [utp-native-nodejs-mobile?](https://github.com/mafintosh/utp-native/compare/master...staltz:master)
 	- [ ] Other native deps?
