@@ -75,6 +75,10 @@ async function build () {
     env
   })
 
+  console.log('Deleting .bin dir to fix builds')
+  const BIN_DIR = join(PROJECT_DIR, 'node_modules/.bin')
+  await rm(BIN_DIR, {recursive: true, force: true})
+
   const SODIUM_NATIVE_DIR = join(PROJECT_DIR, 'node_modules/sodium-native')
   console.log('Clearing existing sodium-native package')
   await rm(SODIUM_NATIVE_DIR, { recursive: true, force: true })
