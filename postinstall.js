@@ -19,6 +19,7 @@ if (process.argv.includes('--android')) { platform = ANDROID }
 if (process.argv.includes('--ios')) { platform = IOS }
 
 const ANDROID_DIR = join(__dirname, 'android')
+const IOS_DIR = join(__dirname, 'ios')
 const PROJECT_DIR = join(__dirname, 'nodejs-assets/nodejs-project/')
 const NODEJS_MOBILE_DIR = join(__dirname, 'node_modules/nodejs-mobile-react-native')
 const MODULE_FOLDER = join(PROJECT_DIR, 'node_modules')
@@ -174,6 +175,12 @@ module.exports = require(requirePath)
         join(androidFolder, SODIUM_LIB_FILE)
       )
     }
+  } else if (platform === IOS) {
+    console.log('Building native files for iOS')
+    await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace build', {
+      cwd: IOS_DIR,
+      env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '1' })
+    })
   }
 
   console.log('Build JS bundle with browserify')
@@ -190,14 +197,18 @@ module.exports = require(requirePath)
   const moduleNames = await readdir(MODULE_FOLDER)
   const nonEssentialModules = moduleNames.filter((name) => !TO_PRESERVE.includes(name))
 
-  const TO_DELETE = [
-    join(SODIUM_NATIVE_FOLDER, 'build'),
+  const toDelete = [
     join(SODIUM_NATIVE_FOLDER, 'libsodium'),
     join(SODIUM_NATIVE_FOLDER, 'lib'),
     ...nonEssentialModules.map((name) => join(MODULE_FOLDER, name))
   ]
 
-  for (const folder of TO_DELETE) {
+  // Android has different architectures, so we should delete the default build folder
+  if (platform === ANDROID) {
+    toDelete.unshift(join(SODIUM_NATIVE_FOLDER, 'build'))
+  }
+
+  for (const folder of toDelete) {
     await rm(folder, {
       recursive: true,
       force: true
@@ -218,6 +229,13 @@ module.exports = require(requirePath)
     const gradlewCommand = shouldInstall ? 'installRelease' : 'buildRelease'
     await exec(`./gradlew ${gradlewCommand}`, {
       cwd: ANDROID_DIR,
+      env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '0' })
+    })
+  } else if (platform === IOS) {
+  // TODO: Support `--install` flag for iOS
+    console.log('Runnin release build without native module rebuild')
+    await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace build', {
+      cwd: IOS_DIR,
       env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '0' })
     })
   }
