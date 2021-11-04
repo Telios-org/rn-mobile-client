@@ -177,7 +177,7 @@ module.exports = require(requirePath)
     }
   } else if (platform === IOS) {
     console.log('Building native files for iOS')
-    await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace build', {
+    await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace -quiet build', {
       cwd: IOS_DIR,
       env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '1' })
     })
@@ -234,7 +234,7 @@ module.exports = require(requirePath)
   } else if (platform === IOS) {
   // TODO: Support `--install` flag for iOS
     console.log('Runnin release build without native module rebuild')
-    await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace build', {
+    await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace -quiet build', {
       cwd: IOS_DIR,
       env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '0' })
     })
