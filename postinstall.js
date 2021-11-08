@@ -21,6 +21,8 @@ if (process.argv.includes('--ios')) { platform = IOS }
 let isSimulator = false
 isSimulator = process.argv.includes('--simulator')
 
+const PLATFORM_NAME = isSimulator ? 'iphonesimulator' : 'iphoneos'
+
 const ANDROID_DIR = join(__dirname, 'android')
 const IOS_DIR = join(__dirname, 'ios')
 const PROJECT_DIR = join(__dirname, 'nodejs-assets/nodejs-project/')
@@ -70,7 +72,7 @@ async function build () {
   console.log('Installing nodejs-project dependencies')
   const env = (platform === IOS)
     ? makeEnv({
-        PLATFORM_NAME: isSimulator ? 'iphonesimulator' : 'iphoneos'
+        PLATFORM_NAME
       })
     : makeEnv({})
   await exec('npm install --no-optional', {
@@ -186,7 +188,10 @@ module.exports = require(requirePath)
     console.log('Building native files for iOS')
     await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace -quiet build', {
       cwd: IOS_DIR,
-      env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '1' }),
+      env: makeEnv({
+        NODEJS_MOBILE_BUILD_NATIVE_MODULES: '1',
+        PLATFORM_NAME
+      }),
       maxBuffer: 1024 * 1024 * 1024
     })
   }
