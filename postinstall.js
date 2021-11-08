@@ -186,7 +186,8 @@ module.exports = require(requirePath)
     console.log('Building native files for iOS')
     await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace -quiet build', {
       cwd: IOS_DIR,
-      env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '1' })
+      env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '1' }),
+      maxBuffer: 1024 * 1024 * 1024
     })
   }
 
@@ -243,7 +244,8 @@ module.exports = require(requirePath)
     console.log('Runnin release build without native module rebuild')
     await exec('xcodebuild -scheme TeliosMobile -workspace TeliosMobile.xcworkspace -quiet build', {
       cwd: IOS_DIR,
-      env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '0' })
+      env: makeEnv({ NODEJS_MOBILE_BUILD_NATIVE_MODULES: '0' }),
+      maxBuffer: 1024 * 1024 * 1024
     })
   }
 }
