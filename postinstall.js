@@ -18,6 +18,9 @@ let platform = (process.platform === 'darwin') ? IOS : ANDROID
 if (process.argv.includes('--android')) { platform = ANDROID }
 if (process.argv.includes('--ios')) { platform = IOS }
 
+let isSimulator = false
+isSimulator = process.argv.includes('--simulator')
+
 const ANDROID_DIR = join(__dirname, 'android')
 const IOS_DIR = join(__dirname, 'ios')
 const PROJECT_DIR = join(__dirname, 'nodejs-assets/nodejs-project/')
@@ -67,7 +70,7 @@ async function build () {
   console.log('Installing nodejs-project dependencies')
   const env = (platform === IOS)
     ? makeEnv({
-        PLATFORM_NAME: 'iphoneos'
+        PLATFORM_NAME: isSimulator ? 'iphonesimulator' : 'iphoneos'
       })
     : makeEnv({})
   await exec('npm install --no-optional', {
@@ -77,7 +80,7 @@ async function build () {
 
   console.log('Deleting .bin dir to fix builds')
   const BIN_DIR = join(PROJECT_DIR, 'node_modules/.bin')
-  await rm(BIN_DIR, {recursive: true, force: true})
+  await rm(BIN_DIR, { recursive: true, force: true })
 
   const SODIUM_NATIVE_DIR = join(PROJECT_DIR, 'node_modules/sodium-native')
   console.log('Clearing existing sodium-native package')
