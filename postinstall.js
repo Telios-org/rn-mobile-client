@@ -21,7 +21,7 @@ if (process.argv.includes('--ios')) { platform = IOS }
 let isSimulator = false
 isSimulator = process.argv.includes('--simulator')
 
-const PLATFORM_NAME = isSimulator ? 'iphonesimulator' : 'iphoneos'
+const PLATFORM_NAME = ((platform === IOS) && !isSimulator) ? 'iphoneos' : ''
 
 const ANDROID_DIR = join(__dirname, 'android')
 const IOS_DIR = join(__dirname, 'ios')
@@ -36,7 +36,7 @@ run().catch((e) => {
 })
 
 async function run () {
-  console.log('Building for platform:', platform)
+  console.log('Building for platform:', platform, PLATFORM_NAME)
   await patch()
   await build()
   console.log('Finished!🎉')
@@ -149,7 +149,7 @@ module.exports = sodium;
   const UTP_BINDING = join(PROJECT_DIR, 'node_modules/utp-native-nodejs-mobile/lib/binding.js')
   await writeFile(UTP_BINDING, `
 var path = require('path')
-var requirePath = path.resolve(__dirname, '../build/Release/sodium.node')
+var requirePath = path.resolve(__dirname, '../build/Release/utp_native.node')
 module.exports = require(requirePath)
 `)
 
