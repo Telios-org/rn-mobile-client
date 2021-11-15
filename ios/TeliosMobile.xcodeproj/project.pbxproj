@@ -145,7 +145,6 @@
 				5722C53AEA1D94E843930702 /* Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig */,
 				89DC7B1847467511EC18B5C9 /* Pods-TeliosMobile-TeliosMobileTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -187,6 +186,7 @@
 				5B94840FA7BD508723DBEDC4 /* [CP] Copy Pods Resources */,
 				6EEE53B88F8C1369489CD686 /* [CP-User] [NODEJS MOBILE] Copy Node.js Project files */,
 				FA4E3A049C697ACE2FCFD529 /* [CP-User] [NODEJS MOBILE] Build Native Modules */,
+				7FBFF851273C49B6003F08F2 /* Bundle node and clear build files */,
 				ABBFE86FE1B5467C7412088C /* [CP-User] [NODEJS MOBILE] Sign Native Modules */,
 				2DF04586BB033D148CAA0EAD /* [CP-User] [NODEJS MOBILE] Remove Simulator Strip */,
 			);
@@ -267,7 +267,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "set -e\n\nexport NODE_BINARY=/Users/telios/.nvm/versions/node/v16.13.0/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2DF04586BB033D148CAA0EAD /* [CP-User] [NODEJS MOBILE] Remove Simulator Strip */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -361,6 +361,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#!/bin/sh\nset -e\nNODEJS_ASSETS_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../nodejs-assets/ && pwd )\"\nNODEJS_BUILT_IN_MODULES_DIR=\"$( cd \"$PROJECT_DIR\" && cd ../node_modules/nodejs-mobile-react-native/install/resources/nodejs-modules/ && pwd )\"\nif [ -d \"$CODESIGNING_FOLDER_PATH/nodejs-project/\" ]\nthen\nrm -rf \"$CODESIGNING_FOLDER_PATH/nodejs-project/\"\nfi\nif [ -d \"$CODESIGNING_FOLDER_PATH/builtin_modules/\" ]\nthen\nrm -rf \"$CODESIGNING_FOLDER_PATH/builtin_modules/\"\nfi\nrsync -av --delete \"$NODEJS_ASSETS_DIR/nodejs-project\" \"$CODESIGNING_FOLDER_PATH\"\nrsync -av --delete \"$NODEJS_BUILT_IN_MODULES_DIR/builtin_modules\" \"$CODESIGNING_FOLDER_PATH\"\n";
+		};
+		7FBFF851273C49B6003F08F2 /* Bundle node and clear build files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle node and clear build files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Delete libsodium source\nrm -rf  \"$CODESIGNING_FOLDER_PATH/nodejs-project/node_modules/sodium-native-nodejs-mobile/libsodium\"\n\ncp \"$CODESIGNING_FOLDER_PATH/nodejs-project/main.js\" \"$CODESIGNING_FOLDER_PATH/nodejs-project/bundle.js\"\n";
 		};
 		993723CD4B2F36E19897A347 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -476,6 +494,7 @@
 			baseConfigurationReference = 5722C53AEA1D94E843930702 /* Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 8N8TTW6C2K;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -504,6 +523,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 8N8TTW6C2K;
 				INFOPLIST_FILE = TeliosMobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -528,7 +548,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8N8TTW6C2K;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TeliosMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -540,8 +563,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.TeliosMobile;
 				PRODUCT_NAME = TeliosMobile;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -554,7 +578,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8N8TTW6C2K;
 				INFOPLIST_FILE = TeliosMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -565,8 +592,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.TeliosMobile;
 				PRODUCT_NAME = TeliosMobile;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
