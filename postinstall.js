@@ -204,7 +204,11 @@ module.exports = require(requirePath)
     'sodium-native-nodejs-mobile',
     'utp-native-nodejs-mobile',
     'sodium-native',
-    'utp-native'
+    'utp-native',
+    'sequelize',
+    'fd-lock',
+    'leveldown',
+    'nodemailer'
   ]
 
   const moduleNames = await readdir(MODULE_FOLDER)
@@ -216,10 +220,8 @@ module.exports = require(requirePath)
     ...nonEssentialModules.map((name) => join(MODULE_FOLDER, name))
   ]
 
-  // Android has different architectures, so we should delete the default build folder
-  if (platform === ANDROID) {
-    toDelete.unshift(join(SODIUM_NATIVE_FOLDER, 'build'))
-  }
+  // By default sodium will get built for the parent arch, we should delete it
+  toDelete.unshift(join(SODIUM_NATIVE_FOLDER, 'build'))
 
   for (const folder of toDelete) {
     await rm(folder, {
