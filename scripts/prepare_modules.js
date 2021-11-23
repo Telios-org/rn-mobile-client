@@ -27,7 +27,9 @@ async function run () {
   ]
 
   for (const folder of DUPLICATE_SODIUM_FOLDERS) {
-    await rm(join(MODULE_FOLDER, folder), { recursive: true, force: true })
+    const location = join(MODULE_FOLDER, folder)
+    console.log('Clearing', location)
+    await rm(location, { recursive: true, force: true })
   }
 
   const SODIUM_NATIVE_DIR = join(PROJECT_DIR, 'node_modules/sodium-native')
