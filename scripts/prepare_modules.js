@@ -11,9 +11,9 @@ run().catch((e) => {
 })
 
 async function run () {
-  console.log('Deleting .bin dir to fix builds')
-  const BIN_DIR = join(PROJECT_DIR, 'node_modules/.bin')
-  await rm(BIN_DIR, { recursive: true, force: true })
+  // console.log('Deleting .bin dir to fix builds')
+  // const BIN_DIR = join(PROJECT_DIR, 'node_modules/.bin')
+  // await rm(BIN_DIR, { recursive: true, force: true })
 
   console.log('Clearing duplicate sodium-native modules')
   const DUPLICATE_SODIUM_FOLDERS = [
@@ -36,9 +36,9 @@ async function run () {
   console.log('Clearing existing sodium-native package')
   await rm(SODIUM_NATIVE_DIR, { recursive: true, force: true })
 
-  console.log('Clearing sodium-native-nodejs-mobile build')
-  const SODIUM_NATIVE_MOBILE_DIR = join(MODULE_FOLDER, 'sodium-native-nodejs-mobile')
-  await rm(join(SODIUM_NATIVE_MOBILE_DIR, 'build'), { recursive: true, force: true })
+  // console.log('Clearing sodium-native-nodejs-mobile build')
+  // const SODIUM_NATIVE_MOBILE_DIR = join(MODULE_FOLDER, 'sodium-native-nodejs-mobile')
+  // await rm(join(SODIUM_NATIVE_MOBILE_DIR, 'build'), { recursive: true, force: true })
 
   console.log('Creating fake sodium-native package')
   await mkdir(SODIUM_NATIVE_DIR, { recursive: true, force: true })
@@ -84,7 +84,11 @@ module.exports = sodium;
   const UTP_BINDING = join(PROJECT_DIR, 'node_modules/utp-native-nodejs-mobile/lib/binding.js')
   await writeFile(UTP_BINDING, `
 var path = require('path')
-var requirePath = path.resolve(__dirname, '../build/Release/utp_native.node')
-module.exports = require(requirePath)
+
+module.exports = require('bindings')({
+  bindings: 'utp_native.node',
+  name: 'utp-native-nodejs-mobile',
+  module_root: path.join(__dirname, '../')
+})
 `)
 }
