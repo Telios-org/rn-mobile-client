@@ -28,9 +28,12 @@ async function run () {
   console.log('Installing nodejs-project dependencies')
   const env = (platform === IOS)
     ? makeEnv({
-        PLATFORM_NAME
+        PLATFORM_NAME,
+        DONT_COMPILE: '1'
       })
-    : makeEnv({})
+    : makeEnv({
+      DONT_COMPILE: '1'
+    })
   await exec('npm install --no-optional', {
     cwd: PROJECT_DIR,
     env
