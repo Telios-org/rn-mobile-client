@@ -6,9 +6,8 @@ A mobile client for [telios](https://telios.io).
 
 ## Building
 
-- set up node.js
+- set up node.js 12.19.x
 - set up [node-gyp](https://www.npmjs.com/package/node-gyp) with `npm install -g node-gyp`
-- set up [node-gyp-build](https://www.npmjs.com/package/node-gyp-build) with `npm install -g node-gyp-build`
 - set up react-native and it's dependencies
 - `yarn` to install deps
 - Android:
@@ -18,10 +17,10 @@ A mobile client for [telios](https://telios.io).
 	- Set up `ANDROID_NDK_HOME` environment variable (should be something like `$ANDROID_HOME/ndk/21.4.7075529`)
 	- Make sure you have a bunch of RAM on your machine. Might take over 4GB to build the native deps
 - iOS:
-	- Set up XCode
+	- Set up XCode 12.4.x
 	- `sudo gem install cocoapods`
 	- `pod setup`
-	- `brew install autoconf automake libtool`
+	- `brew install autoconf automake libtool openssl`
 	- `cd ios && pod install && cd ../`
 - Run `node postinstall.js` to set up patches
 
