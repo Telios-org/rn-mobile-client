@@ -22,7 +22,11 @@ async function run () {
     'sequelize',
     'fd-lock',
     'leveldown',
-    'nodemailer'
+    'nodemailer',
+    'fsctl',
+    'sqlite3',
+    'crc32-universal',
+    '@journeyapps'
   ]
 
   const moduleNames = await readdir(MODULE_FOLDER)
