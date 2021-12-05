@@ -37,13 +37,7 @@ const App = () => {
 
   async function createAccount () {
     nodejs.channel.send({
-      event: 'createAccount',
-      payload: {
-        password: 'password',
-        email: 'test@telios',
-        recoveryEmail: 'test@telios',
-        vcode: 'betacode'
-      }
+      type: 'createDrive'
     })
   }
 

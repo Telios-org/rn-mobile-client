@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { rm, mkdir, writeFile } = require('fs').promises
+const { rmdir, mkdir, writeFile } = require('fs').promises
 const { join } = require('path')
 
 const { PROJECT_DIR, MODULE_FOLDER } = require('./constants')
@@ -15,30 +15,32 @@ async function run () {
   // const BIN_DIR = join(PROJECT_DIR, 'node_modules/.bin')
   // await rm(BIN_DIR, { recursive: true, force: true })
 
-  console.log('Clearing duplicate sodium-native modules')
-  const DUPLICATE_SODIUM_FOLDERS = [
+  console.log('Clearing duplicate sodium-native and utp-native modules')
+  const DUPLICATE_FOLDERS = [
     'sodium-universal/node_modules/sodium-native',
     '@telios/nebula-drive/node_modules/sodium-native',
     'hmac-blake2b/node_modules/sodium-native',
     'blake2b-universal/node_modules/sodium-native',
     'xsalsa20-universal/node_modules/sodium-native',
     'noise-curve-ed/node_modules/sodium-native',
-    'hypercore-peer-auth/node_modules/sodium-native'
+    'hypercore-peer-auth/node_modules/sodium-native',
+    '@hyperswarm/dht/node_modules/utp-native',
+    'hyperswarm/node_modules/utp-native'
   ]
 
-  for (const folder of DUPLICATE_SODIUM_FOLDERS) {
+  for (const folder of DUPLICATE_FOLDERS) {
     const location = join(MODULE_FOLDER, folder)
     console.log('Clearing', location)
-    await rm(location, { recursive: true, force: true })
+    await rmdir(location, { recursive: true, force: true })
   }
 
   const SODIUM_NATIVE_DIR = join(PROJECT_DIR, 'node_modules/sodium-native')
   console.log('Clearing existing sodium-native package')
-  await rm(SODIUM_NATIVE_DIR, { recursive: true, force: true })
+  await rmdir(SODIUM_NATIVE_DIR, { recursive: true, force: true })
 
-  // console.log('Clearing sodium-native-nodejs-mobile build')
-  // const SODIUM_NATIVE_MOBILE_DIR = join(MODULE_FOLDER, 'sodium-native-nodejs-mobile')
-  // await rm(join(SODIUM_NATIVE_MOBILE_DIR, 'build'), { recursive: true, force: true })
+  console.log('Clearing sodium-native-nodejs-mobile build')
+  const SODIUM_NATIVE_MOBILE_DIR = join(MODULE_FOLDER, 'sodium-native-nodejs-mobile')
+  await rmdir(join(SODIUM_NATIVE_MOBILE_DIR, 'build'), { recursive: true, force: true })
 
   console.log('Creating fake sodium-native package')
   await mkdir(SODIUM_NATIVE_DIR, { recursive: true, force: true })
@@ -58,13 +60,13 @@ async function run () {
 
   const UTP_NATIVE_DIR = join(PROJECT_DIR, 'node_modules/utp-native')
   console.log('Clearing existing utp-native package')
-  await rm(UTP_NATIVE_DIR, { recursive: true, force: true })
+  await rmdir(UTP_NATIVE_DIR, { recursive: true, force: true })
 
   console.log('Creating fake utp-native package')
   await mkdir(UTP_NATIVE_DIR, { recursive: true, force: true })
   await writeFile(
     join(UTP_NATIVE_DIR, 'package.json'),
-    JSON.stringify({ name: 'utp-native', main: 'index.js', version: '2.1.4' })
+    JSON.stringify({ name: 'utp-native', main: 'index.js', version: '2.3.5' })
   )
   await writeFile(
     join(UTP_NATIVE_DIR, 'index.js'),

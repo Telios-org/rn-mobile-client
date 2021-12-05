@@ -14,6 +14,7 @@ run().catch((e) => {
 async function run () {
   const entry = join(PROJECT_DIR, 'main.js')
   const output = join(PROJECT_DIR, 'bundle.js')
+  console.log(`Compiling bundle from ${entry} to ${output}`)
   const build = browserify(entry, {
     basedir: PROJECT_DIR,
     ignoreMissing: true,
@@ -22,8 +23,10 @@ async function run () {
 
   const progress = build.bundle().pipe(createWriteStream(output))
 
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     progress.once('error', reject)
     progress.once('close', resolve)
   })
+
+  console.log('Built')
 }
