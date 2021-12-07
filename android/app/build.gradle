@@ -81,31 +81,6 @@ project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
 ]
 
-evaluationDependsOn ':nodejs-mobile-react-native'
-
-task patchNodeModules (type:Exec) {
-  // workingDir "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
-  // environment NODEJS_PROJECT_DIR: "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
-  commandLine "node", "${rootProject.buildDir}/../../scripts/prepare_modules.js"
-}
-
-preBuild.dependsOn patchNodeModules
-
-task generateBundleJS (type: Exec) {
-  workingDir "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
-  environment NODEJS_PROJECT_DIR: "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
-  commandLine "node", "${rootProject.buildDir}/../../scripts/build_bundle.js"
-}
-
-task clearModules(type: Exec) {
-  dependsOn generateBundleJS
-  workingDir "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
-  environment NODEJS_PROJECT_DIR: "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
-  commandLine "node", "${rootProject.buildDir}/../../scripts/clear_modules.js"
-}
-
-tasks.getByPath(':nodejs-mobile-react-native:CopyNodeProjectAssetsFolder').finalizedBy clearModules
-
 // Run this once to be able to run the application with BUCK
 // puts all compile dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
@@ -256,5 +231,38 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+// evaluationDependsOn ':nodejs-mobile-react-native'
+
+task patchNodeModules (type:Exec) {
+  // workingDir "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
+  // environment NODEJS_PROJECT_DIR: "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
+  commandLine "node", "${rootProject.buildDir}/../../scripts/prepare_modules.js"
+}
+
+preBuild.dependsOn patchNodeModules
+
+task generateBundleJS (type: Exec) {
+  workingDir "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
+  environment NODEJS_PROJECT_DIR: "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
+  commandLine "node", "${rootProject.buildDir}/../../scripts/build_bundle.js"
+}
+
+task copyJNILibs(type: Exec) {
+  dependsOn generateBundleJS
+  //workingDir "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
+  environment NODEJS_PROJECT_DIR: "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
+  commandLine "node", "${rootProject.buildDir}/../../scripts/copy_jni_libs.js"
+}
+
+task clearModules(type: Exec) {
+  dependsOn copyJNILibs
+  //dependsOn generateBundleJS
+  workingDir "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
+  environment NODEJS_PROJECT_DIR: "${rootProject.buildDir}/nodejs-assets/nodejs-project/"
+  commandLine "node", "${rootProject.buildDir}/../../scripts/clear_modules.js"
+}
+
+tasks.getByPath(':nodejs-mobile-react-native:CopyNodeProjectAssetsFolder').finalizedBy clearModules
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

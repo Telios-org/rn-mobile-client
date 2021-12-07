@@ -6,11 +6,12 @@
     "android": "react-native run-android --variant release",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "bundle-node": "cd nodejs-assets/nodejs-project && browserify --node --im main.js -o bundle.js && cd ..",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "node ./scripts/install_modules.js && node ./scripts/patch_modules.js"
   },
   "dependencies": {
+    "hypercore": "^10.0.0-alpha.18",
     "nodejs-mobile-react-native": "^0.6.2",
     "react": "17.0.2",
     "react-native": "^0.66.0"

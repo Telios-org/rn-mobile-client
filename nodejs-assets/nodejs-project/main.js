@@ -5,6 +5,14 @@ const userDataPath = bridge.app.datadir()
 
 const Drive = require('@telios/nebula-drive')
 const DHT = require('@hyperswarm/dht')
+const Hypercore = require('hypercore')
+
+// Monkey patch out the locking in hypercore storage
+// For some reason fsctl.lock doesn't seem to want to work
+const originalStorage = Hypercore.defaultStorage
+Hypercore.defaultStorage = (storage, opts = {}) => {
+  return originalStorage(storage, { ...opts, lock: -1 })
+}
 
 const keyPair = DHT.keyPair()
 const swarmOpts = {
@@ -21,6 +29,7 @@ bridge.channel.on('message', (msg) => {
     const { key: givenKey } = msg
     const key = givenKey ? Buffer.from(givenKey, 'hex') : null
     createDrive(key)
+    // createCore()
   }
 })
 
@@ -51,14 +60,12 @@ async function createDrive (key) {
 
     await drive.ready()
 
-    const publicKey = drive.publieKey.toString('hex')
+    const publicKey = drive.publicKey.toString('hex')
 
     bridge.channel.send({
       type: 'driveReady',
       publicKey
     })
-
-    return
 
     await drive.connect()
 

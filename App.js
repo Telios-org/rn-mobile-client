@@ -16,7 +16,7 @@ import {
   View
 } from 'react-native'
 
-const styles = StyleSheet.create({})
+// const styles = StyleSheet.create({})
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark'
