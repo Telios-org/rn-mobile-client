@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/telios/Documents/telios-mobile/ios/TeliosMobile.xcodeproj">
+      location = "group:TeliosMobile.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
