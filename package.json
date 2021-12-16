@@ -13,6 +13,7 @@
   "dependencies": {
     "hypercore": "^10.0.0-alpha.18",
     "nodejs-mobile-react-native": "^0.6.2",
+    "postinstall-postinstall": "^2.1.0",
     "react": "17.0.2",
     "react-native": "^0.66.0"
   },

@@ -1,0 +1,40 @@
+diff --git a/node_modules/nodejs-mobile-react-native/android/build.gradle b/node_modules/nodejs-mobile-react-native/android/build.gradle
+index b6dccc4..a3269d8 100644
+--- a/node_modules/nodejs-mobile-react-native/android/build.gradle
++++ b/node_modules/nodejs-mobile-react-native/android/build.gradle
+@@ -76,9 +76,7 @@ android {
+     }
+ 
+     sourceSets {
+-        main {
+-            jniLibs.srcDirs 'libnode/bin/'
+-        }
++
+         main.assets.srcDirs += '../install/resources/nodejs-modules'
+     }
+ 
+diff --git a/node_modules/nodejs-mobile-react-native/index.js b/node_modules/nodejs-mobile-react-native/index.js
+index ef45a64..e0ac119 100644
+--- a/node_modules/nodejs-mobile-react-native/index.js
++++ b/node_modules/nodejs-mobile-react-native/index.js
+@@ -1,6 +1,6 @@
+ 
+ import { NativeModules, NativeAppEventEmitter } from 'react-native';
+-var EventEmitter = require('react-native/Libraries/vendor/emitter/EventEmitter');
++import EventEmitter from 'react-native/Libraries/vendor/emitter/EventEmitter';
+ 
+ const EVENT_CHANNEL = '_EVENTS_';
+ 
+diff --git a/node_modules/nodejs-mobile-react-native/scripts/patch-package.js b/node_modules/nodejs-mobile-react-native/scripts/patch-package.js
+index b5c1afc..e0cb6dd 100644
+--- a/node_modules/nodejs-mobile-react-native/scripts/patch-package.js
++++ b/node_modules/nodejs-mobile-react-native/scripts/patch-package.js
+@@ -30,7 +30,7 @@ function visitPackageJSON(folderPath)
+   for (var i in files) {
+     let name = files[i];
+     let filePath = path.join(folderPath, files[i]);
+-    if(fs.statSync(filePath).isDirectory()) {
++    if(fs.lstatSync(filePath).isDirectory()) {
+       visitPackageJSON(filePath);
+     } else {
+       if (name === 'package.json') {
