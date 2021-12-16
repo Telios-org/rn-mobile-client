@@ -1,3 +1,7 @@
+diff --git a/node_modules/nodejs-mobile-react-native/.DS_Store b/node_modules/nodejs-mobile-react-native/.DS_Store
+new file mode 100644
+index 0000000..7bae3a5
+Binary files /dev/null and b/node_modules/nodejs-mobile-react-native/.DS_Store differ
 diff --git a/node_modules/nodejs-mobile-react-native/android/build.gradle b/node_modules/nodejs-mobile-react-native/android/build.gradle
 index b6dccc4..a3269d8 100644
 --- a/node_modules/nodejs-mobile-react-native/android/build.gradle
@@ -25,6 +29,32 @@ index ef45a64..e0ac119 100644
  
  const EVENT_CHANNEL = '_EVENTS_';
  
+diff --git a/node_modules/nodejs-mobile-react-native/scripts/ios-build-native-modules.sh b/node_modules/nodejs-mobile-react-native/scripts/ios-build-native-modules.sh
+index ccd99aa..29930a8 100644
+--- a/node_modules/nodejs-mobile-react-native/scripts/ios-build-native-modules.sh
++++ b/node_modules/nodejs-mobile-react-native/scripts/ios-build-native-modules.sh
+@@ -1,4 +1,8 @@
+ #!/bin/sh
++
++export PATH=$PATH:~/.nvm/versions/node/v12.19.1/bin
++echo "Running node: $(node -v)"
++
+ set -e
+ if [ -z "$NODEJS_MOBILE_BUILD_NATIVE_MODULES" ]; then
+ # If build native modules preference is not set, look for it in the project's
+diff --git a/node_modules/nodejs-mobile-react-native/scripts/ios-sign-native-modules.sh b/node_modules/nodejs-mobile-react-native/scripts/ios-sign-native-modules.sh
+index b2cd0fc..a56c989 100644
+--- a/node_modules/nodejs-mobile-react-native/scripts/ios-sign-native-modules.sh
++++ b/node_modules/nodejs-mobile-react-native/scripts/ios-sign-native-modules.sh
+@@ -1,4 +1,8 @@
+ #!/bin/sh
++
++export PATH=$PATH:~/.nvm/versions/node/v12.19.1/bin
++echo "Running node: $(node -v)"
++
+ set -e
+ if [ -z "$NODEJS_MOBILE_BUILD_NATIVE_MODULES" ]; then
+ # If build native modules preference is not set, look for it in the project's
 diff --git a/node_modules/nodejs-mobile-react-native/scripts/patch-package.js b/node_modules/nodejs-mobile-react-native/scripts/patch-package.js
 index b5c1afc..e0cb6dd 100644
 --- a/node_modules/nodejs-mobile-react-native/scripts/patch-package.js
