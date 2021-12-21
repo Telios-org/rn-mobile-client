@@ -12,9 +12,9 @@ run().catch(e => {
 });
 
 async function run() {
-  console.log('Deleting .bin dir to fix builds');
-  const BIN_DIR = join(PROJECT_DIR, 'node_modules/.bin');
-  await rmdir(BIN_DIR, { recursive: true, force: true });
+  // console.log('Deleting .bin dir to fix builds');
+  // const BIN_DIR = join(PROJECT_DIR, 'node_modules/.bin');
+  // await rmdir(BIN_DIR, { recursive: true, force: true });
 
   console.log('Clearing duplicate sodium-native and utp-native modules');
   const DUPLICATE_FOLDERS = [
