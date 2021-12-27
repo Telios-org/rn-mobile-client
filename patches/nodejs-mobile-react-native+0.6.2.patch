@@ -1,19 +1,17 @@
 diff --git a/node_modules/nodejs-mobile-react-native/.DS_Store b/node_modules/nodejs-mobile-react-native/.DS_Store
 new file mode 100644
-index 0000000..7bae3a5
-Binary files /dev/null and b/node_modules/nodejs-mobile-react-native/.DS_Store differ
+index 0000000..e69de29
 diff --git a/node_modules/nodejs-mobile-react-native/android/build.gradle b/node_modules/nodejs-mobile-react-native/android/build.gradle
-index b6dccc4..a3269d8 100644
+index b6dccc4..47d322c 100644
 --- a/node_modules/nodejs-mobile-react-native/android/build.gradle
 +++ b/node_modules/nodejs-mobile-react-native/android/build.gradle
-@@ -76,9 +76,7 @@ android {
+@@ -76,9 +76,6 @@ android {
      }
  
      sourceSets {
 -        main {
 -            jniLibs.srcDirs 'libnode/bin/'
 -        }
-+
          main.assets.srcDirs += '../install/resources/nodejs-modules'
      }
  
