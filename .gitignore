@@ -62,5 +62,9 @@ buck-out/
 # Bundled nodejs-mobile project
 nodejs-assets/nodejs-project/bundle.js
 
+# Generated files
+nodejs-assets/build-native-modules-MacOS-helper-script-node.sh
+nodejs-assets/build-native-modules-MacOS-helper-script-npm.sh
+
 # Compiled jniLibs for Android
 android/app/src/main/jniLibs
