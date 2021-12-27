@@ -1,18 +1,17 @@
 #!/usr/bin/env node
-const { readFile, writeFile } = require('fs').promises
-const { join } = require('path')
+const { readFile, writeFile } = require('fs').promises;
+const { join } = require('path');
 
-const {
-  NODEJS_MOBILE_DIR
-} = require('./constants')
+const { NODEJS_MOBILE_DIR } = require('./constants');
 
-run().catch((e) => {
+run().catch(e => {
   process.nextTick(() => {
-    throw e
-  })
-})
+    throw e;
+  });
+});
 
-async function run () {
+async function run() {
+  /*
   console.log('Patching nodejs-mobile gradle script')
   const NODEJS_MOBILE_GRADLE = join(NODEJS_MOBILE_DIR, 'android/build.gradle')
   const mainSectionMatch = / {8}main {[^}]+}/gm
@@ -28,4 +27,8 @@ async function run () {
   const indexContent = await readFile(NODEJS_MOBILE_INDEX, 'utf8')
   const patchedIndex = indexContent.replace(toReplaceRequire, replaceWithImport)
   await writeFile(NODEJS_MOBILE_INDEX, patchedIndex)
+
+  */
+
+  console.log('ignoring patch_modules.js right now in favor of patch-package');
 }

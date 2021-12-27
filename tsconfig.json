@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "jsx": "react-native",
+    "lib": ["es2017"],
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
+    "module": "commonjs",
+    "target": "es2017",
+    "noEmit": true
+  },
+  "include": [
+    "nodejs-assets/nodejs-project/**/*.ts",
+    "src/frontend/**/*.ts",
+    "typings/*.d.ts"
+  ],
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js"]
+}

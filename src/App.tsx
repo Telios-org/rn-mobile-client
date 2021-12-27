@@ -1,19 +1,15 @@
-import nodejs from 'nodejs-mobile-react-native';
-
 import React, { useEffect, useState } from 'react';
+import nodejs from 'nodejs-mobile-react-native';
 
 import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
   Text,
   Button,
   useColorScheme,
   View,
 } from 'react-native';
-
-// const styles = StyleSheet.create({})
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -64,9 +60,9 @@ const App = () => {
         <View>
           <Button title="Create Drive" onPress={createDrive} />
           <Button title="Create Account" onPress={createAccount} />
-          <Text style={{ color: 'white' }}>{statusText}</Text>
-          <Text style={{ color: 'white' }}>{driveKey}</Text>
-          <Text style={{ color: 'white' }}>{driveDiffKey}</Text>
+          <Text>{statusText}</Text>
+          <Text>{driveKey}</Text>
+          <Text>{driveDiffKey}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
