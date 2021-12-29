@@ -1,72 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import nodejs from 'nodejs-mobile-react-native';
+import React from 'react';
 
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  Button,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { WelcomeScreen } from './screens/WelcomeScreen';
+import { RegisterBetaCodeScreen } from './screens/RegisterBetaCodeScreen';
+import { RegisterConsentScreen } from './screens/RegisterConsentScreen';
+import { RegisterEmailScreen } from './screens/RegisterEmailScreen';
+import { RegisterPasswordScreen } from './screens/RegisterPasswordScreen';
+import { RegisterRecoveryEmailScreen } from './screens/RegisterRecoveryEmailScreen';
+import { RegisterSummaryScreen } from './screens/RegisterSummaryScreen';
 
-const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const [statusText, setStatusText] = useState('');
-  const [driveKey, setDriveKey] = useState('');
-  const [driveDiffKey, setDriveDiffKey] = useState('');
-
-  console.log('Rendering', { statusText, isDarkMode });
-
-  useEffect(() => {
-    nodejs.start('bundle.js');
-    nodejs.channel.addListener('message', msg => {
-      console.log('From node: ', msg);
-      if (msg.type === 'driveReady') {
-        console.log('got key', msg.publicKey);
-        setStatusText(JSON.stringify(msg));
-        setDriveKey(msg.publicKey);
-        setDriveDiffKey(msg.driveDiffKey);
-      } else if (msg.type === 'registerAccount') {
-        setStatusText(JSON.stringify(msg));
-      }
-    });
-  });
-
-  async function createDrive() {
-    nodejs.channel.send({
-      type: 'createDrive',
-    });
-  }
-
-  async function createAccount() {
-    if (!driveKey) {
-      console.log('no drive key');
-      return;
-    }
-    nodejs.channel.send({
-      type: 'registerAccount',
-      driveKey,
-      driveDiffKey,
-    });
-  }
-
-  return (
-    <SafeAreaView>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View>
-          <Button title="Create Drive" onPress={createDrive} />
-          <Button title="Create Account" onPress={createAccount} />
-          <Text>{statusText}</Text>
-          <Text>{driveKey}</Text>
-          <Text>{driveDiffKey}</Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+export type RootStackParams = {
+  welcome: undefined;
+  registerBetaCode: undefined;
+  registerConsent: undefined;
+  registerEmail: undefined;
+  registerPassword: undefined;
+  registerRecoveryEmail: undefined;
+  registerSummary: undefined;
 };
 
-export default App;
+const Stack = createNativeStackNavigator<RootStackParams>();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name={'welcome'}
+          component={WelcomeScreen}
+          options={{ title: 'Welcome' }}
+        />
+        <Stack.Screen
+          name={'registerBetaCode'}
+          component={RegisterBetaCodeScreen}
+          options={{ title: 'Beta Code' }}
+        />
+        <Stack.Screen
+          name={'registerConsent'}
+          component={RegisterConsentScreen}
+          options={{ title: 'Beta Consent' }}
+        />
+        <Stack.Screen
+          name={'registerEmail'}
+          component={RegisterEmailScreen}
+          options={{ title: 'Choose Email' }}
+        />
+        <Stack.Screen
+          name={'registerPassword'}
+          component={RegisterPasswordScreen}
+          options={{ title: 'Master Password' }}
+        />
+        <Stack.Screen
+          name={'registerRecoveryEmail'}
+          component={RegisterRecoveryEmailScreen}
+          options={{ title: 'Recovery Email' }}
+        />
+        <Stack.Screen
+          name={'registerSummary'}
+          component={RegisterSummaryScreen}
+          options={{ title: 'Summary' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}

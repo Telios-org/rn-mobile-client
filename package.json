@@ -13,12 +13,16 @@
     "tsc-watch": "tsc --watch"
   },
   "dependencies": {
+    "@react-navigation/native": "^6.0.6",
+    "@react-navigation/native-stack": "^6.2.5",
     "hypercore": "^10.0.0-alpha.18",
     "nodejs-mobile-react-native": "^0.6.2",
     "patch-package": "^6.4.7",
     "postinstall-postinstall": "^2.1.0",
     "react": "17.0.2",
     "react-native": "^0.66.0",
+    "react-native-safe-area-context": "^3.3.2",
+    "react-native-screens": "^3.10.1",
     "tsify": "^5.0.4"
   },
   "devDependencies": {
