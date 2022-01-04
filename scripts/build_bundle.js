@@ -32,13 +32,4 @@ async function run() {
       console.log('Built');
     })
     .pipe(createWriteStream(output));
-
-  // const progress = build.bundle().pipe();
-
-  // await new Promise((resolve, reject) => {
-  //   progress.once('error', reject);
-  //   progress.once('close', resolve);
-  // });
-
-  // console.log('Built');
 }

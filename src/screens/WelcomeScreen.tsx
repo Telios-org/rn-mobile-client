@@ -14,6 +14,7 @@ export type WelcomeScreenProps = NativeStackScreenProps<
 >;
 
 export const WelcomeScreen = (props: WelcomeScreenProps) => {
+  /*
   const [statusText, setStatusText] = useState('');
   const [driveKey, setDriveKey] = useState('');
   const [driveDiffKey, setDriveDiffKey] = useState('');
@@ -51,8 +52,10 @@ export const WelcomeScreen = (props: WelcomeScreenProps) => {
     });
   }
 
+  */
+
   const onRegister = () => {
-    props.navigation.navigate('registerBetaCode');
+    props.navigation.navigate('register');
   };
 
   return (
@@ -60,7 +63,7 @@ export const WelcomeScreen = (props: WelcomeScreenProps) => {
       <StatusBar barStyle={'dark-content'} />
 
       <View style={{ margin: spacing.md }}>
-        <Button label="Create Your Account" onPress={onRegister} />
+        <Button title="Create Your Account" onPress={onRegister} />
       </View>
 
       {/* <ScrollView style={{ flex: 1 }}>

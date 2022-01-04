@@ -1,3 +1,4 @@
+const fs = require('fs');
 const bridge = require('rn-bridge');
 const crypto = require('crypto');
 
@@ -7,11 +8,12 @@ const Drive = require('@telios/nebula-drive');
 const DHT = require('@hyperswarm/dht');
 const Hypercore = require('hypercore');
 
+// can I remove this Crypto, and only use the explicit import? its confusing to have both
 const { Account, Mailbox, Crypto } = require('@telios/client-sdk');
 const { secretBoxKeypair, signingKeypair, mnemonic } = Account.makeKeys();
 
 // Verification code sent to the recovery email
-const vcode = 'btester1';
+// const vcode = 'btester1';
 
 // Monkey patch out the locking in hypercore storage
 // For some reason fsctl.lock doesn't seem to want to work
@@ -37,9 +39,7 @@ bridge.channel.on('message', (msg: any) => {
     createDrive(key);
     // createCore()
   } else if (type === 'registerAccount') {
-    const driveKey = msg.driveKey;
-    console.log('got drive key', driveKey);
-    registerAccount(driveKey);
+    registerAccount(msg);
   }
 });
 
@@ -117,8 +117,45 @@ async function createDrive(key: any) {
 
 // ----- register Account ------
 
-async function registerAccount(driveKey: any) {
-  console.log('registerAccount  - entry', driveKey);
+async function registerAccount(message: any) {
+  console.log('registerAccount  - entry', message);
+  const { masterPassword, email, recoveryEmail, code } = message.data;
+
+  // Drive encryption key. This will need to be stored as it's the key to unlock the drive when the user comes back online.
+  const encryptionKey = Buffer.from(Crypto.generateAEDKey(), 'hex');
+  console.log('enc key using Crypto', encryptionKey);
+
+  const accountsPath = `${userDataPath}/Accounts`;
+  if (!fs.existsSync(accountsPath)) {
+    fs.mkdirSync(accountsPath, { recursive: true });
+  }
+  const accountPath = `${accountsPath}/${email}`;
+
+  console.log('Opening drive in', accountPath);
+
+  // const drive = new Drive(dir, key, {
+  //   keyPair,
+  //   swarmOpts,
+  // });
+
+  // Initialize a new drive
+  const drive = new Drive(accountPath, null, {
+    keyPair: {
+      publicKey: Buffer.from(signingKeypair.publicKey, 'hex'),
+      secretKey: Buffer.from(signingKeypair.privateKey, 'hex'),
+    },
+    encryptionKey,
+    swarmOpts: {
+      server: true,
+      client: true,
+    },
+  });
+
+  console.log('Initializing drive');
+
+  await drive.ready();
+
+  console.log('drive ready. pubkey:', drive.publicKey);
 
   // const account = new Account({
   //   provider: 'https://apiv1.telios.io',
@@ -131,8 +168,8 @@ async function registerAccount(driveKey: any) {
   const initPayload = {
     account: {
       account_key: secretBoxKeypair.publicKey,
-      recovery_email: 'jpoliachik@gmail.com',
-      device_drive_key: driveKey,
+      recovery_email: recoveryEmail,
+      device_drive_key: drive.publicKey,
       device_signing_key: signingKeypair.publicKey,
     },
   };
@@ -152,7 +189,7 @@ async function registerAccount(driveKey: any) {
     const registerPayload = {
       account,
       sig: sig,
-      vcode: vcode,
+      vcode: code,
     };
 
     console.log('register with payload', registerPayload);
@@ -161,6 +198,53 @@ async function registerAccount(driveKey: any) {
     const { _sig } = await acct.register(registerPayload);
 
     console.log('SIGNATURE', _sig);
+
+    /*
+
+      const accountUID = Crypto.randomBytes(8).toString('hex'); // This is used as an anonymous ID that is sent to Matomo
+
+
+
+    const connection = new Models(acctPath, payload.password, {
+      sync: true,
+      sparse: false,
+    });
+
+    await connection.initAll();
+
+    store.setDBConnection(payload.email, connection);
+
+    const acctDBPayload = {
+      uid: accountUID,
+      secretBoxPubKey: secretBoxKeypair.publicKey,
+      secretBoxPrivKey: secretBoxKeypair.privateKey,
+      driveEncryptionKey: encryptionKey,
+      deviceSigningPubKey: signingKeypair.publicKey,
+      deviceSigningPrivKey: signingKeypair.privateKey,
+      serverSig,
+      deviceId: account.device_id,
+    };
+
+    await AccountModel.create(acctDBPayload);
+
+    handleDriveMessages(drive, acctDBPayload);
+
+    store.setAccount(acctDBPayload);
+
+    process.send({
+      event: 'ACCOUNT_WORKER::createAccount',
+      data: {
+        uid: accountUID,
+        deviceId: account.device_id,
+        signedAcct: account,
+        secretBoxKeypair,
+        signingKeypair,
+        mnemonic,
+        sig: serverSig,
+      },
+    });
+
+    */
   } catch (err) {
     console.log('error - ', err);
   }
