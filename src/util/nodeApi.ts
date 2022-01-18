@@ -5,14 +5,14 @@ export const start = () => {
   nodejs.start('bundle.js');
   nodejs.channel.addListener('message', msg => {
     console.log('From node: ', msg);
-    // if (msg.type === 'driveReady') {
-    //   console.log('got key', msg.publicKey);
-    //   setStatusText(JSON.stringify(msg));
-    //   setDriveKey(msg.publicKey);
-    //   setDriveDiffKey(msg.driveDiffKey);
-    // } else if (msg.type === 'registerAccount') {
-    //   setStatusText(JSON.stringify(msg));
-    // }
+  });
+
+  nodejs.channel.addListener('account:create:success', msg => {
+    console.log('account create success: ', msg);
+  });
+
+  nodejs.channel.addListener('account:create:error', msg => {
+    console.log('account create error message', msg);
   });
 };
 
@@ -23,7 +23,12 @@ export const createAccount = (values: {
   code: string;
 }) => {
   nodejs.channel.send({
-    type: 'registerAccount',
-    data: values,
+    event: 'account:create',
+    payload: {
+      email: values.email,
+      password: values.masterPassword,
+      vcode: values.code,
+      recoveryEmail: values.recoveryEmail,
+    },
   });
 };

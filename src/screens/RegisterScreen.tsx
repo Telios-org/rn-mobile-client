@@ -56,7 +56,7 @@ export const RegisterScreen = (props: RegisterScreenProps) => {
         email: fullEmail,
         masterPassword: values.masterPassword,
         recoveryEmail: values.recoveryEmail,
-        code: values.betaCode,
+        vcode: values.betaCode,
       });
 
       // try {

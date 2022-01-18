@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const browserify = require('browserify');
+const babelify = require('babelify');
 const tsify = require('tsify');
 
 const { createWriteStream } = require('fs');
@@ -24,6 +25,16 @@ async function run() {
     node: true,
   })
     .plugin(tsify, { project: join(ROOT, 'tsconfig.json') })
+    // .transform(babelify, {
+    //   presets: [
+    //     '@babel/preset-env',
+    //     {
+    //       targets: {
+    //         node: '12',
+    //       },
+    //     },
+    //   ],
+    // })
     .bundle()
     .on('error', error => {
       console.error(error.toString());

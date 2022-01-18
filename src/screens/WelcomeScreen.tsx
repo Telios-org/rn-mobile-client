@@ -7,6 +7,7 @@ import { SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native';
 import { Button } from '../components/Button';
 import { RootStackParams } from '../App';
 import { spacing } from '../util/spacing';
+import { createAccount } from '../util/nodeApi';
 
 export type WelcomeScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -55,7 +56,14 @@ export const WelcomeScreen = (props: WelcomeScreenProps) => {
   */
 
   const onRegister = () => {
-    props.navigation.navigate('register');
+    // props.navigation.navigate('register');
+
+    createAccount({
+      email: 'justin23@dev.telios.io',
+      masterPassword: 'letmein123',
+      recoveryEmail: 'justin.poliachik@gmail.com',
+      code: 'btester1',
+    });
   };
 
   return (
