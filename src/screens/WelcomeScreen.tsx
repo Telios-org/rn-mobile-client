@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import nodejs from 'nodejs-mobile-react-native';
-
 import { SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native';
 import { Button } from '../components/Button';
 import { RootStackParams } from '../App';
 import { spacing } from '../util/spacing';
-import { createAccount } from '../util/nodeApi';
+import { useAppDispatch } from '../hooks';
+import { registerNewAccount } from '../mainSlice';
 
 export type WelcomeScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -15,55 +14,19 @@ export type WelcomeScreenProps = NativeStackScreenProps<
 >;
 
 export const WelcomeScreen = (props: WelcomeScreenProps) => {
-  /*
-  const [statusText, setStatusText] = useState('');
-  const [driveKey, setDriveKey] = useState('');
-  const [driveDiffKey, setDriveDiffKey] = useState('');
-
-  useEffect(() => {
-    nodejs.start('bundle.js');
-    nodejs.channel.addListener('message', msg => {
-      console.log('From node: ', msg);
-      if (msg.type === 'driveReady') {
-        console.log('got key', msg.publicKey);
-        setStatusText(JSON.stringify(msg));
-        setDriveKey(msg.publicKey);
-        setDriveDiffKey(msg.driveDiffKey);
-      } else if (msg.type === 'registerAccount') {
-        setStatusText(JSON.stringify(msg));
-      }
-    });
-  });
-
-  async function createDrive() {
-    nodejs.channel.send({
-      type: 'createDrive',
-    });
-  }
-
-  async function createAccount() {
-    if (!driveKey) {
-      console.log('no drive key');
-      return;
-    }
-    nodejs.channel.send({
-      type: 'registerAccount',
-      driveKey,
-      driveDiffKey,
-    });
-  }
-
-  */
+  const dispatch = useAppDispatch();
 
   const onRegister = () => {
     // props.navigation.navigate('register');
 
-    createAccount({
-      email: 'justin23@dev.telios.io',
-      masterPassword: 'letmein123',
-      recoveryEmail: 'justin.poliachik@gmail.com',
-      code: 'btester1',
-    });
+    dispatch(
+      registerNewAccount({
+        email: 'justin25@dev.telios.io',
+        masterPassword: 'letmein123',
+        recoveryEmail: 'justin.poliachik@gmail.com',
+        code: 'btester1',
+      }),
+    );
   };
 
   return (

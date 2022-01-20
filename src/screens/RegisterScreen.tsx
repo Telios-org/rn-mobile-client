@@ -10,6 +10,7 @@ import { spacing } from '../util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParams } from '../App';
 import { createAccount } from '../util/nodeApi';
+import { useAppSelector } from '../hooks';
 
 type RegisterFormValues = {
   betaCode: string;
@@ -36,6 +37,10 @@ export type RegisterScreenProps = NativeStackScreenProps<
 >;
 
 export const RegisterScreen = (props: RegisterScreenProps) => {
+  // The `state` arg is correctly typed as `RootState` already
+  const accountData = useAppSelector(state => state.account);
+  const dispatch = useAppDispatch();
+
   const onSubmit = async (
     values: RegisterFormValues,
     actions: FormikHelpers<RegisterFormValues>,

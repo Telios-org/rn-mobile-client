@@ -1,3 +1,4 @@
+/*
 import nodejs from 'nodejs-mobile-react-native';
 
 export const start = () => {
@@ -6,17 +7,9 @@ export const start = () => {
   nodejs.channel.addListener('message', msg => {
     console.log('From node: ', msg);
   });
-
-  nodejs.channel.addListener('account:create:success', msg => {
-    console.log('account create success: ', msg);
-  });
-
-  nodejs.channel.addListener('account:create:error', msg => {
-    console.log('account create error message', msg);
-  });
 };
 
-export const createAccount = (values: {
+export const registerNewAccount = (values: {
   masterPassword: string;
   email: string;
   recoveryEmail: string;
@@ -32,3 +25,4 @@ export const createAccount = (values: {
     },
   });
 };
+*/
