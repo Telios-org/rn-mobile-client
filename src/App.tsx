@@ -7,6 +7,9 @@ import { RegisterScreen } from './screens/RegisterScreen';
 import { store } from './store';
 import { Provider } from 'react-redux';
 import { LoginScreen } from './screens/LoginScreen';
+import { createNodeListener } from './nodeListener';
+import { useAppDispatch } from './hooks';
+import { ListenerContainer } from './ListenerContainer';
 
 export type RootStackParams = {
   welcome: undefined;
@@ -19,6 +22,7 @@ const Stack = createNativeStackNavigator<RootStackParams>();
 export default function App() {
   return (
     <Provider store={store}>
+      <ListenerContainer />
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen

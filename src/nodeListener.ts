@@ -1,7 +1,7 @@
 import nodejs from 'nodejs-mobile-react-native';
 import { AppDispatch } from './store';
 
-export const nodeListener = (dispatch: AppDispatch) => {
+export const createNodeListener = (dispatch: AppDispatch) => {
   console.log('starting nodejs bundle...');
   nodejs.start('bundle.js');
   nodejs.channel.addListener('message', msg => {
