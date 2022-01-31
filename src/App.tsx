@@ -6,10 +6,12 @@ import { WelcomeScreen } from './screens/WelcomeScreen';
 import { RegisterScreen } from './screens/RegisterScreen';
 import { store } from './store';
 import { Provider } from 'react-redux';
+import { LoginScreen } from './screens/LoginScreen';
 
 export type RootStackParams = {
   welcome: undefined;
   register: undefined;
+  login: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -28,6 +30,11 @@ export default function App() {
             name={'register'}
             component={RegisterScreen}
             options={{ title: 'Register' }}
+          />
+          <Stack.Screen
+            name={'login'}
+            component={LoginScreen}
+            options={{ title: 'Login' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

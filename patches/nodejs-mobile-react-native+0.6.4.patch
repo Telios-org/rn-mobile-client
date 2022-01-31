@@ -2,7 +2,7 @@ diff --git a/node_modules/nodejs-mobile-react-native/.DS_Store b/node_modules/no
 new file mode 100644
 index 0000000..e69de29
 diff --git a/node_modules/nodejs-mobile-react-native/android/build.gradle b/node_modules/nodejs-mobile-react-native/android/build.gradle
-index b6dccc4..47d322c 100644
+index e54f25c..8b0138b 100644
 --- a/node_modules/nodejs-mobile-react-native/android/build.gradle
 +++ b/node_modules/nodejs-mobile-react-native/android/build.gradle
 @@ -76,9 +76,6 @@ android {
@@ -16,24 +16,23 @@ index b6dccc4..47d322c 100644
      }
  
 diff --git a/node_modules/nodejs-mobile-react-native/index.js b/node_modules/nodejs-mobile-react-native/index.js
-index ef45a64..e0ac119 100644
+index 92a53ae..e0ac119 100644
 --- a/node_modules/nodejs-mobile-react-native/index.js
 +++ b/node_modules/nodejs-mobile-react-native/index.js
 @@ -1,6 +1,6 @@
  
  import { NativeModules, NativeAppEventEmitter } from 'react-native';
--var EventEmitter = require('react-native/Libraries/vendor/emitter/EventEmitter');
+-var EventEmitter = require('react-native/Libraries/vendor/emitter/EventEmitter').default;
 +import EventEmitter from 'react-native/Libraries/vendor/emitter/EventEmitter';
  
  const EVENT_CHANNEL = '_EVENTS_';
  
 diff --git a/node_modules/nodejs-mobile-react-native/scripts/ios-build-native-modules.sh b/node_modules/nodejs-mobile-react-native/scripts/ios-build-native-modules.sh
-index ccd99aa..29930a8 100644
+index ccd99aa..2c52814 100644
 --- a/node_modules/nodejs-mobile-react-native/scripts/ios-build-native-modules.sh
 +++ b/node_modules/nodejs-mobile-react-native/scripts/ios-build-native-modules.sh
-@@ -1,4 +1,8 @@
+@@ -1,4 +1,7 @@
  #!/bin/sh
-+
 +export PATH=$PATH:~/.nvm/versions/node/v12.19.1/bin
 +echo "Running node: $(node -v)"
 +
@@ -41,28 +40,14 @@ index ccd99aa..29930a8 100644
  if [ -z "$NODEJS_MOBILE_BUILD_NATIVE_MODULES" ]; then
  # If build native modules preference is not set, look for it in the project's
 diff --git a/node_modules/nodejs-mobile-react-native/scripts/ios-sign-native-modules.sh b/node_modules/nodejs-mobile-react-native/scripts/ios-sign-native-modules.sh
-index b2cd0fc..a56c989 100644
+index b2cd0fc..e21950d 100644
 --- a/node_modules/nodejs-mobile-react-native/scripts/ios-sign-native-modules.sh
 +++ b/node_modules/nodejs-mobile-react-native/scripts/ios-sign-native-modules.sh
-@@ -1,4 +1,8 @@
+@@ -1,4 +1,7 @@
  #!/bin/sh
-+
 +export PATH=$PATH:~/.nvm/versions/node/v12.19.1/bin
 +echo "Running node: $(node -v)"
 +
  set -e
  if [ -z "$NODEJS_MOBILE_BUILD_NATIVE_MODULES" ]; then
  # If build native modules preference is not set, look for it in the project's
-diff --git a/node_modules/nodejs-mobile-react-native/scripts/patch-package.js b/node_modules/nodejs-mobile-react-native/scripts/patch-package.js
-index b5c1afc..e0cb6dd 100644
---- a/node_modules/nodejs-mobile-react-native/scripts/patch-package.js
-+++ b/node_modules/nodejs-mobile-react-native/scripts/patch-package.js
-@@ -30,7 +30,7 @@ function visitPackageJSON(folderPath)
-   for (var i in files) {
-     let name = files[i];
-     let filePath = path.join(folderPath, files[i]);
--    if(fs.statSync(filePath).isDirectory()) {
-+    if(fs.lstatSync(filePath).isDirectory()) {
-       visitPackageJSON(filePath);
-     } else {
-       if (name === 'package.json') {

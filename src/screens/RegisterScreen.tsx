@@ -9,8 +9,8 @@ import envApi from '../../env_api.json';
 import { spacing } from '../util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParams } from '../App';
-import { createAccount } from '../util/nodeApi';
-import { useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { getNewMailMeta, registerFlow } from '../mainSlice';
 
 type RegisterFormValues = {
   betaCode: string;
@@ -38,8 +38,12 @@ export type RegisterScreenProps = NativeStackScreenProps<
 
 export const RegisterScreen = (props: RegisterScreenProps) => {
   // The `state` arg is correctly typed as `RootState` already
-  const accountData = useAppSelector(state => state.account);
+  const storeData = useAppSelector(state => state.main);
   const dispatch = useAppDispatch();
+
+  const onRefresh = async () => {
+    await dispatch(getNewMailMeta());
+  };
 
   const onSubmit = async (
     values: RegisterFormValues,
@@ -47,30 +51,24 @@ export const RegisterScreen = (props: RegisterScreenProps) => {
   ) => {
     try {
       actions.setSubmitting(true);
-      const codeResult = await validateBetaCode(values.betaCode);
-      if (codeResult.type === 'error') {
-        actions.setFieldError('betaCode', codeResult.error.message);
-        throw codeResult.error;
-      }
+      // const codeResult = await validateBetaCode(values.betaCode);
+      // if (codeResult.type === 'error') {
+      //   actions.setFieldError('betaCode', codeResult.error.message);
+      //   throw codeResult.error;
+      // }
 
       console.log('submit the form!', values);
 
       const fullEmail = `${values.email}@dev.telios.io`;
 
-      createAccount({
-        email: fullEmail,
-        masterPassword: values.masterPassword,
-        recoveryEmail: values.recoveryEmail,
-        vcode: values.betaCode,
-      });
-
-      // try {
-      //   const acct = await Login.createAccount({
-      //     password: formValue.masterpass,
-      //     email: email.toLowerCase(),
-      //     recoveryEmail: formValue.recoveryemail.toLowerCase(),
-      //     vcode: formValue.betacode
-      //   });
+      await dispatch(
+        registerFlow({
+          email: fullEmail,
+          masterPassword: values.masterPassword,
+          recoveryEmail: values.recoveryEmail,
+          code: values.betaCode,
+        }),
+      );
 
       actions.setSubmitting(false);
     } catch (error) {
@@ -125,9 +123,9 @@ export const RegisterScreen = (props: RegisterScreenProps) => {
         <Formik
           initialValues={{
             betaCode: 'btester1',
-            email: '',
-            masterPassword: '',
-            recoveryEmail: '',
+            email: `justintest${Math.floor(Date.now() / 1000)}`,
+            masterPassword: 'Letmein123!',
+            recoveryEmail: 'justin.poliachik@gmail.com',
             acceptedTC: true,
           }}
           validationSchema={RegisterFormSchema}
@@ -202,6 +200,7 @@ export const RegisterScreen = (props: RegisterScreenProps) => {
           )}
         </Formik>
       </View>
+      <Button onPress={onRefresh} title="Refresh" />
     </ScrollView>
   );
 };
