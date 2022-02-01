@@ -6,52 +6,7 @@ import {
 } from './eventListenerMiddleware';
 import { RootState, store } from './store';
 
-// Define a type for the slice state
-interface MainState {
-  loadingRegisterAccount?: boolean;
-  errorRegisterAccount?: Error;
-  value: number;
-  account?: RegisterAccountResponse;
-}
-
-// Define the initial state using that type
-const initialState: MainState = {
-  value: 0,
-};
-
-export const registerFlow = createAsyncThunk(
-  'main/registerFlow',
-  async (
-    data: {
-      masterPassword: string;
-      email: string;
-      recoveryEmail: string;
-      code: string;
-    },
-    thunkAPI,
-  ): Promise<{}> => {
-    try {
-      const registerAccountResponse = await thunkAPI.dispatch(
-        registerNewAccount(data),
-      );
-      const account =
-        registerAccountResponse.payload as RegisterAccountResponse;
-      const registerMailboxResponse = await thunkAPI.dispatch(
-        registerMailbox({
-          accountKey: account.signedAcct.account_key,
-          email: data.email,
-        }),
-      );
-      const saveMailboxResponse = await thunkAPI.dispatch(
-        saveMailbox({ email: data.email }),
-      );
-      const getNewMailResponse = await thunkAPI.dispatch(getNewMailMeta());
-      return {};
-    } catch (e) {}
-  },
-);
-
-type RegisterAccountResponse = {
+export type Account = {
   deviceId: string;
   mnemonic: string;
   secretBoxKeypair: {
@@ -74,6 +29,84 @@ type RegisterAccountResponse = {
   };
   uid: string;
 };
+
+export type Mailbox = {
+  email: string;
+  isRegistered: boolean;
+  isSaved: boolean;
+  mailboxId?: string;
+};
+
+// Define a type for the slice state
+interface MainState {
+  account?: Account;
+  mailbox?: Mailbox;
+
+  isAuthenticated: boolean;
+
+  // loadingRegisterAccount?: boolean;
+  // errorRegisterAccount?: Error;
+  // loadingRegisterMailbox?: boolean;
+  // errorRegisterMailbox?: Error;
+  // loadingSaveMailbox?: boolean;
+  // errorSaveMailbox?: Error;
+
+  loadingGetMailMeta?: boolean;
+}
+
+// Define the initial state using that type
+const initialState: MainState = {
+  isAuthenticated: false,
+};
+
+export const registerFlow = createAsyncThunk(
+  'main/registerFlow',
+  async (
+    data: {
+      masterPassword: string;
+      email: string;
+      recoveryEmail: string;
+      code: string;
+    },
+    thunkAPI,
+  ): Promise<void> => {
+    try {
+      const registerAccountResponse = await thunkAPI.dispatch(
+        registerNewAccount(data),
+      );
+      const account =
+        registerAccountResponse.payload as RegisterAccountResponse;
+      const registerMailboxResponse = await thunkAPI.dispatch(
+        registerMailbox({
+          accountKey: account.signedAcct.account_key,
+          email: data.email,
+        }),
+      );
+      const saveMailboxResponse = await thunkAPI.dispatch(
+        saveMailbox({ email: data.email }),
+      );
+      const getNewMailResponse = await thunkAPI.dispatch(getNewMailMeta());
+    } catch (e) {}
+  },
+);
+
+export const loginFlow = createAsyncThunk(
+  'main/loginFlow',
+  async (
+    data: { email: string; password: string },
+    thunkAPI,
+  ): Promise<void> => {
+    const loginResponse = await thunkAPI.dispatch(
+      accountLogin({ email: data.email, password: data.password }),
+    );
+    if (loginResponse.type === accountLogin.rejected.type) {
+      throw new Error('error logging in');
+    }
+    const getNewMailResponse = await thunkAPI.dispatch(getNewMailMeta());
+  },
+);
+
+type RegisterAccountResponse = Account;
 export const registerNewAccount = createAsyncThunk(
   'main/registerNewAccount',
   async (data: {
@@ -97,7 +130,7 @@ export const registerNewAccount = createAsyncThunk(
         if (event.error) {
           reject(event.error as Error);
         } else {
-          resolve(event.payload as RegisterAccountResponse);
+          resolve(event.data as RegisterAccountResponse);
         }
       });
     });
@@ -124,7 +157,7 @@ export const registerMailbox = createAsyncThunk(
         if (event.error) {
           reject(event.error as Error);
         } else {
-          resolve(event.payload as RegisterMailboxResponse);
+          resolve(event.data as RegisterMailboxResponse);
         }
       });
     });
@@ -151,7 +184,7 @@ export const saveMailbox = createAsyncThunk(
         if (event.error) {
           reject(event.error as Error);
         } else {
-          resolve(event.payload as SaveMailboxResponse);
+          resolve(event.data as SaveMailboxResponse);
         }
       });
     });
@@ -188,11 +221,11 @@ export const getNewMailMeta = createAsyncThunk(
           reject(event.error as Error);
         } else {
           // todo remove this into separate flow
-          if (event.payload.meta && event.payload.meta.length > 0) {
-            thunkAPI.dispatch(getMessageBatch(event.payload));
+          if (event.data && event.data.meta && event.data.meta.length > 0) {
+            thunkAPI.dispatch(getMessageBatch(event.data));
           }
 
-          resolve(event.payload as GetNewMailMetaResponse);
+          resolve(event.data as GetNewMailMetaResponse);
         }
       });
     });
@@ -215,7 +248,7 @@ export const getMessageBatch = createAsyncThunk(
           if (event.error) {
             resolve(event.error as Error);
           } else {
-            resolve(event.payload as GetMessageBatchResponse);
+            resolve(event.data as GetMessageBatchResponse);
           }
         },
       );
@@ -240,10 +273,12 @@ export const accountLogin = createAsyncThunk(
       });
 
       registerOneTimeListener('account:login:callback', event => {
+        console.log('login callback event', event);
         if (event.error) {
-          reject(new Error(event.error));
+          console.log('rejectig login');
+          reject(event.error);
         } else {
-          resolve(event.payload as AccountLoginResponse);
+          resolve(event.data as AccountLoginResponse);
         }
       });
     });
@@ -255,18 +290,33 @@ export const mainSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(registerNewAccount.pending, (state, action) => {
-      state.loadingRegisterAccount = true;
-      state.errorRegisterAccount = undefined;
-    });
     builder.addCase(registerNewAccount.fulfilled, (state, action) => {
-      state.loadingRegisterAccount = true;
-      state.errorRegisterAccount = undefined;
-      state.account = action.payload as RegisterAccountResponse;
+      state.account = action.payload;
     });
-    builder.addCase(registerNewAccount.rejected, (state, action) => {
-      state.loadingRegisterAccount = true;
-      state.errorRegisterAccount = undefined;
+    builder.addCase(registerMailbox.fulfilled, (state, action) => {
+      state.mailbox = {
+        email: action.meta.arg.email,
+        isRegistered: true,
+        isSaved: false,
+      };
+    });
+    builder.addCase(saveMailbox.fulfilled, (state, action) => {
+      state.mailbox = {
+        email: action.payload.address,
+        isRegistered: true,
+        isSaved: true,
+        mailboxId: action.payload.mailboxId,
+      };
+    });
+    builder.addCase(getNewMailMeta.pending, (state, action) => {
+      state.loadingGetMailMeta = true;
+    });
+    builder.addCase(getNewMailMeta.fulfilled, (state, action) => {
+      state.loadingGetMailMeta = false;
+      // todo handle meta
+    });
+    builder.addCase(getNewMailMeta.rejected, (state, action) => {
+      state.loadingGetMailMeta = false;
     });
   },
 });

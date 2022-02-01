@@ -8,9 +8,10 @@ import * as Yup from 'yup';
 import envApi from '../../env_api.json';
 import { spacing } from '../util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParams } from '../App';
+import { RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getNewMailMeta, registerFlow } from '../mainSlice';
+import { Result } from '../util/types';
 
 type RegisterFormValues = {
   betaCode: string;
@@ -200,7 +201,6 @@ export const RegisterScreen = (props: RegisterScreenProps) => {
           )}
         </Formik>
       </View>
-      <Button onPress={onRefresh} title="Refresh" />
     </ScrollView>
   );
 };

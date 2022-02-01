@@ -7,9 +7,14 @@ import * as Yup from 'yup';
 
 import { spacing } from '../util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParams } from '../App';
+import { RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { accountLogin, getNewMailMeta, registerFlow } from '../mainSlice';
+import {
+  accountLogin,
+  getNewMailMeta,
+  loginFlow,
+  registerFlow,
+} from '../mainSlice';
 
 type LoginFormValues = {
   email: string;
@@ -24,13 +29,7 @@ const LoginFormSchema = Yup.object().shape({
 export type LoginScreenProps = NativeStackScreenProps<RootStackParams, 'login'>;
 
 export const LoginScreen = (props: LoginScreenProps) => {
-  // The `state` arg is correctly typed as `RootState` already
-  const storeData = useAppSelector(state => state.main);
   const dispatch = useAppDispatch();
-
-  const onRefresh = async () => {
-    await dispatch(getNewMailMeta());
-  };
 
   const onSubmit = async (
     values: LoginFormValues,
@@ -39,14 +38,12 @@ export const LoginScreen = (props: LoginScreenProps) => {
     try {
       actions.setSubmitting(true);
 
-      await dispatch(
-        accountLogin({
-          email: values.email,
-          password: values.password,
-        }),
+      const loginResponse = await dispatch(
+        loginFlow({ email: values.email, password: values.password }),
       );
-
-      await dispatch(getNewMailMeta());
+      if (loginResponse.type === loginFlow.rejected.type) {
+        throw new Error('Login failed');
+      }
 
       actions.setSubmitting(false);
     } catch (error) {
@@ -74,7 +71,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
             errors,
             touched,
             isValidating,
-            validateField,
             isSubmitting,
           }) => (
             <View style={{ marginVertical: spacing.md }}>
@@ -109,8 +105,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
             </View>
           )}
         </Formik>
-
-        <Button onPress={onRefresh} title="Refresh" />
       </View>
     </ScrollView>
   );

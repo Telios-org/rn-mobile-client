@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "postinstall": "patch-package && node ./scripts/install_modules.js && node ./scripts/patch_modules.js",
+    "postinstall": "patch-package",
+    "prepare-node-project": "node ./scripts/install_modules.js && node ./scripts/patch_modules.js",
     "android": "react-native run-android --variant release",
     "ios": "react-native run-ios",
     "start": "react-native start",
@@ -13,6 +14,7 @@
     "tsc-watch": "tsc --watch"
   },
   "dependencies": {
+    "@react-navigation/drawer": "^6.2.0",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
     "@reduxjs/toolkit": "^1.7.1",
@@ -24,6 +26,8 @@
     "postinstall-postinstall": "^2.1.0",
     "react": "17.0.2",
     "react-native": "^0.66.0",
+    "react-native-gesture-handler": "^2.2.0",
+    "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.1",
     "react-redux": "^7.2.6",
