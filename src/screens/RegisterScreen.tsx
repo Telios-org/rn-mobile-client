@@ -71,7 +71,7 @@ export const RegisterScreen = (props: RegisterScreenProps) => {
         }),
       );
 
-      actions.setSubmitting(false);
+      // actions.setSubmitting(false);
     } catch (error) {
       console.log('onSubmit error caught', error);
       actions.setSubmitting(false);

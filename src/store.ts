@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { eventListenerMiddleware } from './eventListenerMiddleware';
+import { fileFetchedMiddleware } from './fileFetchedMiddleware';
 import { mainReducer } from './mainSlice';
 
 export const store = configureStore({
@@ -7,7 +8,9 @@ export const store = configureStore({
     main: mainReducer,
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(eventListenerMiddleware),
+    getDefaultMiddleware()
+      .concat(eventListenerMiddleware)
+      .concat(fileFetchedMiddleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

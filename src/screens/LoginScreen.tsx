@@ -45,7 +45,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
         throw new Error('Login failed');
       }
 
-      actions.setSubmitting(false);
+      // actions.setSubmitting(false);
     } catch (error) {
       console.log('onSubmit error caught', error);
       actions.setSubmitting(false);
@@ -58,7 +58,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
         <Text>{'Login'}</Text>
         <Formik
           initialValues={{
-            email: '',
+            email: 'justintest11@dev.telios.io',
             password: 'Letmein123!',
           }}
           validationSchema={LoginFormSchema}

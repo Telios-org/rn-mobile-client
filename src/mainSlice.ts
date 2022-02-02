@@ -1,12 +1,18 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  PayloadAction,
+  createAsyncThunk,
+  AsyncThunk,
+} from '@reduxjs/toolkit';
 import nodejs from 'nodejs-mobile-react-native';
 import {
   registerOneTimeListener,
   removeListeners,
 } from './eventListenerMiddleware';
 import { RootState, store } from './store';
+import { createNodeCalloutAsyncThunk } from './util/nodeActions';
 
-export type Account = {
+export type SignupAccount = {
   deviceId: string;
   mnemonic: string;
   secretBoxKeypair: {
@@ -30,17 +36,103 @@ export type Account = {
   uid: string;
 };
 
-export type Mailbox = {
+export type LoginAccount = {
+  accountId: string;
+  createdAt: string;
+  deviceId: string;
+  deviceSigningPrivKey: string;
+  deviceSigningPubKey: string;
+  driveEncryptionKey: string;
+  secretBoxPrivKey: string;
+  secretBoxPubKey: string;
+  serverSig: string;
+  uid: string;
+  updatedAt: string;
+  _id: string;
+};
+
+export type MailMeta = Array<{ account_key: string; msg: string; _id: string }>;
+
+// TODO: reconcile this with getMailbox data type
+export type RegisterMailbox = {
   email: string;
   isRegistered: boolean;
   isSaved: boolean;
   mailboxId?: string;
 };
 
+export type Email = {
+  content: {
+    attachments: Array<any>;
+    bcc: Array<any>;
+    cc: Array<any>;
+    date: string;
+    from: Array<{ address: string; name: string }>;
+    headers: Array<any>;
+    html_body: string;
+    sender: Array<any>;
+    subject: string;
+    text_body: string;
+    to: Array<{ address: string; name: string }>;
+  };
+  header: string;
+  key: string;
+  savedToDB?: boolean;
+  markedAsSynced?: boolean;
+  _id?: string;
+};
+
+export type LocalEmail = {
+  aliasId: string;
+  attachments: string;
+  bccJSON: string;
+  bodyAsHtml: string;
+  bodyAsText: string;
+  ccJSON: string;
+  createdAt: string;
+  date: string;
+  emailId: string;
+  encHeader: string;
+  encKey: string;
+  folderId: string;
+  fromJSON: string;
+  id: string;
+  path: string;
+  size: string;
+  subject: string;
+  toJSON: string;
+  unread: string;
+  updatedAt: string;
+  _id: string;
+};
+
+export type Mailbox = {
+  address: string;
+  mailboxId: string;
+  _id: string;
+};
+
+export type MailboxFolder = {
+  count: number;
+  createdAt: string;
+  folderId: number;
+  icon: string;
+  mailboxId: string;
+  name: string;
+  seq: number;
+  type: string;
+  updatedAt: string;
+  _id: string;
+};
+
 // Define a type for the slice state
 interface MainState {
-  account?: Account;
-  mailbox?: Mailbox;
+  signupAccount?: SignupAccount;
+  loginAccount?: LoginAccount;
+  registerMailbox?: RegisterMailbox;
+  mailMeta?: MailMeta;
+  mail: { [id: string]: LocalEmail };
+  mailboxes: Array<Mailbox>;
 
   isAuthenticated: boolean;
 
@@ -57,6 +149,8 @@ interface MainState {
 // Define the initial state using that type
 const initialState: MainState = {
   isAuthenticated: false,
+  mail: {},
+  mailboxes: [],
 };
 
 export const registerFlow = createAsyncThunk(
@@ -70,23 +164,33 @@ export const registerFlow = createAsyncThunk(
     },
     thunkAPI,
   ): Promise<void> => {
-    try {
-      const registerAccountResponse = await thunkAPI.dispatch(
-        registerNewAccount(data),
-      );
-      const account =
-        registerAccountResponse.payload as RegisterAccountResponse;
-      const registerMailboxResponse = await thunkAPI.dispatch(
-        registerMailbox({
-          accountKey: account.signedAcct.account_key,
-          email: data.email,
-        }),
-      );
-      const saveMailboxResponse = await thunkAPI.dispatch(
-        saveMailbox({ email: data.email }),
-      );
-      const getNewMailResponse = await thunkAPI.dispatch(getNewMailMeta());
-    } catch (e) {}
+    const registerAccountResponse = await thunkAPI.dispatch(
+      registerNewAccount(data),
+    );
+    if (registerAccountResponse.type === registerNewAccount.rejected.type) {
+      throw new Error(JSON.stringify(registerAccountResponse.payload));
+    }
+
+    const account = registerAccountResponse.payload as RegisterAccountResponse;
+    const registerMailboxResponse = await thunkAPI.dispatch(
+      registerMailbox({
+        accountKey: account.signedAcct.account_key,
+        email: data.email,
+      }),
+    );
+    if (registerMailboxResponse.type === registerMailbox.rejected.type) {
+      throw new Error(JSON.stringify(registerMailboxResponse.payload));
+    }
+
+    const saveMailboxResponse = await thunkAPI.dispatch(
+      saveMailbox({ email: data.email }),
+    );
+    if (saveMailboxResponse.type === saveMailbox.rejected.type) {
+      throw new Error(JSON.stringify(saveMailboxResponse.payload));
+    }
+
+    // getNewMailMeta is non-blocking
+    thunkAPI.dispatch(getNewMailMeta());
   },
 );
 
@@ -100,13 +204,27 @@ export const loginFlow = createAsyncThunk(
       accountLogin({ email: data.email, password: data.password }),
     );
     if (loginResponse.type === accountLogin.rejected.type) {
-      throw new Error('error logging in');
+      throw new Error(JSON.stringify(loginResponse.payload));
     }
-    const getNewMailResponse = await thunkAPI.dispatch(getNewMailMeta());
+
+    // getNewMailMeta is non-blocking
+    thunkAPI.dispatch(getNewMailMeta());
+
+    const getMailboxesResponse = await thunkAPI.dispatch(getMailboxes());
+    // if (getMailboxesResponse.type === getMailboxes.rejected.type) {
+    //   throw new Error(JSON.stringify(getMailboxesResponse.payload));
+    // }
+    if (getMailboxesResponse.type === getMailboxes.fulfilled.type) {
+      const mailboxes = getMailboxesResponse.payload as GetMailboxesResponse;
+      const mailboxId = mailboxes[0]?._id;
+      if (mailboxId) {
+        thunkAPI.dispatch(getMailboxFolders({ id: mailboxId }));
+      }
+    }
   },
 );
 
-type RegisterAccountResponse = Account;
+type RegisterAccountResponse = SignupAccount;
 export const registerNewAccount = createAsyncThunk(
   'main/registerNewAccount',
   async (data: {
@@ -256,7 +374,7 @@ export const getMessageBatch = createAsyncThunk(
   },
 );
 
-type AccountLoginResponse = {};
+type AccountLoginResponse = LoginAccount;
 export const accountLogin = createAsyncThunk(
   'main/accountLogin',
   async (data: {
@@ -285,23 +403,109 @@ export const accountLogin = createAsyncThunk(
   },
 );
 
+type SaveMailToDBResponse = {
+  msgArr: Array<LocalEmail>;
+  newAliases: Array<any>;
+};
+export const saveMailToDB = createAsyncThunk(
+  'main/saveMessageToDB',
+  async (data: {
+    messageType: 'Incoming' | 'Draft';
+    messages: Array<Email>;
+  }): Promise<SaveMailToDBResponse> => {
+    return new Promise((resolve, reject) => {
+      // any other transformations needed?
+      const payload = {
+        type: data.messageType,
+        messages: data.messages.map(item => ({
+          ...item.content,
+          bodyAsText: item.content.text_body,
+          bodyAsHTML: item.content.html_body,
+        })),
+      };
+      console.log('sending saveMailToDB', payload);
+      nodejs.channel.send({
+        event: 'email:saveMessageToDB',
+        payload,
+      });
+      registerOneTimeListener('email:saveMessageToDB:callback', event => {
+        console.log('saveMailToDB callback event', event);
+        if (event.error) {
+          reject(event.error);
+        } else {
+          resolve(event.data);
+        }
+      });
+    });
+  },
+);
+
+type UpdateMailAsSyncedResponse = {};
+export const updateMailAsSynced = createAsyncThunk(
+  'main/updateMailAsSynced',
+  async (data: {
+    mail: Array<LocalEmail>;
+  }): Promise<UpdateMailAsSyncedResponse> => {
+    return new Promise((resolve, reject) => {
+      const payload = {
+        msgArray: [data.mail.map(email => email._id)],
+      };
+      console.log('sending updateMailAsSynced', payload);
+      nodejs.channel.send({
+        event: 'mailbox:markArrayAsSynced',
+        payload,
+      });
+      registerOneTimeListener('mailbox:markArrayAsSynced:callback', event => {
+        console.log('updateMailAsSynced callback event', event);
+        if (event.error) {
+          reject(event.error);
+        } else {
+          resolve(event.data);
+        }
+      });
+    });
+  },
+);
+
+type GetMailboxesRequest = void;
+type GetMailboxesResponse = Array<Mailbox>;
+export const getMailboxes = createNodeCalloutAsyncThunk<
+  GetMailboxesRequest,
+  GetMailboxesResponse
+>('mailbox:getMailboxes');
+
+type GetMailboxFoldersRequest = { id: string };
+type GetMailboxFoldersResponse = {};
+export const getMailboxFolders = createNodeCalloutAsyncThunk<
+  GetMailboxFoldersRequest,
+  GetMailboxFoldersResponse
+>('folder:getMailboxFolders');
+
 export const mainSlice = createSlice({
   name: 'main',
   initialState,
   reducers: {},
   extraReducers: builder => {
+    // builder.addCase('messageHandler:fileFetched', (state, action) => {
+    //   const email = action.data?.email as Email;
+    //   if (email) {
+    //     state.mail = [...state.mail, email];
+    //   }
+    // });
     builder.addCase(registerNewAccount.fulfilled, (state, action) => {
-      state.account = action.payload;
+      state.signupAccount = action.payload;
     });
     builder.addCase(registerMailbox.fulfilled, (state, action) => {
-      state.mailbox = {
+      // TODO: reconcile this with getMailbox data type
+      state.registerMailbox = {
         email: action.meta.arg.email,
         isRegistered: true,
         isSaved: false,
       };
     });
     builder.addCase(saveMailbox.fulfilled, (state, action) => {
-      state.mailbox = {
+      // TODO: reconcile this with getMailbox data type
+      state.registerMailbox = {
         email: action.payload.address,
         isRegistered: true,
         isSaved: true,
@@ -313,10 +517,23 @@ export const mainSlice = createSlice({
     });
     builder.addCase(getNewMailMeta.fulfilled, (state, action) => {
       state.loadingGetMailMeta = false;
-      // todo handle meta
+      state.mailMeta = action.payload.meta;
     });
     builder.addCase(getNewMailMeta.rejected, (state, action) => {
       state.loadingGetMailMeta = false;
+    });
+    builder.addCase(accountLogin.fulfilled, (state, action) => {
+      state.loginAccount = action.payload;
+    });
+    builder.addCase(saveMailToDB.fulfilled, (state, action) => {
+      const emails = action.payload.msgArr;
+      for (const email of emails) {
+        state.mail[email.id] = email;
+      }
+    });
+    builder.addCase(getMailboxes.fulfilled, (state, action) => {
+      const mailboxes = action.payload;
+      state.mailboxes = mailboxes;
     });
   },
 });

@@ -7,7 +7,8 @@ import { WelcomeScreen } from './screens/WelcomeScreen';
 import { RegisterScreen } from './screens/RegisterScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { InboxScreen } from './screens/InboxScreen';
-import { useAppSelector } from './hooks';
+import { useAppSelector, useIsAuthenticated } from './hooks';
+import { DrawerContent } from './components/DrawerContent';
 
 export type RootStackParams = {
   welcome: undefined;
@@ -25,18 +26,18 @@ const Drawer = createDrawerNavigator<MainStackParams>();
 
 function Main() {
   return (
-    <Drawer.Navigator initialRouteName="inbox">
+    <Drawer.Navigator initialRouteName="inbox" drawerContent={DrawerContent}>
       <Drawer.Screen name={'inbox'} component={InboxScreen} />
     </Drawer.Navigator>
   );
 }
 
 export const Navigator = () => {
-  const mainState = useAppSelector(state => state.main);
+  const isAuthenticated = useIsAuthenticated();
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {mainState.isAuthenticated ? (
+        {isAuthenticated ? (
           <Stack.Screen
             name="main"
             component={Main}
