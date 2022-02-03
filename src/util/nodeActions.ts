@@ -14,13 +14,16 @@ export const createNodeCalloutAsyncThunk = <RequestPayload, ResponseType>(
           event: eventName,
           payload: data,
         });
-        registerOneTimeListener(`node/${eventName}:callback`, event => {
-          if (event.error) {
-            reject(event.error);
-          } else {
-            resolve(event.data);
-          }
-        });
+        registerOneTimeListener(
+          { eventName: `node/${eventName}:callback` },
+          event => {
+            if (event.error) {
+              reject(event.error);
+            } else {
+              resolve(event.data);
+            }
+          },
+        );
       });
     },
   );

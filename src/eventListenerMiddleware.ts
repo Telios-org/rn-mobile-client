@@ -1,20 +1,32 @@
 import { Middleware } from 'redux';
 
-const oneTimeListeners: { [eventName: string]: Array<(action: any) => void> } =
-  {};
+type ActionCallback = (action: any) => void;
+type CustomPredicate = (action: any) => boolean;
+
+const oneTimeListeners: {
+  [eventName: string]: Array<{
+    callback: ActionCallback;
+    customPredicate?: CustomPredicate;
+  }>;
+} = {};
 
 export const registerOneTimeListener = (
-  eventName: string,
+  args: { eventName: string; customPredicate?: CustomPredicate },
   callback: (action: any) => void,
 ) => {
-  if (oneTimeListeners[eventName]) {
-    oneTimeListeners[eventName].push(callback);
+  if (oneTimeListeners[args.eventName]) {
+    oneTimeListeners[args.eventName].push({
+      callback,
+      customPredicate: args.customPredicate,
+    });
   } else {
-    oneTimeListeners[eventName] = [callback];
+    oneTimeListeners[args.eventName] = [
+      { callback, customPredicate: args.customPredicate },
+    ];
   }
 };
 
-export const removeListeners = (eventName: string) => {
+export const removeAllListenersForEvent = (eventName: string) => {
   if (oneTimeListeners[eventName]) {
     delete oneTimeListeners[eventName];
   }
@@ -22,12 +34,34 @@ export const removeListeners = (eventName: string) => {
 
 export const eventListenerMiddleware: Middleware<{}, {}> =
   () => next => action => {
-    console.log('event listener middleware. action', action);
+    // this is way too complex, feels like there should be a better way
     if (oneTimeListeners[action.type]) {
-      for (const callback of oneTimeListeners[action.type]) {
-        callback(action);
+      const listenersForEvent = [...oneTimeListeners[action.type]]; // make copy
+      console.log(
+        `${listenersForEvent.length} listener for event ${action.type}`,
+      );
+      const indexesToRemove: number[] = [];
+      for (let i = 0; i < listenersForEvent.length; i++) {
+        const listener = listenersForEvent[i];
+        if (listener.customPredicate) {
+          if (listener.customPredicate(action)) {
+            console.log('custom predicate hit!');
+            listener.callback(action);
+            indexesToRemove.push(i);
+          }
+        } else {
+          listener.callback(action);
+          indexesToRemove.push(i);
+        }
       }
-      delete oneTimeListeners[action.type];
+
+      for (let i = indexesToRemove.length - 1; i >= 0; i--) {
+        listenersForEvent.splice(indexesToRemove[i], 1);
+      }
+
+      console.log('listeners after: ', listenersForEvent);
+
+      oneTimeListeners[action.type] = listenersForEvent;
     }
     return next(action);
   };

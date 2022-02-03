@@ -1,15 +1,6 @@
-import {
-  createSlice,
-  PayloadAction,
-  createAsyncThunk,
-  AsyncThunk,
-} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import nodejs from 'nodejs-mobile-react-native';
-import {
-  registerOneTimeListener,
-  removeListeners,
-} from './eventListenerMiddleware';
-import { RootState, store } from './store';
+import { registerOneTimeListener } from './eventListenerMiddleware';
 import { createNodeCalloutAsyncThunk } from './util/nodeActions';
 
 export type SignupAccount = {
@@ -54,6 +45,7 @@ export type LoginAccount = {
 export type MailMeta = { account_key: string; msg: string; _id: string };
 
 export type EmailContent = {
+  _id: string;
   attachments: Array<any>;
   bcc: Array<any>;
   cc: Array<any>;
@@ -309,20 +301,6 @@ export const accountLogin = createNodeCalloutAsyncThunk<
   AccountLoginResponse
 >('account:login');
 
-// TODO:
-// any other transformations needed?
-// const payload = {
-//   type: data.messageType,
-//   messages: data.messages.map(item => ({
-//     ...item.content,
-//     bodyAsText: item.content.text_body,
-//     bodyAsHTML: item.content.html_body,
-//   })),
-// };
-
-// TODO: this can get called multiple times concurrently,
-// when multiple fileFetched events get sent from Node in a short span.
-// this fucks with the 'listener' hack we have - the initial listener gets fired twice,
 type SaveMailToDBRequest = {
   messageType: 'Incoming' | 'Draft';
   messages: Array<EmailContent & { bodyAsText: string; bodyAsHTML: string }>;
@@ -331,10 +309,37 @@ type SaveMailToDBResponse = {
   msgArr: Array<LocalEmail>;
   newAliases: Array<any>;
 };
-export const saveMailToDB = createNodeCalloutAsyncThunk<
-  SaveMailToDBRequest,
-  SaveMailToDBResponse
->('email:saveMessageToDB');
+const SaveMailToDBEventName = 'email:saveMessageToDB';
+export const saveMailToDB = createAsyncThunk(
+  `local/${SaveMailToDBEventName}`,
+  async (data: SaveMailToDBRequest): Promise<SaveMailToDBResponse> => {
+    return new Promise((resolve, reject) => {
+      const firstEmailId = data.messages[0]?._id;
+      nodejs.channel.send({
+        event: SaveMailToDBEventName,
+        payload: data,
+      });
+
+      // use a custom predicate for our listener
+      // to match up specific request / responses
+      registerOneTimeListener(
+        {
+          eventName: `node/${SaveMailToDBEventName}:callback`,
+          customPredicate: action => {
+            return action.data.msgArr?.[0]?.id === firstEmailId;
+          },
+        },
+        event => {
+          if (event.error) {
+            reject(event.error);
+          } else {
+            resolve(event.data);
+          }
+        },
+      );
+    });
+  },
+);
 
 type UpdateMailAsSyncedRequest = { msgArray: string[] };
 type UpdateMailAsSyncedResponse = {}; // TODO
