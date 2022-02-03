@@ -6,7 +6,7 @@ export const createNodeListener = (dispatch: AppDispatch) => {
     console.log('From node: ', msg);
     const eventName = msg.event;
     if (eventName) {
-      dispatch({ type: eventName, data: msg.data, error: msg.error });
+      dispatch({ type: `node/${eventName}`, data: msg.data, error: msg.error });
     } else {
       console.log('unknown event type');
     }

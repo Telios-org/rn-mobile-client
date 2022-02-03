@@ -14,7 +14,7 @@ export const createNodeCalloutAsyncThunk = <RequestPayload, ResponseType>(
           event: eventName,
           payload: data,
         });
-        registerOneTimeListener(`${eventName}:callback`, event => {
+        registerOneTimeListener(`node/${eventName}:callback`, event => {
           if (event.error) {
             reject(event.error);
           } else {
