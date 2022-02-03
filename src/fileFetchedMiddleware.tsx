@@ -9,7 +9,6 @@ type FileFetchedPayload = {
 
 export const fileFetchedMiddleware: Middleware<{}, {}> =
   (api: MiddlewareAPI<AppDispatch>) => next => action => {
-    console.log('file fetched middleware attached', action.type);
     if (action.type === 'node/messageHandler:fileFetched') {
       console.log('caught fileFetched event', action);
       const data = action.data as FileFetchedPayload;

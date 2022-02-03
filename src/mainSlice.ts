@@ -204,7 +204,18 @@ export const loginFlow = createAsyncThunk(
       const mailboxes = getMailboxesResponse.payload as GetMailboxesResponse;
       const mailboxId = mailboxes[0]?._id;
       if (mailboxId) {
-        thunkAPI.dispatch(getMailboxFolders({ id: mailboxId }));
+        const getFoldersResponse = await thunkAPI.dispatch(
+          getMailboxFolders({ id: mailboxId }),
+        );
+        if (getFoldersResponse.type === getMailboxFolders.fulfilled.type) {
+          const folders =
+            getFoldersResponse.payload as GetMailboxFoldersResponse;
+          const inbox = folders.find(folder => folder.name === 'Inbox');
+          if (!inbox) {
+            throw new Error('inbox folder not found');
+          }
+          thunkAPI.dispatch(getMailByFolder({ id: inbox.folderId }));
+        }
       }
     }
   },
@@ -301,6 +312,9 @@ export const accountLogin = createNodeCalloutAsyncThunk<
   AccountLoginResponse
 >('account:login');
 
+// TODO: prevent duplicate emails from being added to DB
+// no logic to prevent that today, and it could happen
+// if there is any interruption between inserting into DB and 'mark as synced' call succeeding
 type SaveMailToDBRequest = {
   messageType: 'Incoming' | 'Draft';
   messages: Array<EmailContent & { bodyAsText: string; bodyAsHTML: string }>;
@@ -312,7 +326,10 @@ type SaveMailToDBResponse = {
 const SaveMailToDBEventName = 'email:saveMessageToDB';
 export const saveMailToDB = createAsyncThunk(
   `local/${SaveMailToDBEventName}`,
-  async (data: SaveMailToDBRequest): Promise<SaveMailToDBResponse> => {
+  async (
+    data: SaveMailToDBRequest,
+    thunkAPI,
+  ): Promise<SaveMailToDBResponse> => {
     return new Promise((resolve, reject) => {
       const firstEmailId = data.messages[0]?._id;
       nodejs.channel.send({
@@ -333,6 +350,10 @@ export const saveMailToDB = createAsyncThunk(
           if (event.error) {
             reject(event.error);
           } else {
+            // TODO: break this part out into a separate flow
+            // TODO: batch these up, rather than call for every single item inserted to DB.
+            const emailIds: string[] = event.data.msgArr.map(item => item.id);
+            thunkAPI.dispatch(updateMailAsSynced({ msgArray: emailIds }));
             resolve(event.data);
           }
         },
@@ -362,6 +383,13 @@ export const getMailboxFolders = createNodeCalloutAsyncThunk<
   GetMailboxFoldersResponse
 >('folder:getMailboxFolders');
 
+type GetMailByFolderRequest = { id: string | number };
+type GetMailByFolderResponse = Array<LocalEmail>;
+export const getMailByFolder = createNodeCalloutAsyncThunk<
+  GetMailByFolderRequest,
+  GetMailByFolderResponse
+>('email:getMessagesByFolderId');
+
 export const mainSlice = createSlice({
   name: 'main',
   initialState,
@@ -378,8 +406,6 @@ export const mainSlice = createSlice({
     });
     builder.addCase(getNewMailMeta.fulfilled, (state, action) => {
       state.loadingGetMailMeta = false;
-      console.log('in get new mail meta reducer', action);
-      console.log('setting mailMeta to', action.payload.meta);
       state.mailMeta = action.payload.meta;
     });
     builder.addCase(getNewMailMeta.rejected, (state, action) => {
@@ -397,6 +423,16 @@ export const mainSlice = createSlice({
     builder.addCase(getMailboxes.fulfilled, (state, action) => {
       const mailboxes = action.payload;
       state.mailbox = mailboxes[0];
+    });
+    builder.addCase(getMailboxFolders.fulfilled, (state, action) => {
+      const folders = action.payload;
+      state.folders = folders;
+    });
+    builder.addCase(getMailByFolder.fulfilled, (state, action) => {
+      const emails = action.payload;
+      for (const email of emails) {
+        state.mail[email.emailId] = email;
+      }
     });
   },
 });
