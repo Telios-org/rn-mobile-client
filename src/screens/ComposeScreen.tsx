@@ -40,7 +40,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
     const email: OutgoingEmail = {
       from: [{ address: mainState.mailbox.address }],
       to: [{ address: to }],
-      subject,
+      subject: subject,
       date: formatISO(new Date()),
       cc: [],
       bcc: [],
@@ -65,9 +65,15 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
       headerLeft: () => (
         <TextButton onPress={() => props.navigation.goBack()} title="cancel" />
       ),
-      headerRight: () => <TextButton onPress={onSend} title="send" />,
+      headerRight: () => (
+        <TextButton onPress={onSend} title="send" loading={isSending} />
+      ),
     });
-  }, [props.navigation]);
+  }, [props.navigation, to, subject, body, isSending]); // TODO: is this going to cause performance issues?
+
+  console.log(
+    `to-${to} sub-${subject} body-${body} mailbox-${!!mainState.mailbox} isSending-${isSending}`,
+  );
 
   return (
     <View
