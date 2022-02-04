@@ -37,15 +37,11 @@ export const eventListenerMiddleware: Middleware<{}, {}> =
     // this is way too complex, feels like there should be a better way
     if (oneTimeListeners[action.type]) {
       const listenersForEvent = [...oneTimeListeners[action.type]]; // make copy
-      console.log(
-        `${listenersForEvent.length} listener for event ${action.type}`,
-      );
       const indexesToRemove: number[] = [];
       for (let i = 0; i < listenersForEvent.length; i++) {
         const listener = listenersForEvent[i];
         if (listener.customPredicate) {
           if (listener.customPredicate(action)) {
-            console.log('custom predicate hit!');
             listener.callback(action);
             indexesToRemove.push(i);
           }
@@ -58,8 +54,6 @@ export const eventListenerMiddleware: Middleware<{}, {}> =
       for (let i = indexesToRemove.length - 1; i >= 0; i--) {
         listenersForEvent.splice(indexesToRemove[i], 1);
       }
-
-      console.log('listeners after: ', listenersForEvent);
 
       oneTimeListeners[action.type] = listenersForEvent;
     }

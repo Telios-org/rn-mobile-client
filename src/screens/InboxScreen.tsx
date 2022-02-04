@@ -39,6 +39,7 @@ export const InboxScreen = (props: InboxScreenProps) => {
     return (
       <View
         style={{ paddingVertical: spacing.md, paddingHorizontal: spacing.md }}>
+        <Text>{`Logged in as ${mainState.mailbox?.address}`}</Text>
         {listData.length === 0 && <Text>{'no mail to display'}</Text>}
         <Text>{`${mainState.mailMeta?.length || 0} messages to download`}</Text>
       </View>

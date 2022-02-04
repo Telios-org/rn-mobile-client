@@ -1,9 +1,10 @@
 import { Formik, FormikHelpers } from 'formik';
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { Button } from '../components/Button';
 import { Input, InputProps } from '../components/Input';
 import * as Yup from 'yup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { spacing } from '../util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -15,6 +16,8 @@ import {
   loginFlow,
   registerFlow,
 } from '../mainSlice';
+import { storage } from '../util/asyncStorage';
+import { TextButton } from '../components/TextButton';
 
 type LoginFormValues = {
   email: string;
@@ -30,6 +33,30 @@ export type LoginScreenProps = NativeStackScreenProps<RootStackParams, 'login'>;
 
 export const LoginScreen = (props: LoginScreenProps) => {
   const dispatch = useAppDispatch();
+
+  const [loadingUsernames, setLoadingUsernames] = React.useState(false);
+  const [savedUsernames, setSavedUsernames] = React.useState<string[] | null>(
+    [],
+  );
+
+  const getSavedUsernames = async () => {
+    setLoadingUsernames(true);
+    try {
+      const jsonValue = await AsyncStorage.getItem(storage.savedUsernames);
+      const usernames =
+        jsonValue != null ? (JSON.parse(jsonValue) as string[]) : null;
+      setSavedUsernames(usernames);
+      setLoadingUsernames(false);
+    } catch (e) {
+      // error reading value
+      console.log('ERROR GETTING USERNAMES: ', e);
+      setLoadingUsernames(false);
+    }
+  };
+
+  React.useEffect(() => {
+    getSavedUsernames();
+  }, []);
 
   const onSubmit = async (
     values: LoginFormValues,
@@ -72,6 +99,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
             touched,
             isValidating,
             isSubmitting,
+            setFieldValue,
           }) => (
             <View style={{ marginVertical: spacing.md }}>
               <Input
@@ -85,6 +113,19 @@ export const LoginScreen = (props: LoginScreenProps) => {
                 autoCorrect={false}
                 style={{ flex: 1 }}
               />
+              {loadingUsernames ? (
+                <ActivityIndicator />
+              ) : (
+                savedUsernames?.map(username => (
+                  <TextButton
+                    title={username}
+                    style={{ marginTop: spacing.sm }}
+                    onPress={() => {
+                      setFieldValue('email', username);
+                    }}
+                  />
+                ))
+              )}
 
               <Input
                 onChangeText={handleChange('password')}

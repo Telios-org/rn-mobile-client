@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import nodejs from 'nodejs-mobile-react-native';
 import { registerOneTimeListener } from './eventListenerMiddleware';
+import { storeSavedUsername } from './util/asyncStorage';
 import { createNodeCalloutAsyncThunk } from './util/nodeActions';
 
 export type SignupAccount = {
@@ -92,6 +93,23 @@ export type LocalEmail = {
   _id: string;
 };
 
+// export type OutgoingEmail = {
+//     from: [{"name":"Bob Kinderly","address":"bob@telios.io"}],
+//     to: [{"name":"Alice Drumpf","address":"alice@telios.io"}],
+//     subject: 'Subject-d510aa65-40c0-4b36-98ba-84735aa961d0',
+//     date: '2022-01-20T18:21:33.062Z',
+//     cc: [{"name":"Json Waterfall","address":"jwaterfall@telios.io"}],
+//     bcc: [{"name":"Albus Dumbeldore","address":"albus.dumbeldore@howgwarts.edu"}],
+//     bodyAsText: 'This is a test message-d510aa65-40c0-4b36-98ba-84735aa961d0',
+//     bodyAsHTML: '<div>This is a test message-d510aa65-40c0-4b36-98ba-84735aa961d0</div>',
+//     attachments: [{
+//       filename: 'image.png',
+//       content: 'b64EncodedString',
+//       mimetype: 'image/png',
+//       size: 1024// bytes
+//     }]
+// }
+
 export type Mailbox = {
   address: string;
   mailboxId: string;
@@ -115,7 +133,7 @@ export type MailboxFolder = {
 interface MainState {
   signupAccount?: SignupAccount;
   loginAccount?: LoginAccount;
-  mailMeta?: Array<MailMeta>;
+  mailMeta: { [id: string]: MailMeta };
   mail: { [id: string]: LocalEmail };
   mailbox?: Mailbox; // assuming only one for now
   folders?: Array<MailboxFolder>;
@@ -132,7 +150,7 @@ interface MainState {
 
 const initialState: MainState = {
   mail: {},
-  mailMeta: [],
+  mailMeta: {},
 };
 
 export const registerFlow = createAsyncThunk(
@@ -175,6 +193,8 @@ export const registerFlow = createAsyncThunk(
     if (saveMailboxResponse.type === saveMailbox.rejected.type) {
       throw new Error(JSON.stringify(saveMailboxResponse.payload));
     }
+
+    await storeSavedUsername(data.email);
 
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
@@ -366,7 +386,7 @@ export const saveMailToDB = createAsyncThunk(
 );
 
 type UpdateMailAsSyncedRequest = { msgArray: string[] };
-type UpdateMailAsSyncedResponse = {}; // TODO
+type UpdateMailAsSyncedResponse = string[];
 export const updateMailAsSynced = createNodeCalloutAsyncThunk<
   UpdateMailAsSyncedRequest,
   UpdateMailAsSyncedResponse
@@ -409,7 +429,9 @@ export const mainSlice = createSlice({
     });
     builder.addCase(getNewMailMeta.fulfilled, (state, action) => {
       state.loadingGetMailMeta = false;
-      state.mailMeta = action.payload.meta;
+      for (const emailMeta of action.payload.meta) {
+        state.mailMeta[emailMeta._id] = emailMeta;
+      }
     });
     builder.addCase(getNewMailMeta.rejected, (state, action) => {
       state.loadingGetMailMeta = false;
@@ -421,12 +443,6 @@ export const mainSlice = createSlice({
       const emails = action.payload.msgArr;
       for (const email of emails) {
         state.mail[email.id] = email;
-        const metaIndex = state.mailMeta?.findIndex(
-          item => item._id === email.id,
-        );
-        if (metaIndex >= 0) {
-          state.mailMeta = state.mailMeta.splice(metaIndex, 1);
-        }
       }
     });
     builder.addCase(getMailboxes.fulfilled, (state, action) => {
@@ -441,6 +457,12 @@ export const mainSlice = createSlice({
       const emails = action.payload;
       for (const email of emails) {
         state.mail[email.emailId] = email;
+      }
+    });
+    builder.addCase(updateMailAsSynced.fulfilled, (state, action) => {
+      for (const id of action.payload) {
+        console.log('deleting id', id);
+        delete state.mailMeta[id];
       }
     });
   },
