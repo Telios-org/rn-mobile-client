@@ -9,12 +9,14 @@ import { LoginScreen } from './screens/LoginScreen';
 import { InboxScreen } from './screens/InboxScreen';
 import { useAppSelector, useIsAuthenticated } from './hooks';
 import { DrawerContent } from './components/DrawerContent';
+import { ComposeScreen } from './screens/ComposeScreen';
 
 export type RootStackParams = {
   welcome: undefined;
   register: undefined;
   login: undefined;
   main: undefined;
+  compose: undefined;
 };
 
 export type MainStackParams = {
@@ -38,11 +40,18 @@ export const Navigator = () => {
     <NavigationContainer>
       <Stack.Navigator>
         {isAuthenticated ? (
-          <Stack.Screen
-            name="main"
-            component={Main}
-            options={{ headerShown: false }}
-          />
+          <>
+            <Stack.Group>
+              <Stack.Screen
+                name="main"
+                component={Main}
+                options={{ headerShown: false }}
+              />
+            </Stack.Group>
+            <Stack.Group screenOptions={{ presentation: 'modal' }}>
+              <Stack.Screen name="compose" component={ComposeScreen} />
+            </Stack.Group>
+          </>
         ) : (
           <>
             <Stack.Screen

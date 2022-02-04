@@ -4,6 +4,8 @@ import { registerOneTimeListener } from './eventListenerMiddleware';
 import { storeSavedUsername } from './util/asyncStorage';
 import { createNodeCalloutAsyncThunk } from './util/nodeActions';
 
+export type ToFrom = { address: string; name?: string };
+
 export type SignupAccount = {
   deviceId: string;
   mnemonic: string;
@@ -51,13 +53,13 @@ export type EmailContent = {
   bcc: Array<any>;
   cc: Array<any>;
   date: string;
-  from: Array<{ address: string; name: string }>;
+  from: Array<ToFrom>;
   headers: Array<any>;
   html_body: string;
   sender: Array<any>;
   subject: string;
   text_body: string;
-  to: Array<{ address: string; name: string }>;
+  to: Array<ToFrom>;
 };
 
 export type Email = {
@@ -93,22 +95,22 @@ export type LocalEmail = {
   _id: string;
 };
 
-// export type OutgoingEmail = {
-//     from: [{"name":"Bob Kinderly","address":"bob@telios.io"}],
-//     to: [{"name":"Alice Drumpf","address":"alice@telios.io"}],
-//     subject: 'Subject-d510aa65-40c0-4b36-98ba-84735aa961d0',
-//     date: '2022-01-20T18:21:33.062Z',
-//     cc: [{"name":"Json Waterfall","address":"jwaterfall@telios.io"}],
-//     bcc: [{"name":"Albus Dumbeldore","address":"albus.dumbeldore@howgwarts.edu"}],
-//     bodyAsText: 'This is a test message-d510aa65-40c0-4b36-98ba-84735aa961d0',
-//     bodyAsHTML: '<div>This is a test message-d510aa65-40c0-4b36-98ba-84735aa961d0</div>',
-//     attachments: [{
-//       filename: 'image.png',
-//       content: 'b64EncodedString',
-//       mimetype: 'image/png',
-//       size: 1024// bytes
-//     }]
-// }
+export type OutgoingEmail = {
+  from: Array<ToFrom>;
+  to: Array<ToFrom>;
+  subject: string;
+  date?: string; // needed??
+  cc: Array<ToFrom>;
+  bcc: Array<ToFrom>;
+  bodyAsText: string;
+  bodyAsHTML?: string; // needed?
+  attachments?: Array<{
+    filename: string;
+    content: string;
+    mimetype: string;
+    size: number;
+  }>;
+};
 
 export type Mailbox = {
   address: string;
@@ -146,6 +148,7 @@ interface MainState {
   // errorSaveMailbox?: Error;
 
   loadingGetMailMeta?: boolean;
+  loadingSendEmail?: boolean;
 }
 
 const initialState: MainState = {
@@ -413,6 +416,13 @@ export const getMailByFolder = createNodeCalloutAsyncThunk<
   GetMailByFolderResponse
 >('email:getMessagesByFolderId');
 
+type SendEmailRequest = { email: OutgoingEmail };
+type SendEmailResponse = {}; // TODO;
+export const sendEmail = createNodeCalloutAsyncThunk<
+  SendEmailRequest,
+  SendEmailResponse
+>('email:sendEmail');
+
 export const mainSlice = createSlice({
   name: 'main',
   initialState,
@@ -461,9 +471,17 @@ export const mainSlice = createSlice({
     });
     builder.addCase(updateMailAsSynced.fulfilled, (state, action) => {
       for (const id of action.payload) {
-        console.log('deleting id', id);
         delete state.mailMeta[id];
       }
+    });
+    builder.addCase(sendEmail.pending, (state, action) => {
+      state.loadingSendEmail = true;
+    });
+    builder.addCase(sendEmail.fulfilled, (state, action) => {
+      state.loadingSendEmail = false;
+    });
+    builder.addCase(sendEmail.rejected, (state, action) => {
+      state.loadingSendEmail = false;
     });
   },
 });

@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { format, isToday } from 'date-fns';
 
 import { FlatList, Text, View } from 'react-native';
 import { Button } from '../components/Button';
-import { MainStackParams } from '../Navigator';
+import { MainStackParams, RootStackParams } from '../Navigator';
 import { spacing } from '../util/spacing';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getNewMailFlow, LocalEmail } from '../mainSlice';
 import { TextButton } from '../components/TextButton';
 import { colors } from '../util/colors';
 
-export type InboxScreenProps = NativeStackScreenProps<MainStackParams, 'inbox'>;
+export type InboxScreenProps = CompositeScreenProps<
+  NativeStackScreenProps<MainStackParams, 'inbox'>,
+  NativeStackScreenProps<RootStackParams>
+>;
 
 export const InboxScreen = (props: InboxScreenProps) => {
   const mainState = useAppSelector(state => state.main);
@@ -23,6 +27,10 @@ export const InboxScreen = (props: InboxScreenProps) => {
     setIsRefreshing(true);
     await dispatch(getNewMailFlow());
     setIsRefreshing(false);
+  };
+
+  const onNewEmail = () => {
+    props.navigation.navigate('compose');
   };
 
   // React.useLayoutEffect(() => {
@@ -38,10 +46,17 @@ export const InboxScreen = (props: InboxScreenProps) => {
   const renderHeader = () => {
     return (
       <View
-        style={{ paddingVertical: spacing.md, paddingHorizontal: spacing.md }}>
+        style={{ paddingVertical: spacing.lg, paddingHorizontal: spacing.md }}>
         <Text>{`Logged in as ${mainState.mailbox?.address}`}</Text>
-        {listData.length === 0 && <Text>{'no mail to display'}</Text>}
         <Text>{`${mainState.mailMeta?.length || 0} messages to download`}</Text>
+        <Button
+          title="Compose Email"
+          onPress={onNewEmail}
+          style={{ marginTop: spacing.md }}
+        />
+        {listData.length === 0 && (
+          <Text style={{ marginTop: spacing.lg }}>{'no mail to display'}</Text>
+        )}
       </View>
     );
   };
