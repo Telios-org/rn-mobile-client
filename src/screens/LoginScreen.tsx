@@ -58,7 +58,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
         <Text>{'Login'}</Text>
         <Formik
           initialValues={{
-            email: 'justintest11@dev.telios.io',
+            email: 'justintest12@dev.telios.io',
             password: 'Letmein123!',
           }}
           validationSchema={LoginFormSchema}

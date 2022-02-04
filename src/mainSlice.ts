@@ -230,8 +230,11 @@ export const getNewMailFlow = createAsyncThunk(
     }
     const mailMeta = newMailMetaResponse.payload as GetNewMailMetaResponse;
 
-    await thunkAPI.dispatch(getMessageBatch(mailMeta));
-    // after calling getMessageBatch we async wait for file:fetched event
+    if (mailMeta.meta.length > 0) {
+      // after calling getMessageBatch we async wait for messageHandler:newMessage event
+      // non-blocking here, as each `messageHandler:newMessage` could take some time to arrive
+      thunkAPI.dispatch(getMessageBatch(mailMeta));
+    }
 
     // error handling is tricky here -
     // should we expect errors back from getMessageBatch?
@@ -418,6 +421,12 @@ export const mainSlice = createSlice({
       const emails = action.payload.msgArr;
       for (const email of emails) {
         state.mail[email.id] = email;
+        const metaIndex = state.mailMeta?.findIndex(
+          item => item._id === email.id,
+        );
+        if (metaIndex >= 0) {
+          state.mailMeta = state.mailMeta.splice(metaIndex, 1);
+        }
       }
     });
     builder.addCase(getMailboxes.fulfilled, (state, action) => {

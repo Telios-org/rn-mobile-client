@@ -16,19 +16,34 @@ export type InboxScreenProps = NativeStackScreenProps<MainStackParams, 'inbox'>;
 export const InboxScreen = (props: InboxScreenProps) => {
   const mainState = useAppSelector(state => state.main);
   const dispatch = useAppDispatch();
-  const onRefresh = () => {
-    dispatch(getNewMailFlow());
+
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await dispatch(getNewMailFlow());
+    setIsRefreshing(false);
   };
 
-  React.useLayoutEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () => <TextButton onPress={onRefresh} title="refresh" />,
-    });
-  }, [props.navigation]);
+  // React.useLayoutEffect(() => {
+  //   props.navigation.setOptions({
+  //     headerRight: () => <TextButton onPress={onRefresh} title="refresh" />,
+  //   });
+  // }, [props.navigation]);
 
   const listData = Object.values(mainState.mail);
 
   const renderItem = ({ item }) => <EmailCell email={item} />;
+
+  const renderHeader = () => {
+    return (
+      <View
+        style={{ paddingVertical: spacing.md, paddingHorizontal: spacing.md }}>
+        {listData.length === 0 && <Text>{'no mail to display'}</Text>}
+        <Text>{`${mainState.mailMeta?.length || 0} messages to download`}</Text>
+      </View>
+    );
+  };
 
   return (
     <FlatList
@@ -37,8 +52,10 @@ export const InboxScreen = (props: InboxScreenProps) => {
       renderItem={renderItem}
       keyExtractor={item => item._id}
       ItemSeparatorComponent={ItemSeparator}
-      ListHeaderComponent={ItemSeparator}
+      ListHeaderComponent={renderHeader}
       ListFooterComponent={ItemSeparator}
+      onRefresh={onRefresh}
+      refreshing={isRefreshing}
     />
   );
 };
