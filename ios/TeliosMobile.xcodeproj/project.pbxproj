@@ -12,8 +12,10 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		63DF99DA19F2CCF9AD513865 /* libPods-TeliosMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 72CC7B09BFFEEE2050F8A366 /* libPods-TeliosMobile.a */; };
+		6D91158FA367DACAC624F790 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5C6AFF25212D680F04E236 /* ExpoModulesProvider.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B0B13952792D458DF3A06406 /* libPods-TeliosMobile-TeliosMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B35FE68A10A494711D6936F /* libPods-TeliosMobile-TeliosMobileTests.a */; };
+		D2BF4DFB878EF77C3D24F7C7 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB9DC809A65BBC0E0BFB86B /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,8 +38,10 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeliosMobile/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TeliosMobile/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TeliosMobile/main.m; sourceTree = "<group>"; };
+		2CB9DC809A65BBC0E0BFB86B /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TeliosMobile/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		3B35FE68A10A494711D6936F /* libPods-TeliosMobile-TeliosMobileTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeliosMobile-TeliosMobileTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5722C53AEA1D94E843930702 /* Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig"; path = "Target Support Files/Pods-TeliosMobile-TeliosMobileTests/Pods-TeliosMobile-TeliosMobileTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5A5C6AFF25212D680F04E236 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TeliosMobile-TeliosMobileTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		603ECB7BD5F9E257D58202F0 /* Pods-TeliosMobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeliosMobile.release.xcconfig"; path = "Target Support Files/Pods-TeliosMobile/Pods-TeliosMobile.release.xcconfig"; sourceTree = "<group>"; };
 		72CC7B09BFFEEE2050F8A366 /* libPods-TeliosMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeliosMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TeliosMobile/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -106,6 +110,31 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		4FDCECE6ED08FEA9E6AC775B /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				619D0E2BF10A9B1408D0ADA3 /* TeliosMobile */,
+				7C50E8DF0F57058D67BA3F39 /* TeliosMobileTests */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		619D0E2BF10A9B1408D0ADA3 /* TeliosMobile */ = {
+			isa = PBXGroup;
+			children = (
+				2CB9DC809A65BBC0E0BFB86B /* ExpoModulesProvider.swift */,
+			);
+			name = TeliosMobile;
+			sourceTree = "<group>";
+		};
+		7C50E8DF0F57058D67BA3F39 /* TeliosMobileTests */ = {
+			isa = PBXGroup;
+			children = (
+				5A5C6AFF25212D680F04E236 /* ExpoModulesProvider.swift */,
+			);
+			name = TeliosMobileTests;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +151,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				FBEE58D59E5A603AB4501D73 /* Pods */,
+				4FDCECE6ED08FEA9E6AC775B /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -269,7 +299,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nexport NODE_BINARY=~/.nvm/versions/node/v16.13.0/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "set -e\n\necho \"node v:\"\nwhich node\n\nexport NODE_BINARY=~/.nvm/versions/node/v16.13.0/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2DF04586BB033D148CAA0EAD /* [CP-User] [NODEJS MOBILE] Remove Simulator Strip */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -504,6 +534,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* TeliosMobileTests.m in Sources */,
+				6D91158FA367DACAC624F790 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,6 +544,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				D2BF4DFB878EF77C3D24F7C7 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,7 +570,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = TeliosMobileTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -563,7 +595,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 8N8TTW6C2K;
 				INFOPLIST_FILE = TeliosMobileTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -691,7 +723,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -750,7 +782,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",

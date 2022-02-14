@@ -21,6 +21,8 @@
     "@reduxjs/toolkit": "^1.7.1",
     "@types/lodash": "^4.14.178",
     "date-fns": "^2.28.0",
+    "expo": ">=44.0.0-0 <45.0.0",
+    "expo-constants": "~13.0.1",
     "formik": "^2.2.9",
     "hypercore": "^10.0.0-alpha.18",
     "nodejs-mobile-react-native": "^0.6.2",
