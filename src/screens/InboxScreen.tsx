@@ -9,7 +9,6 @@ import { MainStackParams, RootStackParams } from '../Navigator';
 import { spacing } from '../util/spacing';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getNewMailFlow, LocalEmail } from '../mainSlice';
-import { TextButton } from '../components/TextButton';
 import { colors } from '../util/colors';
 
 export type InboxScreenProps = CompositeScreenProps<

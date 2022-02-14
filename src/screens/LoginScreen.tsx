@@ -17,7 +17,6 @@ import {
   registerFlow,
 } from '../mainSlice';
 import { storage } from '../util/asyncStorage';
-import { TextButton } from '../components/TextButton';
 
 type LoginFormValues = {
   email: string;
@@ -117,7 +116,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
                 <ActivityIndicator />
               ) : (
                 savedUsernames?.map(username => (
-                  <TextButton
+                  <Button
+                    type="text"
                     title={username}
                     style={{ marginTop: spacing.sm }}
                     onPress={() => {

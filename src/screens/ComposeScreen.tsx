@@ -4,12 +4,12 @@ import { format, formatISO, isToday } from 'date-fns';
 
 import { Alert, FlatList, ScrollView, Text, View } from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
-import { TextButton } from '../components/TextButton';
 import { TextInput } from 'react-native-gesture-handler';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { OutgoingEmail, sendEmail } from '../mainSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { Button } from '../components/Button';
 
 export type ComposeScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -63,10 +63,21 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   React.useLayoutEffect(() => {
     props.navigation.setOptions({
       headerLeft: () => (
-        <TextButton onPress={() => props.navigation.goBack()} title="cancel" />
+        <Button
+          type="text"
+          size="small"
+          onPress={() => props.navigation.goBack()}
+          title="cancel"
+        />
       ),
       headerRight: () => (
-        <TextButton onPress={onSend} title="send" loading={isSending} />
+        <Button
+          type="text"
+          size="small"
+          onPress={onSend}
+          title="send"
+          loading={isSending}
+        />
       ),
     });
   }, [props.navigation, to, subject, body, isSending]); // TODO: is this going to cause performance issues?

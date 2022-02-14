@@ -10,8 +10,10 @@ import { InboxScreen } from './screens/InboxScreen';
 import { useAppSelector, useIsAuthenticated } from './hooks';
 import { DrawerContent } from './components/DrawerContent';
 import { ComposeScreen } from './screens/ComposeScreen';
+import { TestScreen } from './screens/TestScreen';
 
 export type RootStackParams = {
+  test: undefined;
   welcome: undefined;
   register: undefined;
   login: undefined;
@@ -38,7 +40,7 @@ export const Navigator = () => {
   const isAuthenticated = useIsAuthenticated();
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="test">
         {isAuthenticated ? (
           <>
             <Stack.Group>
@@ -68,6 +70,11 @@ export const Navigator = () => {
               name={'login'}
               component={LoginScreen}
               options={{ title: 'Login' }}
+            />
+            <Stack.Screen
+              name="test"
+              component={TestScreen}
+              options={{ title: 'Test' }}
             />
           </>
         )}
