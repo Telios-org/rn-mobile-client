@@ -4,7 +4,7 @@ export const storage = {
   savedUsernames: '@saved_usernames_json',
 };
 
-const getSavedUsernames = async () => {
+export const getAsyncStorageSavedUsernames = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem(storage.savedUsernames);
     const usernames =
@@ -18,8 +18,8 @@ const getSavedUsernames = async () => {
 };
 
 // @throwable
-export const storeSavedUsername = async (email: string) => {
-  const savedUsernames = await getSavedUsernames();
+export const storeAsyncStorageSavedUsername = async (email: string) => {
+  const savedUsernames = await getAsyncStorageSavedUsernames();
   if (savedUsernames.includes(email)) {
     return;
   } else {

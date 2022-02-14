@@ -3,6 +3,9 @@ import { ScrollView, View } from 'react-native';
 import { Button } from '../components/Button';
 import { colors } from '../util/colors';
 
+import Constants from 'expo-constants';
+console.log(Constants.systemFonts);
+
 export const TestScreen = () => {
   const onPress = () => {
     console.log('press');

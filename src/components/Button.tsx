@@ -44,7 +44,7 @@ export const Button = (props: ButtonProps) => {
               : type === 'secondary'
               ? colors.primaryLightest
               : null,
-          paddingHorizontal: size === 'small' ? spacing.md : spacing.lg,
+          paddingHorizontal: size === 'small' ? spacing.md : spacing.xl,
           paddingVertical: size === 'small' ? spacing.sm : spacing.md,
           borderRadius: 30,
           opacity: loading ? 0.5 : 1,
@@ -52,7 +52,7 @@ export const Button = (props: ButtonProps) => {
           alignContent: 'center',
           flexDirection: 'row',
           height: size === 'block' || size === 'large' ? 55 : 'auto',
-          alignSelf: size === 'block' ? 'stretch' : 'flex-start',
+          alignSelf: size === 'block' ? 'stretch' : 'auto',
           borderWidth: type === 'outline' ? 1 : 0,
           borderColor: colors.primaryBase,
         },

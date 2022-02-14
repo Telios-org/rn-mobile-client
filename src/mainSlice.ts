@@ -1,8 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import nodejs from 'nodejs-mobile-react-native';
 import { registerOneTimeListener } from './eventListenerMiddleware';
-import { storeSavedUsername } from './util/asyncStorage';
+import {
+  getAsyncStorageSavedUsernames,
+  storage,
+  storeAsyncStorageSavedUsername,
+} from './util/asyncStorage';
 import { createNodeCalloutAsyncThunk } from './util/nodeActions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type ToFrom = { address: string; name?: string };
 
@@ -133,6 +138,8 @@ export type MailboxFolder = {
 
 // Define a type for the slice state
 interface MainState {
+  localUsernames: string[];
+
   signupAccount?: SignupAccount;
   loginAccount?: LoginAccount;
   mailMeta: { [id: string]: MailMeta };
@@ -154,7 +161,16 @@ interface MainState {
 const initialState: MainState = {
   mail: {},
   mailMeta: {},
+  localUsernames: [],
 };
+
+export const getStoredUsernames = createAsyncThunk(
+  'system/getStoredUsernames',
+  async (_, thunkAPI): Promise<string[]> => {
+    const usernames = await getAsyncStorageSavedUsernames();
+    return usernames;
+  },
+);
 
 export const registerFlow = createAsyncThunk(
   'flow/registerAccount',
@@ -197,7 +213,7 @@ export const registerFlow = createAsyncThunk(
       throw new Error(JSON.stringify(saveMailboxResponse.payload));
     }
 
-    await storeSavedUsername(data.email);
+    await storeAsyncStorageSavedUsername(data.email);
 
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
@@ -428,6 +444,9 @@ export const mainSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(getStoredUsernames.fulfilled, (state, action) => {
+      state.localUsernames = action.payload;
+    });
     builder.addCase(registerNewAccount.fulfilled, (state, action) => {
       state.signupAccount = action.payload;
     });

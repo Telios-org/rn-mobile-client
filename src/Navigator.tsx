@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import { WelcomeScreen } from './screens/WelcomeScreen';
+import { IntroScreen } from './screens/IntroScreen';
 import { RegisterScreen } from './screens/RegisterScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { InboxScreen } from './screens/InboxScreen';
@@ -14,7 +14,7 @@ import { TestScreen } from './screens/TestScreen';
 
 export type RootStackParams = {
   test: undefined;
-  welcome: undefined;
+  intro: undefined;
   register: undefined;
   login: undefined;
   main: undefined;
@@ -37,10 +37,12 @@ function Main() {
 }
 
 export const Navigator = () => {
+  const localUsernames = useAppSelector(state => state.main.localUsernames);
+  const hasLocalAccount = localUsernames.length > 0;
   const isAuthenticated = useIsAuthenticated();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="test">
+      <Stack.Navigator initialRouteName={hasLocalAccount ? 'login' : 'intro'}>
         {isAuthenticated ? (
           <>
             <Stack.Group>
@@ -57,9 +59,9 @@ export const Navigator = () => {
         ) : (
           <>
             <Stack.Screen
-              name={'welcome'}
-              component={WelcomeScreen}
-              options={{ title: 'Welcome' }}
+              name={'intro'}
+              component={IntroScreen}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name={'register'}
@@ -69,7 +71,7 @@ export const Navigator = () => {
             <Stack.Screen
               name={'login'}
               component={LoginScreen}
-              options={{ title: 'Login' }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="test"
