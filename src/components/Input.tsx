@@ -21,6 +21,7 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   error?: string;
   style?: StyleProp<ViewStyle>;
   textInputStyle?: StyleProp<TextStyle>;
+  disabled?: boolean;
   loading?: boolean;
   loadingPosition?: 'left' | 'right';
   iconRight?: { name: string; size?: number; color?: string };
@@ -34,6 +35,7 @@ export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
     textInputStyle,
     label,
     error,
+    disabled,
     loading,
     loadingPosition = 'right',
     iconRight,
@@ -74,7 +76,7 @@ export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
           ref={ref}
           style={[
             {
-              backgroundColor: colors.white,
+              backgroundColor: disabled ? colors.skyLighter : colors.white,
               paddingVertical: spacing.sm,
               paddingLeft: iconLeft ? 45 : spacing.md,
               paddingRight: iconRight ? 45 : spacing.md,
@@ -92,6 +94,7 @@ export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
             },
             textInputStyle,
           ]}
+          editable={!disabled}
           {...restOfProps}
           onFocus={onFocus}
           onBlur={onBlur}

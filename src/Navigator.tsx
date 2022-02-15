@@ -16,6 +16,7 @@ import { colors } from './util/colors';
 import { RegisterConsentScreen } from './screens/RegisterConsentScreen';
 import { RegisterUsernameScreen } from './screens/RegisterUsernameScreen';
 import { RegisterPasswordScreen } from './screens/RegisterPasswordScreen';
+import { RegisterRecoveryEmailScreen } from './screens/RegisterRecoveryEmailScreen';
 
 export type RootStackParams = {
   test: undefined;
@@ -28,7 +29,12 @@ export type RootStackParams = {
   registerConsent: { code: string };
   registerUsername: { code: string; accepted: boolean };
   registerPassword: { code: string; accepted: boolean; email: string };
-  registerRecoveryEmail: undefined;
+  registerRecoveryEmail: {
+    code: string;
+    accepted: boolean;
+    email: string;
+    password: string;
+  };
   registerSuccess: undefined;
 };
 
@@ -122,6 +128,16 @@ export const Navigator = () => {
             <Stack.Screen
               name="registerPassword"
               component={RegisterPasswordScreen}
+              options={{
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                title: '',
+                headerTintColor: colors.primaryDark,
+              }}
+            />
+            <Stack.Screen
+              name="registerRecoveryEmail"
+              component={RegisterRecoveryEmailScreen}
               options={{
                 headerBackTitleVisible: false,
                 headerTransparent: true,
