@@ -7,8 +7,6 @@ import {
   Text,
   ScrollView,
   InputAccessoryView,
-  KeyboardAvoidingView,
-  Platform,
   TouchableOpacity,
   Linking,
 } from 'react-native';
@@ -21,18 +19,15 @@ import { colors } from '../util/colors';
 import { Result } from '../util/types';
 import envApi from '../../env_api.json';
 import { debounce } from 'lodash';
-import { Icon } from '../components/Icon';
 
-export type RegisterScreenProps = NativeStackScreenProps<
+export type RegisterBetaCodeScreenProps = NativeStackScreenProps<
   RootStackParams,
   'registerBetaCode'
 >;
 
-const debounceFunc = (value: string) => {
-  console.log('debounced func', value);
-};
+const accessoryId = 'input-betacode-accessory';
 
-export const RegisterBetaCodeScreen = () => {
+export const RegisterBetaCodeScreen = (props: RegisterBetaCodeScreenProps) => {
   const headerHeight = useHeaderHeight();
   const [code, setCode] = React.useState('');
   const [loadingVerify, setLoadingVerify] = React.useState(false);
@@ -59,69 +54,88 @@ export const RegisterBetaCodeScreen = () => {
     }
   };
 
-  const onSubmit = () => {};
-
   const isValid = verifyResponse?.type === 'success';
 
-  return (
-    <ScrollView
+  const onSubmit = () => {
+    if (!isValid) {
+      return;
+    }
+    props.navigation.navigate('registerConsent', { code: code });
+  };
+
+  const NextButton = () => (
+    <View
       style={{
-        flex: 1,
-        backgroundColor: colors.white,
-      }}
-      contentContainerStyle={{ marginTop: headerHeight }}>
-      <View style={{ margin: spacing.lg, flex: 1 }}>
-        <Text style={fonts.title2}>{'Enter Beta Code'}</Text>
-        <TouchableOpacity
-          onPress={() => {
-            Linking.openURL('https://www.telios.io');
-          }}>
-          <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
-            {'Telios is still in Beta. If you do not have a beta code,'}
-            <Text style={{ color: colors.primaryBase }}>
-              {' join our waitlist.'}
-            </Text>
-          </Text>
-        </TouchableOpacity>
-        <Input
-          style={{ marginTop: spacing.lg }}
-          onChangeText={onChange}
-          value={code}
-          error={null}
-          label="Beta Code"
-          placeholder="000000"
-          autoFocus={true}
-          autoCapitalize="none"
-          autoCorrect={false}
-          loading={loadingVerify}
-          iconRight={
-            verifyResponse?.type === 'success'
-              ? { name: 'checkmark-circle-outline', color: 'green' }
-              : verifyResponse?.type === 'error'
-              ? { name: 'close-circle-outline', color: 'red' }
-              : null
-          }
-        />
-        <KeyboardAvoidingView
-          style={{ marginTop: spacing.xxl }}
-          behavior={'padding'}
-          keyboardVerticalOffset={80}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              marginVertical: spacing.md,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+      }}>
+      <Button
+        size="large"
+        title="Next"
+        disabled={!isValid}
+        onPress={onSubmit}
+      />
+    </View>
+  );
+
+  return (
+    <>
+      <ScrollView
+        style={{
+          flex: 1,
+          backgroundColor: colors.white,
+        }}
+        contentContainerStyle={{ marginTop: headerHeight, flexGrow: 1 }}>
+        <View style={{ margin: spacing.lg, flex: 1 }}>
+          <Text style={fonts.title2}>{'Enter Beta Code'}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL('https://www.telios.io');
             }}>
-            <Button
-              size="large"
-              title="Next"
-              disabled={!isValid}
-              onPress={onSubmit}
-            />
+            <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
+              {'Telios is still in Beta. If you do not have a beta code,'}
+              <Text style={{ color: colors.primaryBase }}>
+                {' join our waitlist.'}
+              </Text>
+            </Text>
+          </TouchableOpacity>
+          <Input
+            style={{ marginTop: spacing.lg }}
+            onChangeText={onChange}
+            value={code}
+            error={null}
+            label="Beta Code"
+            placeholder="000000"
+            autoFocus={true}
+            autoCapitalize="none"
+            autoCorrect={false}
+            inputAccessoryViewID={accessoryId}
+            loading={loadingVerify}
+            iconRight={
+              verifyResponse?.type === 'success'
+                ? { name: 'checkmark-circle-outline', color: 'green' }
+                : verifyResponse?.type === 'error'
+                ? { name: 'close-circle-outline', color: 'red' }
+                : null
+            }
+            onSubmitEditing={onSubmit}
+            returnKeyType="done"
+          />
+          <View style={{ position: 'absolute', bottom: 0, right: 0, left: 0 }}>
+            <NextButton />
           </View>
-        </KeyboardAvoidingView>
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+      <InputAccessoryView nativeID={accessoryId}>
+        <View
+          style={{
+            paddingHorizontal: spacing.lg,
+            paddingVertical: spacing.md,
+          }}>
+          <NextButton />
+        </View>
+      </InputAccessoryView>
+    </>
   );
 };
 

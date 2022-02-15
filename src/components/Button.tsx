@@ -57,7 +57,8 @@ export const Button = (props: ButtonProps) => {
       style={[
         {
           backgroundColor: getBgColor(),
-          paddingHorizontal: size === 'small' ? spacing.md : spacing.xl,
+          paddingHorizontal:
+            type === 'text' ? 0 : size === 'small' ? spacing.md : spacing.xl,
           paddingVertical: size === 'small' ? spacing.sm : spacing.md,
           borderRadius: 30,
           opacity: loading ? 0.5 : 1,

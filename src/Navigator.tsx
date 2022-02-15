@@ -13,6 +13,8 @@ import { ComposeScreen } from './screens/ComposeScreen';
 import { TestScreen } from './screens/TestScreen';
 import { RegisterBetaCodeScreen } from './screens/RegisterBetaCodeScreen';
 import { colors } from './util/colors';
+import { RegisterConsentScreen } from './screens/RegisterConsentScreen';
+import { RegisterUsernameScreen } from './screens/RegisterUsernameScreen';
 
 export type RootStackParams = {
   test: undefined;
@@ -22,8 +24,8 @@ export type RootStackParams = {
   main: undefined;
   compose: undefined;
   registerBetaCode: undefined;
-  registerConsent: undefined;
-  registerUsername: undefined;
+  registerConsent: { code: string };
+  registerUsername: { code: string; accepted: boolean };
   registerPassword: undefined;
   registerRecoveryEmail: undefined;
   registerSuccess: undefined;
@@ -89,6 +91,26 @@ export const Navigator = () => {
             <Stack.Screen
               name="registerBetaCode"
               component={RegisterBetaCodeScreen}
+              options={{
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                title: '',
+                headerTintColor: colors.primaryDark,
+              }}
+            />
+            <Stack.Screen
+              name="registerConsent"
+              component={RegisterConsentScreen}
+              options={{
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                title: '',
+                headerTintColor: colors.primaryDark,
+              }}
+            />
+            <Stack.Screen
+              name="registerUsername"
+              component={RegisterUsernameScreen}
               options={{
                 headerBackTitleVisible: false,
                 headerTransparent: true,
