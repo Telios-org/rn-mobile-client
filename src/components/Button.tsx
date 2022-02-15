@@ -33,17 +33,30 @@ export const Button = (props: ButtonProps) => {
     loading = false,
     style,
   } = props;
+
+  const getBgColor = () => {
+    if (type === 'primary') {
+      if (disabled) {
+        return colors.skyBase;
+      } else {
+        return colors.primaryBase;
+      }
+    } else if (type === 'secondary') {
+      if (disabled) {
+        return colors.skyLighter;
+      } else {
+        return colors.primaryLightest;
+      }
+    }
+    return null;
+  };
+
   return (
     <TouchableOpacity
       disabled={loading}
       style={[
         {
-          backgroundColor:
-            type === 'primary'
-              ? colors.primaryBase
-              : type === 'secondary'
-              ? colors.primaryLightest
-              : null,
+          backgroundColor: getBgColor(),
           paddingHorizontal: size === 'small' ? spacing.md : spacing.xl,
           paddingVertical: size === 'small' ? spacing.sm : spacing.md,
           borderRadius: 30,

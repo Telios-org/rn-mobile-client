@@ -11,6 +11,8 @@ import { useAppSelector, useIsAuthenticated } from './hooks';
 import { DrawerContent } from './components/DrawerContent';
 import { ComposeScreen } from './screens/ComposeScreen';
 import { TestScreen } from './screens/TestScreen';
+import { RegisterBetaCodeScreen } from './screens/RegisterBetaCodeScreen';
+import { colors } from './util/colors';
 
 export type RootStackParams = {
   test: undefined;
@@ -19,6 +21,12 @@ export type RootStackParams = {
   login: undefined;
   main: undefined;
   compose: undefined;
+  registerBetaCode: undefined;
+  registerConsent: undefined;
+  registerUsername: undefined;
+  registerPassword: undefined;
+  registerRecoveryEmail: undefined;
+  registerSuccess: undefined;
 };
 
 export type MainStackParams = {
@@ -77,6 +85,16 @@ export const Navigator = () => {
               name="test"
               component={TestScreen}
               options={{ title: 'Test' }}
+            />
+            <Stack.Screen
+              name="registerBetaCode"
+              component={RegisterBetaCodeScreen}
+              options={{
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                title: '',
+                headerTintColor: colors.primaryDark,
+              }}
             />
           </>
         )}
