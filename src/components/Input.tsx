@@ -27,7 +27,8 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   iconLeft?: { name: string; size?: number; color?: string };
   renderCustomRightView?: () => ReactNode;
 }
-export const Input = (props: InputProps) => {
+
+export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
   const {
     style,
     textInputStyle,
@@ -70,6 +71,7 @@ export const Input = (props: InputProps) => {
       ) : null}
       <View>
         <TextInput
+          ref={ref}
           style={[
             {
               backgroundColor: colors.white,
@@ -145,4 +147,4 @@ export const Input = (props: InputProps) => {
       ) : null}
     </View>
   );
-};
+});

@@ -38,6 +38,10 @@ export const RegisterBetaCodeScreen = (props: RegisterBetaCodeScreenProps) => {
   const onVerify = async (value: string) => {
     const response = await validateBetaCode(value);
     setVerifyResponse(response);
+
+    // TODO: this gets called sometimes when another debounce is in progress
+    // which makes the loading indicator stop too soon.
+    // may need to implement loading state based on each individual value
     setLoadingVerify(false);
   };
 

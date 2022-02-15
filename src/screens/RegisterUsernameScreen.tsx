@@ -2,14 +2,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHeaderHeight } from '@react-navigation/elements';
 
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  InputAccessoryView,
-  TouchableOpacity,
-  Linking,
-} from 'react-native';
+import { View, Text, ScrollView, InputAccessoryView } from 'react-native';
+import { Modalize } from 'react-native-modalize';
 
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
@@ -30,7 +24,9 @@ export type RegisterUsernameScreenProps = NativeStackScreenProps<
 const accessoryId = 'input-username-accessory';
 
 export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
+  const { code, accepted } = props.route.params;
   const headerHeight = useHeaderHeight();
+  const modalizeRef = React.useRef<Modalize>(null);
 
   // TODO: dev vs prod switch
   const emailPostfix = envApi.devMail;
@@ -80,7 +76,11 @@ export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
     if (!isAvailable) {
       return;
     }
-    // props.navigation.navigate('registerConsent', { code: code });
+    props.navigation.navigate('registerPassword', {
+      code,
+      accepted,
+      email: getEmail(username),
+    });
   };
 
   const NextButton = () => (
@@ -162,6 +162,7 @@ export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
               style={{ marginTop: spacing.sm }}
               onPress={() => {
                 // todo show modal
+                modalizeRef.current?.open();
               }}
             />
           </View>
@@ -179,6 +180,26 @@ export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
           <NextButton />
         </View>
       </InputAccessoryView>
+      <Modalize ref={modalizeRef} adjustToContentHeight={true}>
+        <View
+          style={{
+            marginHorizontal: spacing.lg,
+            marginTop: spacing.xl,
+            marginBottom: spacing.lg,
+          }}>
+          <Text style={fonts.title3}>{'Allowable Characters'}</Text>
+          <Text
+            style={[
+              fonts.regular.regular,
+              { marginTop: spacing.md },
+            ]}>{`No special characters are allowed except for .`}</Text>
+          <Button
+            title="Done"
+            style={{ marginTop: spacing.lg }}
+            onPress={() => modalizeRef.current?.close()}
+          />
+        </View>
+      </Modalize>
     </>
   );
 };
