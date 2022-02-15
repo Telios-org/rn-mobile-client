@@ -40,4 +40,7 @@ export const colors = {
 
   white: '#FFFFFF',
   black: '#000000',
+
+  error: '#D3180C',
+  success: '#23C16B',
 };

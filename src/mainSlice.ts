@@ -439,6 +439,10 @@ export const sendEmail = createNodeCalloutAsyncThunk<
   SendEmailResponse
 >('email:sendEmail');
 
+// type GetMailboxPubKeysRequest = {emails: string[]};
+// type GetMailboxPubKeysResponse = {} // TODO;
+// export const getMailboxPubKeys = createNodeCalloutAsyncThunk<GetMailboxPubKeysRequest, GetMailboxPubKeysResponse>('')
+
 export const mainSlice = createSlice({
   name: 'main',
   initialState,

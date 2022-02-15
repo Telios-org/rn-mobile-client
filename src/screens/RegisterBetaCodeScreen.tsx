@@ -36,7 +36,6 @@ export const RegisterBetaCodeScreen = (props: RegisterBetaCodeScreenProps) => {
   >();
 
   const onVerify = async (value: string) => {
-    setLoadingVerify(true);
     const response = await validateBetaCode(value);
     setVerifyResponse(response);
     setLoadingVerify(false);
@@ -50,6 +49,7 @@ export const RegisterBetaCodeScreen = (props: RegisterBetaCodeScreenProps) => {
   const onChange = (value: string) => {
     setCode(value);
     if (value) {
+      setLoadingVerify(true);
       debounceVerify(value);
     }
   };
