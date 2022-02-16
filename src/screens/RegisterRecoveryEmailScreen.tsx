@@ -65,6 +65,7 @@ export const RegisterRecoveryEmailScreen = (
         }),
       );
       // on success, Navigator will auto-transition into authenticated space.
+      props.navigation.navigate('registerSuccess');
       // setLoadingSubmit(false);
     } catch (e) {
       setLoadingSubmit(false);

@@ -18,6 +18,7 @@ import { RegisterConsentScreen } from './screens/RegisterConsentScreen';
 import { RegisterUsernameScreen } from './screens/RegisterUsernameScreen';
 import { RegisterPasswordScreen } from './screens/RegisterPasswordScreen';
 import { RegisterRecoveryEmailScreen } from './screens/RegisterRecoveryEmailScreen';
+import { RegisterSuccessScreen } from './screens/RegisterSuccessScreen';
 
 export type RootStackParams = {
   test: undefined;
@@ -73,6 +74,16 @@ export const Navigator = () => {
               </Stack.Group>
               <Stack.Group screenOptions={{ presentation: 'modal' }}>
                 <Stack.Screen name="compose" component={ComposeScreen} />
+                <Stack.Screen
+                  name="registerSuccess"
+                  component={RegisterSuccessScreen}
+                  options={{
+                    headerBackTitleVisible: false,
+                    headerTransparent: true,
+                    title: '',
+                    headerTintColor: colors.primaryDark,
+                  }}
+                />
               </Stack.Group>
             </>
           ) : (

@@ -4,7 +4,6 @@ import {
   View,
   Text,
   ScrollView,
-  ActivityIndicator,
   Image,
   Alert,
   KeyboardAvoidingView,
@@ -13,7 +12,6 @@ import {
 import { Button } from '../components/Button';
 import { Input, InputProps } from '../components/Input';
 import * as Yup from 'yup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { spacing } from '../util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -21,16 +19,9 @@ import { useHeaderHeight } from '@react-navigation/elements';
 
 import { RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import {
-  accountLogin,
-  getNewMailMeta,
-  loginFlow,
-  registerFlow,
-} from '../mainSlice';
-import { storage } from '../util/asyncStorage';
+import { loginFlow } from '../mainSlice';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
-import { DropdownInput } from '../components/DropdownInput';
 import { SingleSelectInput } from '../components/SingleSelectInput';
 
 const SYNC_EXISTING = 'sync_existing';

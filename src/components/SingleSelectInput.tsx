@@ -57,6 +57,7 @@ export const SingleSelectInput = (props: SingleSelectInputProps) => {
             <View style={{ marginVertical: spacing.lg }}>
               {props.options.map(option => (
                 <SingleSelectCell
+                  key={`singleselect-${option.value}`}
                   option={option}
                   onPress={() => onSelectValue(option.value)}
                   style={{ marginBottom: spacing.sm }}
