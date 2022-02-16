@@ -12,7 +12,7 @@ export const textStyles = {
     extraLight: '200' as TextStyle['fontWeight'],
   },
   sizes: {
-    title1: 48,
+    title1: 38,
     title2: 32,
     title3: 24,
     large: 18,
@@ -21,23 +21,24 @@ export const textStyles = {
     tiny: 12,
   },
   defaultColor: colors.inkBase,
+  titleColor: colors.inkDarkest,
 };
 
 export const fonts = {
   title1: {
     fontWeight: textStyles.weights.bold,
     fontSize: textStyles.sizes.title1,
-    color: textStyles.defaultColor,
+    color: textStyles.titleColor,
   },
   title2: {
     fontWeight: textStyles.weights.bold,
     fontSize: textStyles.sizes.title2,
-    color: textStyles.defaultColor,
+    color: textStyles.titleColor,
   },
   title3: {
     fontWeight: textStyles.weights.bold,
     fontSize: textStyles.sizes.title3,
-    color: textStyles.defaultColor,
+    color: textStyles.titleColor,
   },
   large: {
     bold: {

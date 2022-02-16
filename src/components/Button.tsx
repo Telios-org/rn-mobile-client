@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   StyleProp,
   ViewStyle,
+  TextStyle,
 } from 'react-native';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
@@ -20,6 +21,7 @@ export interface ButtonProps {
   disabled?: boolean;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
+  titleStyle?: StyleProp<TextStyle>;
 }
 export const Button = (props: ButtonProps) => {
   const {
@@ -32,6 +34,7 @@ export const Button = (props: ButtonProps) => {
     disabled = false,
     loading = false,
     style,
+    titleStyle,
   } = props;
 
   const getBgColor = () => {
@@ -83,6 +86,7 @@ export const Button = (props: ButtonProps) => {
             {
               color: type === 'primary' ? colors.white : colors.primaryBase,
             },
+            titleStyle,
           ]}>
           {title}
         </Text>

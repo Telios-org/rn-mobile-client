@@ -19,6 +19,9 @@ import { RegisterUsernameScreen } from './screens/RegisterUsernameScreen';
 import { RegisterPasswordScreen } from './screens/RegisterPasswordScreen';
 import { RegisterRecoveryEmailScreen } from './screens/RegisterRecoveryEmailScreen';
 import { RegisterSuccessScreen } from './screens/RegisterSuccessScreen';
+import { Icon } from './components/Icon';
+import { TouchableOpacity } from 'react-native';
+import { SearchScreen } from './screens/SearchScreen';
 
 export type RootStackParams = {
   test: undefined;
@@ -27,6 +30,7 @@ export type RootStackParams = {
   login: undefined;
   main: undefined;
   compose: undefined;
+  search: undefined;
   registerBetaCode: undefined;
   registerConsent: { code: string };
   registerUsername: { code: string; accepted: boolean };
@@ -50,7 +54,26 @@ const Drawer = createDrawerNavigator<MainStackParams>();
 function Main() {
   return (
     <Drawer.Navigator initialRouteName="inbox" drawerContent={DrawerContent}>
-      <Drawer.Screen name={'inbox'} component={InboxScreen} />
+      <Drawer.Screen
+        name={'inbox'}
+        component={InboxScreen}
+        options={({ navigation, route }) => ({
+          headerTintColor: colors.inkDarker,
+          title: '',
+          headerRight: props => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('search')}
+              style={{
+                width: 45,
+                height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Icon name="search-outline" size={26} color={colors.inkDarker} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
     </Drawer.Navigator>
   );
 }
@@ -74,6 +97,7 @@ export const Navigator = () => {
               </Stack.Group>
               <Stack.Group screenOptions={{ presentation: 'modal' }}>
                 <Stack.Screen name="compose" component={ComposeScreen} />
+                <Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen
                   name="registerSuccess"
                   component={RegisterSuccessScreen}

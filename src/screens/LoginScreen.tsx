@@ -93,7 +93,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
           }}>
           <Image
             source={{ uri: 'logo-no-text' }}
-            style={{ width: 80, height: 60 }}
+            style={{ width: 60, height: 60 }}
             resizeMode="contain"
           />
         </View>
