@@ -2,8 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import nodejs from 'nodejs-mobile-react-native';
 import { registerOneTimeListener } from './eventListenerMiddleware';
 import {
+  getAsyncStorageLastUsername,
   getAsyncStorageSavedUsernames,
   storage,
+  storeAsyncStorageLastUsername,
   storeAsyncStorageSavedUsername,
 } from './util/asyncStorage';
 import { createNodeCalloutAsyncThunk } from './util/nodeActions';
@@ -139,6 +141,7 @@ export type MailboxFolder = {
 // Define a type for the slice state
 interface MainState {
   localUsernames: string[];
+  lastUsername?: string;
 
   signupAccount?: SignupAccount;
   loginAccount?: LoginAccount;
@@ -166,9 +169,10 @@ const initialState: MainState = {
 
 export const getStoredUsernames = createAsyncThunk(
   'system/getStoredUsernames',
-  async (_, thunkAPI): Promise<string[]> => {
+  async (): Promise<{ usernames: string[]; lastUsername?: string }> => {
     const usernames = await getAsyncStorageSavedUsernames();
-    return usernames;
+    const lastUsername = await getAsyncStorageLastUsername();
+    return { usernames, lastUsername };
   },
 );
 
@@ -214,6 +218,7 @@ export const registerFlow = createAsyncThunk(
     }
 
     await storeAsyncStorageSavedUsername(data.email);
+    await storeAsyncStorageLastUsername(data.email);
 
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
@@ -232,6 +237,8 @@ export const loginFlow = createAsyncThunk(
     if (loginResponse.type === accountLogin.rejected.type) {
       throw new Error(JSON.stringify(loginResponse.payload));
     }
+
+    await storeAsyncStorageLastUsername(data.email);
 
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
@@ -449,7 +456,8 @@ export const mainSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(getStoredUsernames.fulfilled, (state, action) => {
-      state.localUsernames = action.payload;
+      state.localUsernames = action.payload.usernames;
+      state.lastUsername = action.payload.lastUsername;
     });
     builder.addCase(registerNewAccount.fulfilled, (state, action) => {
       state.signupAccount = action.payload;

@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const storage = {
   savedUsernames: '@saved_usernames_json',
+  lastUsername: '@last_used_username_string',
 };
 
 export const getAsyncStorageSavedUsernames = async () => {
@@ -27,4 +28,22 @@ export const storeAsyncStorageSavedUsername = async (email: string) => {
   }
   const jsonValue = JSON.stringify(savedUsernames);
   await AsyncStorage.setItem(storage.savedUsernames, jsonValue);
+};
+
+export const getAsyncStorageLastUsername = async () => {
+  try {
+    const value = (await AsyncStorage.getItem(storage.lastUsername)) as
+      | string
+      | undefined;
+    return value;
+  } catch (e) {
+    // error reading value
+    console.log('ERROR GETTING USERNAME: ', e);
+    return undefined;
+  }
+};
+
+// @throwable
+export const storeAsyncStorageLastUsername = async (email: string) => {
+  await AsyncStorage.setItem(storage.lastUsername, email);
 };

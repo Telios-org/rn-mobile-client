@@ -42,7 +42,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const dispatch = useAppDispatch();
   const headerHeight = useHeaderHeight();
 
-  const localUsernames = useAppSelector(state => state.main.localUsernames);
+  const { localUsernames, lastUsername } = useAppSelector(state => state.main);
 
   const onSubmit = async (
     values: LoginFormValues,
@@ -104,7 +104,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
           </Text>
           <Formik
             initialValues={{
-              email: localUsernames[0],
+              email: lastUsername,
               password: '',
             }}
             validationSchema={LoginFormSchema}
