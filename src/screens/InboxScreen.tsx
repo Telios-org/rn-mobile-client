@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { format, isToday } from 'date-fns';
-
-import { FlatList, Text, View, Animated, SectionList } from 'react-native';
+import { Text, View, Animated } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { Button } from '../components/Button';
 import { MainStackParams, RootStackParams } from '../Navigator';
@@ -11,8 +11,8 @@ import { spacing } from '../util/spacing';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getNewMailFlow, LocalEmail } from '../mainSlice';
 import { colors } from '../util/colors';
-import { fonts } from '../util/fonts';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { fonts, textStyles } from '../util/fonts';
+import { Icon } from '../components/Icon';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -36,7 +36,9 @@ export const InboxScreen = (props: InboxScreenProps) => {
               outputRange: [0, 0, 1],
             }),
           }}>
-          <Text style={fonts.large.medium}>{'Inbox'}</Text>
+          <Text style={[fonts.large.bold, { color: textStyles.titleColor }]}>
+            {'Inbox'}
+          </Text>
         </Animated.View>
       ),
     });
@@ -54,39 +56,36 @@ export const InboxScreen = (props: InboxScreenProps) => {
     props.navigation.navigate('compose');
   };
 
-  // React.useLayoutEffect(() => {
-  //   props.navigation.setOptions({
-  //     headerRight: () => <TextButton onPress={onRefresh} title="refresh" />,
-  //   });
-  // }, [props.navigation]);
-
-  // const listData = Object.values(mainState.mail);
-  const listData: Array<LocalEmail> = [];
-  for (let i = 0; i < 50; i++) {
-    listData.push({
-      aliasId: '',
-      attachments: '',
-      bccJSON: '',
-      bodyAsHtml: '',
-      bodyAsText: 'test body goes here wow so much test',
-      ccJSON: '',
-      createdAt: '2022-02-16T16:04:11Z',
-      date: '2022-02-16T16:04:11Z',
-      emailId: '',
-      encHeader: '',
-      encKey: '',
-      folderId: '',
-      fromJSON: `[{"name": "Jillian Jacob", "address": "abc123@test.com"}]`,
-      id: '',
-      path: '',
-      size: '',
-      subject: 'test subject',
-      toJSON: `[{"name": "Phillip Fry", "address": "abc123@test.com"}]`,
-      unread: '1',
-      updatedAt: '2022-02-16T16:04:11Z',
-      _id: `id${i}`,
-    });
+  const listData = Object.values(mainState.mail) as Array<Partial<LocalEmail>>;
+  if (listData.length === 0 && !mainState.loadingGetMailMeta) {
+    listData.push({ _id: 'MAIL_EMPTY' });
   }
+  // const listData: Array<LocalEmail> = [];
+  // for (let i = 0; i < 50; i++) {
+  //   listData.push({
+  //     aliasId: '',
+  //     attachments: '',
+  //     bccJSON: '',
+  //     bodyAsHtml: '',
+  //     bodyAsText: 'test body goes here wow so much test',
+  //     ccJSON: '',
+  //     createdAt: '2022-02-16T16:04:11Z',
+  //     date: '2022-02-16T16:04:11Z',
+  //     emailId: '',
+  //     encHeader: '',
+  //     encKey: '',
+  //     folderId: '',
+  //     fromJSON: `[{"name": "Jillian Jacob", "address": "abc123@test.com"}]`,
+  //     id: '',
+  //     path: '',
+  //     size: '',
+  //     subject: 'test subject',
+  //     toJSON: `[{"name": "Phillip Fry", "address": "abc123@test.com"}]`,
+  //     unread: '1',
+  //     updatedAt: '2022-02-16T16:04:11Z',
+  //     _id: `id${i}`,
+  //   });
+  // }
 
   const sectionListData = [
     {
@@ -95,7 +94,13 @@ export const InboxScreen = (props: InboxScreenProps) => {
     },
   ];
 
-  const renderItem = ({ item }) => <EmailCell email={item} />;
+  const renderItem = ({ item }) => {
+    if (item._id === 'MAIL_EMPTY') {
+      return <EmptyComponent />;
+    } else {
+      return <EmailCell email={item} />;
+    }
+  };
 
   const renderFilterHeader = () => {
     return (
@@ -162,41 +167,12 @@ export const InboxScreen = (props: InboxScreenProps) => {
   };
 
   return (
-    <Animated.SectionList
-      style={{ flex: 1, backgroundColor: colors.white }}
-      sections={sectionListData}
-      stickySectionHeadersEnabled={true}
-      onScroll={Animated.event(
-        [
-          {
-            nativeEvent: {
-              contentOffset: {
-                y: headerTitleAnimation,
-              },
-            },
-          },
-        ],
-        { useNativeDriver: true },
-      )}
-      renderItem={renderItem}
-      renderSectionHeader={renderSectionHeader}
-      keyExtractor={(item, index) => item._id + index}
-      // ItemSeparatorComponent={ItemSeparator}
-      ListHeaderComponent={renderHeader}
-      ListFooterComponent={ItemSeparator}
-      onRefresh={onRefresh}
-      refreshing={isRefreshing}
-    />
-  );
-
-  return (
-    <>
-      <Animated.FlatList
-        // onScroll={onScroll}
-        // contentContainerStyle={{ paddingTop: containerPaddingTop }}
-        // scrollIndicatorInsets={{ top: scrollIndicatorInsetTop }}
+    <View style={{ flex: 1 }}>
+      <Animated.SectionList
+        style={{ flex: 1, backgroundColor: colors.white }}
+        sections={sectionListData}
+        stickySectionHeadersEnabled={true}
         onScroll={Animated.event(
-          // scrollX = e.nativeEvent.contentOffset.x
           [
             {
               nativeEvent: {
@@ -208,39 +184,61 @@ export const InboxScreen = (props: InboxScreenProps) => {
           ],
           { useNativeDriver: true },
         )}
-        data={listData}
         renderItem={renderItem}
-        keyExtractor={item => item._id}
-        ItemSeparatorComponent={ItemSeparator}
+        renderSectionHeader={renderSectionHeader}
+        keyExtractor={(item, index) => item._id + index}
         ListHeaderComponent={renderHeader}
-        ListFooterComponent={ItemSeparator}
         onRefresh={onRefresh}
         refreshing={isRefreshing}
+        ListEmptyComponent={EmptyComponent}
       />
-      {/* Wrap your component with `CollapsibleSubHeaderAnimator` */}
-      <CollapsibleSubHeaderAnimator translateY={translateY}>
-        <MySearchBar />
-      </CollapsibleSubHeaderAnimator>
-    </>
-  );
-
-  return (
-    <FlatList
-      style={{ flex: 1 }}
-      data={listData}
-      renderItem={renderItem}
-      keyExtractor={item => item._id}
-      ItemSeparatorComponent={ItemSeparator}
-      ListHeaderComponent={renderHeader}
-      ListFooterComponent={ItemSeparator}
-      onRefresh={onRefresh}
-      refreshing={isRefreshing}
-    />
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          left: 0,
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+          padding: spacing.lg,
+        }}>
+        <TouchableOpacity
+          onPress={onNewEmail}
+          style={{
+            width: 54,
+            height: 54,
+            borderRadius: 26,
+            backgroundColor: colors.primaryBase,
+            justifyContent: 'center',
+            alignItems: 'center',
+            elevation: 4,
+            shadowOpacity: 0.2,
+            shadowOffset: { width: 2, height: 2 },
+          }}>
+          <Icon
+            name="add-outline"
+            size={30}
+            color={colors.white}
+            style={{ marginRight: -4 }} // + icon is misaligned for some reason
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
-const ItemSeparator = () => (
-  <View style={{ height: 2, backgroundColor: 'yellow' }} />
+const EmptyComponent = () => (
+  <View
+    style={{
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: spacing.xxl,
+    }}>
+    <Icon name="file-tray-outline" size={50} color={colors.skyLight} />
+    <Text style={[fonts.large.regular, { color: colors.skyLight }]}>
+      {'No Messages'}
+    </Text>
+  </View>
 );
 
 const EmailCell = (props: { email: LocalEmail }) => {
