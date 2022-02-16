@@ -92,17 +92,17 @@ export const RegisterBetaCodeScreen = (props: RegisterBetaCodeScreenProps) => {
         contentContainerStyle={{ marginTop: headerHeight, flexGrow: 1 }}>
         <View style={{ margin: spacing.lg, flex: 1 }}>
           <Text style={fonts.title2}>{'Enter Beta Code'}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              Linking.openURL('https://www.telios.io');
-            }}>
-            <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
-              {'Telios is still in Beta. If you do not have a beta code,'}
-              <Text style={{ color: colors.primaryBase }}>
-                {' join our waitlist.'}
-              </Text>
+
+          <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
+            {'Telios is still in Beta. If you do not have a beta code, '}
+            <Text
+              style={{ color: colors.primaryBase }}
+              onPress={() => {
+                Linking.openURL('https://www.telios.io');
+              }}>
+              {'join our waitlist.'}
             </Text>
-          </TouchableOpacity>
+          </Text>
           <Input
             style={{ marginTop: spacing.lg }}
             onChangeText={onChange}
@@ -110,7 +110,7 @@ export const RegisterBetaCodeScreen = (props: RegisterBetaCodeScreenProps) => {
             error={null}
             label="Beta Code"
             placeholder="000000"
-            autoFocus={true}
+            autoFocus={false}
             autoCapitalize="none"
             autoCorrect={false}
             inputAccessoryViewID={accessoryId}

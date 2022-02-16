@@ -121,22 +121,7 @@ export const RegisterRecoveryEmailScreen = (
             returnKeyType="done"
             disabled={loadingSubmit}
           />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              marginTop: spacing.sm,
-            }}>
-            <Button
-              size="small"
-              type="text"
-              title="whats this?"
-              onPress={() => {
-                // todo show modal
-                modalizeRef.current?.open();
-              }}
-            />
-          </View>
+
           <View style={{ position: 'absolute', bottom: 0, right: 0, left: 0 }}>
             {showLoadingText && (
               <View style={{ marginBottom: spacing.lg }}>
@@ -153,26 +138,7 @@ export const RegisterRecoveryEmailScreen = (
           </View>
         </View>
       </ScrollView>
-      <Modalize ref={modalizeRef} adjustToContentHeight={true}>
-        <View
-          style={{
-            marginHorizontal: spacing.lg,
-            marginTop: spacing.xl,
-            marginBottom: spacing.lg,
-          }}>
-          <Text style={fonts.title3}>{'Password Strength'}</Text>
-          <Text
-            style={[
-              fonts.regular.regular,
-              { marginTop: spacing.md },
-            ]}>{`Password strength is estimated through pattern matching and conservative estimation, it recognizes and weighs 30k common passwords, common names and surnames according to US census data, popular English words from Wikipedia and US television and movies, and other common patterns like dates, repeats (aaa), sequences (abcd), keyboard patterns (qwertyuiop), and l33t speak.\nTime to crack is estimated for an offline attack, multiple attackers, proper user-unique salting, and a slow hash function with moderate work factor, such as bcrypt, scrypt, PBKDF2.`}</Text>
-          <Button
-            title="Done"
-            style={{ marginTop: spacing.lg }}
-            onPress={() => modalizeRef.current?.close()}
-          />
-        </View>
-      </Modalize>
+
       <InputAccessoryView nativeID={accessoryId}>
         <View
           style={{

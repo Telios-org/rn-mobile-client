@@ -1,6 +1,15 @@
 import { Formik, FormikHelpers } from 'formik';
 import React from 'react';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  Image,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { Button } from '../components/Button';
 import { Input, InputProps } from '../components/Input';
 import * as Yup from 'yup';
@@ -8,6 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { spacing } from '../util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useHeaderHeight } from '@react-navigation/elements';
+
 import { RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
@@ -17,6 +28,12 @@ import {
   registerFlow,
 } from '../mainSlice';
 import { storage } from '../util/asyncStorage';
+import { colors } from '../util/colors';
+import { fonts } from '../util/fonts';
+import { DropdownInput } from '../components/DropdownInput';
+import { SingleSelectInput } from '../components/SingleSelectInput';
+
+const SYNC_EXISTING = 'sync_existing';
 
 type LoginFormValues = {
   email: string;
@@ -32,30 +49,9 @@ export type LoginScreenProps = NativeStackScreenProps<RootStackParams, 'login'>;
 
 export const LoginScreen = (props: LoginScreenProps) => {
   const dispatch = useAppDispatch();
+  const headerHeight = useHeaderHeight();
 
-  const [loadingUsernames, setLoadingUsernames] = React.useState(false);
-  const [savedUsernames, setSavedUsernames] = React.useState<string[] | null>(
-    [],
-  );
-
-  const getSavedUsernames = async () => {
-    setLoadingUsernames(true);
-    try {
-      const jsonValue = await AsyncStorage.getItem(storage.savedUsernames);
-      const usernames =
-        jsonValue != null ? (JSON.parse(jsonValue) as string[]) : null;
-      setSavedUsernames(usernames);
-      setLoadingUsernames(false);
-    } catch (e) {
-      // error reading value
-      console.log('ERROR GETTING USERNAMES: ', e);
-      setLoadingUsernames(false);
-    }
-  };
-
-  React.useEffect(() => {
-    getSavedUsernames();
-  }, []);
+  const localUsernames = useAppSelector(state => state.main.localUsernames);
 
   const onSubmit = async (
     values: LoginFormValues,
@@ -68,85 +64,153 @@ export const LoginScreen = (props: LoginScreenProps) => {
         loginFlow({ email: values.email, password: values.password }),
       );
       if (loginResponse.type === loginFlow.rejected.type) {
-        throw new Error('Login failed');
+        actions.setSubmitting(false);
+        Alert.alert('Login Failed', 'Invalid login credentials');
       }
-
-      // actions.setSubmitting(false);
     } catch (error) {
       console.log('onSubmit error caught', error);
+      Alert.alert('Error', 'An unknown error occurred. Try again later.');
       actions.setSubmitting(false);
     }
   };
 
+  const onSyncExistingAccount = () => {
+    // todo navigate
+    Alert.alert('Not implemented yet');
+  };
+
+  const onForgotPassword = () => {
+    // todo navigate
+    Alert.alert('Not implemented yet');
+  };
+
+  const onRegisterNewAccount = () => {
+    props.navigation.navigate('registerBetaCode');
+  };
+
   return (
-    <ScrollView style={{ flex: 1 }}>
-      <View style={{ margin: spacing.md }}>
-        <Text>{'Login'}</Text>
-        <Formik
-          initialValues={{
-            email: 'justintest12@dev.telios.io',
-            password: 'Letmein123!',
-          }}
-          validationSchema={LoginFormSchema}
-          onSubmit={onSubmit}>
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-            isValidating,
-            isSubmitting,
-            setFieldValue,
-          }) => (
-            <View style={{ marginVertical: spacing.md }}>
-              <Input
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
-                error={touched.email && errors.email}
-                label="Email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                style={{ flex: 1 }}
-              />
-              {loadingUsernames ? (
-                <ActivityIndicator />
-              ) : (
-                savedUsernames?.map(username => (
+    <ScrollView
+      style={{ flex: 1, backgroundColor: colors.white }}
+      contentContainerStyle={{ marginTop: headerHeight }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+        <View
+          style={{
+            marginVertical: spacing.xxl,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Image
+            source={{ uri: 'logo-no-text' }}
+            style={{ width: 80, height: 60 }}
+            resizeMode="contain"
+          />
+        </View>
+        <View style={{ marginHorizontal: spacing.lg }}>
+          <Text style={fonts.title2}>{'Welcome Back'}</Text>
+          <Text style={fonts.regular.regular}>
+            {'Log in with your account'}
+          </Text>
+          <Formik
+            initialValues={{
+              email: localUsernames[0],
+              password: '',
+            }}
+            validationSchema={LoginFormSchema}
+            onSubmit={onSubmit}>
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+              isValidating,
+              isSubmitting,
+              setFieldValue,
+            }) => (
+              <View style={{ marginVertical: spacing.xl }}>
+                <SingleSelectInput
+                  modalTitle="Select Account"
+                  options={[
+                    ...localUsernames.map(username => ({
+                      label: username,
+                      value: username,
+                    })),
+                    {
+                      label: 'Sync from another device',
+                      value: SYNC_EXISTING,
+                      rightIcon: {
+                        name: 'arrow-down-circle-outline',
+                        color: colors.primaryBase,
+                      },
+                      labelStyle: { color: colors.primaryBase },
+                    },
+                  ]}
+                  value={values.email}
+                  error={touched.email && errors.email}
+                  onSelect={value => {
+                    if (value === SYNC_EXISTING) {
+                      onSyncExistingAccount();
+                    } else {
+                      setFieldValue('email', value);
+                    }
+                  }}
+                />
+
+                <Input
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  value={values.password}
+                  error={touched.password && errors.password}
+                  label="Master Password"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  autoComplete="password"
+                  secureTextEntry={true}
+                  iconLeft={{ name: 'lock-closed-outline' }}
+                  style={{ marginTop: spacing.md }}
+                />
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    marginTop: spacing.md,
+                  }}>
                   <Button
+                    onPress={onForgotPassword}
+                    size="small"
                     type="text"
-                    title={username}
-                    style={{ marginTop: spacing.sm }}
-                    onPress={() => {
-                      setFieldValue('email', username);
-                    }}
+                    title="Forgot Password"
                   />
-                ))
-              )}
+                </View>
 
-              <Input
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
-                error={touched.password && errors.password}
-                label="Password"
-                autoCapitalize="none"
-                autoCorrect={false}
-                style={{ marginTop: spacing.md }}
-              />
-
-              <Button
-                onPress={handleSubmit}
-                title="Submit"
-                loading={isValidating || isSubmitting}
-              />
-            </View>
-          )}
-        </Formik>
-      </View>
+                <Button
+                  style={{ marginTop: spacing.xl }}
+                  onPress={handleSubmit}
+                  title="Login"
+                  loading={isValidating || isSubmitting}
+                />
+                <Button
+                  style={{ marginTop: spacing.md }}
+                  size="small"
+                  type="text"
+                  onPress={onSyncExistingAccount}
+                  title="I have an account on another device"
+                />
+                <Button
+                  style={{ marginTop: spacing.sm }}
+                  size="small"
+                  type="text"
+                  onPress={onRegisterNewAccount}
+                  title="Create a new account"
+                />
+              </View>
+            )}
+          </Formik>
+        </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };
