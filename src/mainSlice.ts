@@ -361,6 +361,12 @@ export const accountLogin = createNodeCalloutAsyncThunk<
   AccountLoginResponse
 >('account:login');
 
+type AccountLogoutResponse = {}; // todo
+export const accountLogout = createNodeCalloutAsyncThunk<
+  void,
+  AccountLogoutResponse
+>('account:logout');
+
 // TODO: prevent duplicate emails from being added to DB
 // no logic to prevent that today, and it could happen
 // if there is any interruption between inserting into DB and 'mark as synced' call succeeding
@@ -513,6 +519,12 @@ export const mainSlice = createSlice({
     });
     builder.addCase(sendEmail.rejected, (state, action) => {
       state.loadingSendEmail = false;
+    });
+    builder.addCase(accountLogout.fulfilled, (state, action) => {
+      const newState = { ...initialState };
+      newState.localUsernames = state.localUsernames;
+      newState.lastUsername = state.lastUsername;
+      return newState;
     });
   },
 });

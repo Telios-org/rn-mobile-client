@@ -5,17 +5,20 @@ import {
   DrawerItem,
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
+import { useAppDispatch } from '../hooks';
+import { accountLogout } from '../mainSlice';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
+  const dispatch = useAppDispatch();
+
+  const onLogout = () => {
+    dispatch(accountLogout());
+  };
+
   return (
     <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <DrawerItem
-        label="Sign Out"
-        onPress={() => {
-          console.log('sign out');
-        }}
-      />
+      <DrawerItem label="Inbox" onPress={() => {}} />
+      <DrawerItem label="Sign Out" onPress={onLogout} />
     </DrawerContentScrollView>
   );
 };
