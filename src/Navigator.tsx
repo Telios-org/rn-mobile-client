@@ -22,6 +22,11 @@ import { RegisterSuccessScreen } from './screens/RegisterSuccessScreen';
 import { Icon } from './components/Icon';
 import { TouchableOpacity } from 'react-native';
 import { SearchScreen } from './screens/SearchScreen';
+import { NavIconButton } from './components/NavIconButton';
+import { DraftsScreen } from './screens/DraftsScreen';
+import { SentScreen } from './screens/SentScreen';
+import { TrashScreen } from './screens/TrashScreen';
+import { ProfileScreen } from './screens/ProfileScreen';
 
 export type RootStackParams = {
   test: undefined;
@@ -46,6 +51,10 @@ export type RootStackParams = {
 
 export type MainStackParams = {
   inbox: undefined;
+  drafts: undefined;
+  sent: undefined;
+  trash: undefined;
+  profile: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -53,7 +62,15 @@ const Drawer = createDrawerNavigator<MainStackParams>();
 
 function Main() {
   return (
-    <Drawer.Navigator initialRouteName="inbox" drawerContent={DrawerContent}>
+    <Drawer.Navigator
+      initialRouteName="inbox"
+      screenOptions={{
+        drawerStyle: {
+          width: '80%',
+        },
+        headerTintColor: colors.inkDarker,
+      }}
+      drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen
         name={'inbox'}
         component={InboxScreen}
@@ -61,18 +78,35 @@ function Main() {
           headerTintColor: colors.inkDarker,
           title: '',
           headerRight: props => (
-            <TouchableOpacity
+            <NavIconButton
+              icon={{ name: 'search-outline' }}
               onPress={() => navigation.navigate('search')}
-              style={{
-                width: 45,
-                height: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Icon name="search-outline" size={26} color={colors.inkDarker} />
-            </TouchableOpacity>
+            />
           ),
         })}
+      />
+      <Drawer.Screen
+        name={'drafts'}
+        component={DraftsScreen}
+        options={{ title: 'Drafts' }}
+      />
+      <Drawer.Screen
+        name={'sent'}
+        component={SentScreen}
+        options={{ title: 'Sent' }}
+      />
+      <Drawer.Screen
+        name={'trash'}
+        component={TrashScreen}
+        options={{ title: 'Trash' }}
+      />
+      <Drawer.Screen
+        name={'profile'}
+        component={ProfileScreen}
+        options={{
+          headerTransparent: true,
+          title: '',
+        }}
       />
     </Drawer.Navigator>
   );
@@ -96,7 +130,11 @@ export const Navigator = () => {
                 />
               </Stack.Group>
               <Stack.Group screenOptions={{ presentation: 'modal' }}>
-                <Stack.Screen name="compose" component={ComposeScreen} />
+                <Stack.Screen
+                  name="compose"
+                  component={ComposeScreen}
+                  options={{ title: 'Compose' }}
+                />
                 <Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen
                   name="registerSuccess"

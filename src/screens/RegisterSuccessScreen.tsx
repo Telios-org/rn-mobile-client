@@ -42,7 +42,7 @@ export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
       <View style={{ margin: spacing.lg, flex: 1 }}>
         <Text style={fonts.title2}>{'Recovery Phrase'}</Text>
 
-        <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
+        <Text style={[fonts.small.regular, { marginTop: spacing.sm }]}>
           {
             'In the event you lose your password or device, this phrase can be used to restore your account. Be sure to memorize this phrase or keep it somewhere secure like under your pillow.'
           }
@@ -55,12 +55,12 @@ export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
 
           <View
             style={{
-              backgroundColor: colors.skyLighter,
+              backgroundColor: colors.primaryLightest,
               borderRadius: borderRadius,
               padding: spacing.md,
               marginVertical: spacing.sm,
             }}>
-            <Text style={[{ flex: 1 }, fonts.large.medium]}>
+            <Text style={[{ flex: 1 }, fonts.large.bold]}>
               {account?.mnemonic}
             </Text>
           </View>

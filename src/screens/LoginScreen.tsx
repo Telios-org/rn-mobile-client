@@ -83,125 +83,122 @@ export const LoginScreen = (props: LoginScreenProps) => {
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.white }}
       contentContainerStyle={{ marginTop: headerHeight }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-        <View
-          style={{
-            marginVertical: spacing.xxl,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Image
-            source={{ uri: 'logo-no-text' }}
-            style={{ width: 60, height: 60 }}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={{ marginHorizontal: spacing.lg }}>
-          <Text style={fonts.title2}>{'Welcome Back'}</Text>
-          <Text style={fonts.regular.regular}>
-            {'Log in with your account'}
-          </Text>
-          <Formik
-            initialValues={{
-              email: lastUsername,
-              password: '',
-            }}
-            validationSchema={LoginFormSchema}
-            onSubmit={onSubmit}>
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-              isValidating,
-              isSubmitting,
-              setFieldValue,
-            }) => (
-              <View style={{ marginVertical: spacing.xl }}>
-                <SingleSelectInput
-                  modalTitle="Select Account"
-                  options={[
-                    ...localUsernames.map(username => ({
-                      label: username,
-                      value: username,
-                    })),
-                    {
-                      label: 'Sync from another device',
-                      value: SYNC_EXISTING,
-                      rightIcon: {
-                        name: 'arrow-down-circle-outline',
-                        color: colors.primaryBase,
-                      },
-                      labelStyle: { color: colors.primaryBase },
+      <View
+        style={{
+          marginVertical: spacing.xxl,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Image
+          source={{ uri: 'logo-no-text' }}
+          style={{ width: 60, height: 60 }}
+          resizeMode="contain"
+        />
+      </View>
+      <View style={{ marginHorizontal: spacing.lg }}>
+        <Text style={fonts.title2}>{'Welcome Back'}</Text>
+        <Text style={fonts.regular.regular}>{'Log in with your account'}</Text>
+        <Formik
+          initialValues={{
+            email: lastUsername,
+            password: '',
+          }}
+          validationSchema={LoginFormSchema}
+          onSubmit={onSubmit}>
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            isValidating,
+            isSubmitting,
+            setFieldValue,
+          }) => (
+            <View style={{ marginVertical: spacing.xl }}>
+              <SingleSelectInput
+                modalTitle="Select Account"
+                options={[
+                  ...localUsernames.map(username => ({
+                    label: username,
+                    value: username,
+                  })),
+                  {
+                    label: 'Sync from another device',
+                    value: SYNC_EXISTING,
+                    rightIcon: {
+                      name: 'arrow-down-circle-outline',
+                      color: colors.primaryBase,
                     },
-                  ]}
-                  value={values.email}
-                  error={touched.email && errors.email}
-                  onSelect={value => {
-                    if (value === SYNC_EXISTING) {
-                      onSyncExistingAccount();
-                    } else {
-                      setFieldValue('email', value);
-                    }
-                  }}
-                />
+                    labelStyle: { color: colors.primaryBase },
+                  },
+                ]}
+                value={values.email}
+                error={touched.email && errors.email}
+                onSelect={value => {
+                  if (value === SYNC_EXISTING) {
+                    onSyncExistingAccount();
+                  } else {
+                    setFieldValue('email', value);
+                  }
+                }}
+              />
 
-                <Input
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  value={values.password}
-                  error={touched.password && errors.password}
-                  label="Master Password"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  autoComplete="password"
-                  secureTextEntry={true}
-                  iconLeft={{ name: 'lock-closed-outline' }}
-                  style={{ marginTop: spacing.md }}
-                />
+              <Input
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                value={values.password}
+                error={touched.password && errors.password}
+                label="Master Password"
+                autoCapitalize="none"
+                autoCorrect={false}
+                autoComplete="password"
+                secureTextEntry={true}
+                iconLeft={{ name: 'lock-closed-outline' }}
+                style={{ marginTop: spacing.md }}
+                returnKeyType="go"
+                onSubmitEditing={() => handleSubmit()}
+              />
 
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                    marginTop: spacing.md,
-                  }}>
-                  <Button
-                    onPress={onForgotPassword}
-                    size="small"
-                    type="text"
-                    title="Forgot Password"
-                  />
-                </View>
-
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
+                  marginTop: spacing.md,
+                }}>
                 <Button
-                  style={{ marginTop: spacing.xl }}
-                  onPress={handleSubmit}
-                  title="Login"
-                  loading={isValidating || isSubmitting}
-                />
-                <Button
-                  style={{ marginTop: spacing.md }}
+                  onPress={onForgotPassword}
                   size="small"
                   type="text"
-                  onPress={onSyncExistingAccount}
-                  title="I have an account on another device"
-                />
-                <Button
-                  style={{ marginTop: spacing.sm }}
-                  size="small"
-                  type="text"
-                  onPress={onRegisterNewAccount}
-                  title="Create a new account"
+                  title="Forgot Password"
                 />
               </View>
-            )}
-          </Formik>
-        </View>
-      </KeyboardAvoidingView>
+
+              <Button
+                style={{ marginTop: spacing.xl }}
+                onPress={handleSubmit}
+                title="Login"
+                loading={isValidating || isSubmitting}
+              />
+              <Button
+                style={{ marginTop: spacing.md }}
+                size="small"
+                type="text"
+                onPress={onSyncExistingAccount}
+                title="I have an account on another device"
+              />
+              <Button
+                style={{ marginTop: spacing.sm }}
+                size="small"
+                type="text"
+                onPress={onRegisterNewAccount}
+                title="Create a new account"
+              />
+            </View>
+          )}
+        </Formik>
+      </View>
     </ScrollView>
   );
 };

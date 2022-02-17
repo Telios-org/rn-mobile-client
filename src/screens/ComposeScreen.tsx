@@ -10,6 +10,8 @@ import { colors } from '../util/colors';
 import { OutgoingEmail, sendEmail } from '../mainSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button } from '../components/Button';
+import { fonts, textStyles } from '../util/fonts';
+import { NavIconButton } from '../components/NavIconButton';
 
 export type ComposeScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -19,6 +21,9 @@ export type ComposeScreenProps = NativeStackScreenProps<
 export const ComposeScreen = (props: ComposeScreenProps) => {
   const mainState = useAppSelector(state => state.main);
   const dispatch = useAppDispatch();
+
+  const subjectInputRef = React.useRef<TextInput>();
+  const bodyInputRef = React.useRef<TextInput>();
 
   const [isSending, setIsSending] = React.useState(false);
 
@@ -63,19 +68,15 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   React.useLayoutEffect(() => {
     props.navigation.setOptions({
       headerLeft: () => (
-        <Button
-          type="text"
-          size="small"
+        <NavIconButton
+          icon={{ name: 'close-outline', size: 28 }}
           onPress={() => props.navigation.goBack()}
-          title="cancel"
         />
       ),
       headerRight: () => (
-        <Button
-          type="text"
-          size="small"
+        <NavIconButton
+          icon={{ name: 'send-outline', color: colors.primaryBase, size: 22 }}
           onPress={onSend}
-          title="send"
           loading={isSending}
         />
       ),
@@ -96,13 +97,13 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
         style={{
           flexDirection: 'row',
           paddingVertical: spacing.sm,
-          borderBottomColor: colors.gray300,
+          borderBottomColor: colors.skyBase,
           borderBottomWidth: 1,
           paddingHorizontal: spacing.md,
           height: 50,
           alignItems: 'center',
         }}>
-        <Text>{'To:'}</Text>
+        <Text style={fonts.regular.regular}>{'To:'}</Text>
         <TextInput
           autoFocus={true}
           autoCorrect={false}
@@ -115,34 +116,50 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
             paddingHorizontal: spacing.md,
             height: '100%',
             flex: 1,
+            color: textStyles.defaultColor,
+            fontSize: textStyles.sizes.regular,
+            fontWeight: textStyles.weights.medium,
           }}
           value={to}
           onChangeText={value => setTo(value)}
+          returnKeyType="next"
+          onSubmitEditing={() => {
+            subjectInputRef.current?.focus();
+          }}
         />
       </View>
       <View
         style={{
           flexDirection: 'row',
           paddingVertical: spacing.sm,
-          borderBottomColor: colors.gray300,
+          borderBottomColor: colors.skyBase,
           borderBottomWidth: 1,
           paddingHorizontal: spacing.md,
           height: 50,
           alignItems: 'center',
         }}>
-        <Text>{'Subject:'}</Text>
+        <Text style={fonts.regular.regular}>{'Subject:'}</Text>
         <TextInput
+          ref={subjectInputRef}
           multiline={false}
           style={{
             paddingHorizontal: spacing.md,
             height: '100%',
             flex: 1,
+            color: textStyles.defaultColor,
+            fontSize: textStyles.sizes.regular,
+            fontWeight: textStyles.weights.medium,
           }}
           value={subject}
           onChangeText={value => setSubject(value)}
+          returnKeyType="next"
+          onSubmitEditing={() => {
+            bodyInputRef.current?.focus();
+          }}
         />
       </View>
       <TextInput
+        ref={bodyInputRef}
         multiline={true}
         value={body}
         onChangeText={value => setBody(value)}
@@ -151,6 +168,9 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
           marginVertical: spacing.md,
           backgroundColor: colors.white,
           flex: 1,
+          color: textStyles.defaultColor,
+          fontSize: textStyles.sizes.regular,
+          fontWeight: textStyles.weights.regular,
         }}
       />
     </View>
