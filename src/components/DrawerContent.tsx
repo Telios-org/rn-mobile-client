@@ -12,17 +12,27 @@ import { fonts, textStyles } from '../util/fonts';
 import { Avatar } from './Avatar';
 import { Icon } from './Icon';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { IconAccessory } from '../util/types';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
   const mainState = useAppSelector(state => state.main);
+
+  // todo
+  const aliases = [];
 
   const onRefresh = () => {
     //todo
   };
 
-  const onManageAliases = () => {};
+  const onManageAliases = () => {
+    props.navigation.navigate('aliasManage');
+  };
 
-  const onAddAlias = () => {};
+  const onAddAlias = () => {
+    if (aliases.length === 0) {
+      onManageAliases();
+    }
+  };
 
   const selectedRoute = props.state.routes[props.state.index];
   return (
@@ -124,8 +134,6 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
     </DrawerContentScrollView>
   );
 };
-
-type IconAccessory = { name: string; color?: string; size?: number };
 
 const DrawerCell = (props: {
   label: string;

@@ -7971,6 +7971,11 @@ random-array-iterator@^1.0.0:
   resolved "https://registry.yarnpkg.com/random-array-iterator/-/random-array-iterator-1.0.0.tgz#1081f8922d68d2817368c13028f858ec308e146b"
   integrity sha512-u7xCM93XqKEvPTP6xZp2ehttcAemKnh73oKNf1FvzuVCfpt6dILDt1Kxl1LeBjm2iNIeR49VGFhy4Iz3yOun+Q==
 
+random-word-slugs@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/random-word-slugs/-/random-word-slugs-0.1.6.tgz#1822f059e0e9a91e967a3eaed1e33580df0598cf"
+  integrity sha512-EVPGKyhXTdnBlMCrqBvby3nf9Jz+W/rVuP2nOi68aDZa6VJ2OXvz+VDCwl8jULBLZ1Ht8wscRA+/SogeI9NYGw==
+
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.1.0.tgz#df6f84372f0270dc65cdf6291349ab7a473d4f2a"

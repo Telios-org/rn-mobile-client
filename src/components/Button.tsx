@@ -6,18 +6,20 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
+  View,
 } from 'react-native';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
 import { borderRadius, spacing } from '../util/spacing';
+import { IconAccessory } from '../util/types';
+import { Icon } from './Icon';
 
 export interface ButtonProps {
   title: string;
   onPress: () => void;
   type?: 'primary' | 'secondary' | 'outline' | 'text';
   size?: 'block' | 'large' | 'small';
-  iconPosition?: 'left' | 'right' | 'side';
-  iconName?: string;
+  iconRight?: IconAccessory;
   disabled?: boolean;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -29,8 +31,7 @@ export const Button = (props: ButtonProps) => {
     onPress,
     type = 'primary',
     size = 'block',
-    iconPosition,
-    iconName,
+    iconRight,
     disabled = false,
     loading = false,
     style,
@@ -54,6 +55,8 @@ export const Button = (props: ButtonProps) => {
     return null;
   };
 
+  const textColor = type === 'primary' ? colors.white : colors.primaryBase;
+
   return (
     <TouchableOpacity
       disabled={loading}
@@ -68,7 +71,7 @@ export const Button = (props: ButtonProps) => {
           justifyContent: 'center',
           alignContent: 'center',
           flexDirection: 'row',
-          height: size === 'block' || size === 'large' ? 55 : 'auto',
+          height: size === 'block' || size === 'large' ? 55 : undefined,
           alignSelf: size === 'block' ? 'stretch' : 'auto',
           borderWidth: type === 'outline' ? 1 : 0,
           borderColor: colors.primaryBase,
@@ -79,17 +82,28 @@ export const Button = (props: ButtonProps) => {
       {loading ? (
         <ActivityIndicator />
       ) : (
-        <Text
-          numberOfLines={1}
-          style={[
-            fonts.regular.medium,
-            {
-              color: type === 'primary' ? colors.white : colors.primaryBase,
-            },
-            titleStyle,
-          ]}>
-          {title}
-        </Text>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Text
+            numberOfLines={1}
+            style={[
+              fonts.regular.medium,
+              {
+                color: textColor,
+              },
+              titleStyle,
+            ]}>
+            {title}
+          </Text>
+        </View>
+      )}
+      {iconRight && (
+        <View style={{ marginLeft: spacing.sm }}>
+          <Icon
+            name={iconRight.name}
+            color={iconRight.color || textColor}
+            size={iconRight.size || 22}
+          />
+        </View>
       )}
     </TouchableOpacity>
   );

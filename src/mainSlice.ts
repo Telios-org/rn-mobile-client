@@ -138,6 +138,16 @@ export type MailboxFolder = {
   _id: string;
 };
 
+export type AliasNamespace = {
+  disabled: boolean;
+  domain: string;
+  mailboxId: string;
+  name: string;
+  privateKey: string;
+  publicKey: string;
+  _id: string;
+};
+
 // Define a type for the slice state
 interface MainState {
   localUsernames: string[];
@@ -159,6 +169,8 @@ interface MainState {
 
   loadingGetMailMeta?: boolean;
   loadingSendEmail?: boolean;
+
+  aliasNamespace?: AliasNamespace;
 }
 
 const initialState: MainState = {
@@ -243,13 +255,15 @@ export const loginFlow = createAsyncThunk(
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
 
-    // get mailboxes and folders
+    // get mailboxes and folders and namespaces
     // TODO: move this out
     const getMailboxesResponse = await thunkAPI.dispatch(getMailboxes());
     if (getMailboxesResponse.type === getMailboxes.fulfilled.type) {
       const mailboxes = getMailboxesResponse.payload as GetMailboxesResponse;
       const mailboxId = mailboxes[0]?._id;
       if (mailboxId) {
+        thunkAPI.dispatch(getNamespacesForMailbox({ id: mailboxId }));
+
         const getFoldersResponse = await thunkAPI.dispatch(
           getMailboxFolders({ id: mailboxId }),
         );
@@ -452,9 +466,42 @@ export const sendEmail = createNodeCalloutAsyncThunk<
   SendEmailResponse
 >('email:sendEmail');
 
-// type GetMailboxPubKeysRequest = {emails: string[]};
-// type GetMailboxPubKeysResponse = {} // TODO;
-// export const getMailboxPubKeys = createNodeCalloutAsyncThunk<GetMailboxPubKeysRequest, GetMailboxPubKeysResponse>('')
+type GetNamespacesForMailboxRequest = { id: string };
+type GetNamespacesForMailboxResponse = Array<AliasNamespace>;
+export const getNamespacesForMailbox = createNodeCalloutAsyncThunk<
+  GetNamespacesForMailboxRequest,
+  GetNamespacesForMailboxResponse
+>('alias:getMailboxNamespaces');
+
+type GetAliasesRequest = { namespaceKeys: string[] };
+type GetAliasesResponse = {}; // TODO;
+export const getAliases = createNodeCalloutAsyncThunk<
+  GetAliasesRequest,
+  GetAliasesResponse
+>('alias:getMailboxAliases');
+
+type RegisterNamespaceRequest = { mailboxId: string; namespace: string };
+type RegisterNamespaceResponse = AliasNamespace;
+export const registerNamespace = createNodeCalloutAsyncThunk<
+  RegisterNamespaceRequest,
+  RegisterNamespaceResponse
+>('alias:registerAliasNamespace');
+
+type UpdateAliasRequest = {
+  namespaceName: string;
+  domain: string;
+  address: string;
+  description?: string;
+  fwdAddresses: string[];
+  disabled: boolean;
+  updatedAt: string;
+};
+
+type UpdateAliasResponse = {};
+export const updateAlias = createNodeCalloutAsyncThunk<
+  UpdateAliasRequest,
+  UpdateAliasResponse
+>('alias:updateAliasAddress');
 
 export const mainSlice = createSlice({
   name: 'main',
@@ -520,6 +567,13 @@ export const mainSlice = createSlice({
     builder.addCase(sendEmail.rejected, (state, action) => {
       state.loadingSendEmail = false;
     });
+    builder.addCase(registerNamespace.fulfilled, (state, action) => {
+      state.aliasNamespace = action.payload;
+    });
+    builder.addCase(getNamespacesForMailbox.fulfilled, (state, action) => {
+      state.aliasNamespace = action.payload[0];
+    });
+
     builder.addCase(accountLogout.fulfilled, (state, action) => {
       const newState = { ...initialState };
       newState.localUsernames = state.localUsernames;

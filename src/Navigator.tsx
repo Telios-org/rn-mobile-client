@@ -27,6 +27,8 @@ import { DraftsScreen } from './screens/DraftsScreen';
 import { SentScreen } from './screens/SentScreen';
 import { TrashScreen } from './screens/TrashScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
+import { AliasManageScreen } from './screens/AliasManageScreen';
+import { AliasNewNamespaceScreen } from './screens/AliasNewNamespaceScreen';
 
 export type RootStackParams = {
   test: undefined;
@@ -47,6 +49,7 @@ export type RootStackParams = {
     password: string;
   };
   registerSuccess: undefined;
+  aliasNewNamespace: undefined;
 };
 
 export type MainStackParams = {
@@ -55,6 +58,8 @@ export type MainStackParams = {
   sent: undefined;
   trash: undefined;
   profile: undefined;
+  aliasManage: undefined;
+  aliasMailbox: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -108,6 +113,13 @@ function Main() {
           title: '',
         }}
       />
+      <Drawer.Screen
+        name={'aliasManage'}
+        component={AliasManageScreen}
+        options={{
+          title: 'Manage Aliases',
+        }}
+      />
     </Drawer.Navigator>
   );
 }
@@ -129,7 +141,12 @@ export const Navigator = () => {
                   options={{ headerShown: false }}
                 />
               </Stack.Group>
-              <Stack.Group screenOptions={{ presentation: 'modal' }}>
+              <Stack.Group
+                screenOptions={{
+                  presentation: 'modal',
+                  headerTintColor: colors.inkDarkest,
+                  headerBackTitleVisible: false,
+                }}>
                 <Stack.Screen
                   name="compose"
                   component={ComposeScreen}
@@ -140,11 +157,22 @@ export const Navigator = () => {
                   name="registerSuccess"
                   component={RegisterSuccessScreen}
                   options={{
-                    headerBackTitleVisible: false,
                     headerTransparent: true,
                     title: '',
-                    headerTintColor: colors.primaryDark,
                   }}
+                />
+                <Stack.Screen
+                  name="aliasNewNamespace"
+                  component={AliasNewNamespaceScreen}
+                  options={({ navigation }) => ({
+                    title: 'Create Namespace',
+                    headerLeft: () => (
+                      <NavIconButton
+                        icon={{ name: 'close-outline', size: 28 }}
+                        onPress={() => navigation.goBack()}
+                      />
+                    ),
+                  })}
                 />
               </Stack.Group>
             </>
