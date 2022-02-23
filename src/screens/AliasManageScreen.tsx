@@ -1,9 +1,15 @@
 import React from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View, ScrollView, Text, ViewStyle, StyleProp } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Text,
+  ViewStyle,
+  StyleProp,
+  Alert,
+} from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
-// import { ScrollView } from 'react-native-gesture-handler';
 import { TableCell } from '../components/TableCell';
 import { colors } from '../util/colors';
 import { spacing } from '../util/spacing';
@@ -11,6 +17,8 @@ import { fonts } from '../util/fonts';
 import { Button } from '../components/Button';
 import { Icon } from '../components/Icon';
 import { useAppSelector } from '../hooks';
+import { aliasesComputedSelector } from '../util/selectors';
+import { useSelector } from 'react-redux';
 
 export type AliasManageScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasManage'>,
@@ -21,8 +29,11 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
   const mainState = useAppSelector(state => state.main);
 
   const namespace = mainState.aliasNamespace;
-  const aliases = []; // todo
+  const { aliases, aliasKeys } = useSelector(aliasesComputedSelector);
 
+  const onAlias = (aliasKey: string) => {
+    Alert.alert('Not implemented');
+  };
   const onCreateNamespace = () => {
     props.navigation.navigate('newAliasNamespace');
   };
@@ -40,6 +51,7 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
             name: 'information-circle-outline',
             color: colors.primaryBase,
           }}
+          onPress={() => Alert.alert('Not impelmented')}
         />
         {!namespace && (
           <Button
@@ -65,7 +77,31 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
             />
           ) : null}
         </View>
-        <EmptyAliases style={{ marginVertical: spacing.xxl }} />
+        {aliasKeys.length > 0 ? (
+          <View>
+            {aliasKeys.map(aliasKey => {
+              const alias = aliases[aliasKey];
+              return (
+                <TableCell
+                  key={`managealias-cell-${aliasKey}`}
+                  label={`#${alias.name}`}
+                  caption={alias.aliasId}
+                  iconRight={
+                    alias.fwdAddresses?.length > 0
+                      ? {
+                          name: 'return-up-forward-outline',
+                          color: colors.skyDark,
+                        }
+                      : null
+                  }
+                  onPress={() => onAlias(aliasKey)}
+                />
+              );
+            })}
+          </View>
+        ) : (
+          <EmptyAliases style={{ marginVertical: spacing.xxl }} />
+        )}
       </View>
     </ScrollView>
   );

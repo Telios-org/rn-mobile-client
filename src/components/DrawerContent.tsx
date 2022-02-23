@@ -13,12 +13,13 @@ import { Avatar } from './Avatar';
 import { Icon } from './Icon';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { IconAccessory } from '../util/types';
+import { useSelector } from 'react-redux';
+import { aliasesComputedSelector } from '../util/selectors';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
   const mainState = useAppSelector(state => state.main);
-  const aliases = mainState.aliases;
-  // todo use memoized selector, sorted
-  const aliasKeys = Object.keys(aliases);
+
+  const { aliases, aliasKeys } = useSelector(aliasesComputedSelector);
 
   const onRefresh = () => {
     //todo
@@ -31,6 +32,8 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
   const onAddAlias = () => {
     if (aliasKeys.length === 0) {
       onManageAliases();
+    } else {
+      props.navigation.navigate('newAlias');
     }
   };
 

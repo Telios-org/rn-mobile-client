@@ -153,7 +153,19 @@ export const Navigator = () => {
                 component={ComposeScreen}
                 options={{ title: 'Compose' }}
               />
-              <Stack.Screen name="search" component={SearchScreen} />
+              <Stack.Screen
+                name="search"
+                component={SearchScreen}
+                options={({ navigation }) => ({
+                  title: 'Search',
+                  headerLeft: () => (
+                    <NavIconButton
+                      icon={{ name: 'close-outline', size: 28 }}
+                      onPress={() => navigation.goBack()}
+                    />
+                  ),
+                })}
+              />
               <Stack.Screen
                 name="registerSuccess"
                 component={RegisterSuccessScreen}
