@@ -11,6 +11,7 @@ export type TableCellProps = {
   label: string;
   caption?: string;
   iconRight?: IconAccessory;
+  iconLeft?: IconAccessory;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 };
@@ -26,6 +27,19 @@ export const TableCell = (props: TableCellProps) => {
         props.style,
       ]}
       onPress={props.onPress}>
+      {props.iconLeft && (
+        <View
+          style={{
+            marginRight: spacing.md,
+            justifyContent: 'center',
+          }}>
+          <Icon
+            name={props.iconLeft.name}
+            size={props.iconLeft.size || 26}
+            color={props.iconLeft.color || colors.inkBase}
+          />
+        </View>
+      )}
       <View style={{ flex: 1 }}>
         <Text style={fonts.regular.regular}>{props.label}</Text>
         {props.caption ? (
