@@ -24,9 +24,18 @@ export type DropdownInputProps = {
 
 export const DropdownInput = (props: DropdownInputProps) => {
   return (
-    <TouchableOpacity
-      style={[
-        {
+    <View style={props.style}>
+      {props.label ? (
+        <Text
+          style={[
+            fonts.regular.medium,
+            { color: colors.inkDarkest, marginBottom: spacing.sm },
+          ]}>
+          {props.label}
+        </Text>
+      ) : null}
+      <TouchableOpacity
+        style={{
           backgroundColor: props.disabled ? colors.skyLighter : colors.white,
           paddingVertical: spacing.sm,
           paddingLeft: props.iconLeft ? 45 : spacing.md,
@@ -35,23 +44,22 @@ export const DropdownInput = (props: DropdownInputProps) => {
           borderColor: props.error ? colors.error : colors.skyBase,
           borderRadius: borderRadius,
           flexDirection: 'row',
-        },
-        props.style,
-      ]}
-      onPress={props.onPress}>
-      <View style={{ flex: 1, justifyContent: 'center' }}>
-        {props.value ? (
-          <Text style={fonts.regular.regular}>{props.value}</Text>
-        ) : (
-          <Text style={[fonts.regular.regular, { color: colors.skyBase }]}>
-            {props.placeholder}
-          </Text>
-        )}
-      </View>
-      <View
-        style={{ width: 45, justifyContent: 'center', alignItems: 'center' }}>
-        <Icon name="chevron-down-outline" size={22} color={colors.skyBase} />
-      </View>
-    </TouchableOpacity>
+        }}
+        onPress={props.onPress}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          {props.value ? (
+            <Text style={fonts.regular.regular}>{props.value}</Text>
+          ) : (
+            <Text style={[fonts.regular.regular, { color: colors.skyBase }]}>
+              {props.placeholder}
+            </Text>
+          )}
+        </View>
+        <View
+          style={{ width: 45, justifyContent: 'center', alignItems: 'center' }}>
+          <Icon name="chevron-down-outline" size={22} color={colors.skyBase} />
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };

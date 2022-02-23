@@ -3,6 +3,7 @@ import 'react-native-gesture-handler';
 
 import nodejs from 'nodejs-mobile-react-native';
 import AppLoading from 'expo-app-loading';
+import { Host } from 'react-native-portalize';
 
 import React from 'react';
 import { store } from './store';
@@ -38,7 +39,13 @@ export default function App() {
     <Provider store={store}>
       <StatusBar barStyle={'dark-content'} />
       <ListenerContainer />
-      {isReady ? <Navigator /> : <AppLoading />}
+      {isReady ? (
+        <Host>
+          <Navigator />
+        </Host>
+      ) : (
+        <AppLoading />
+      )}
     </Provider>
   );
 }

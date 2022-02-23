@@ -21,14 +21,14 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
   const mainState = useAppSelector(state => state.main);
 
   const namespace = mainState.aliasNamespace;
-  // const namespace = '9y1dc3v7'; // todo
-  // const namespace = undefined; // todo
   const aliases = []; // todo
 
   const onCreateNamespace = () => {
-    props.navigation.navigate('aliasNewNamespace');
+    props.navigation.navigate('newAliasNamespace');
   };
-  const onAddAlias = () => {};
+  const onAddAlias = () => {
+    props.navigation.navigate('newAlias');
+  };
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.white }}>

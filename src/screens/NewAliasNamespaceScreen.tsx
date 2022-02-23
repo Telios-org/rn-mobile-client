@@ -15,13 +15,13 @@ import { randomLetters, randomWords } from '../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { registerNamespace } from '../mainSlice';
 
-export type AliasNewNamespaceScreenProps = NativeStackScreenProps<
+export type NewAliasNamespaceScreenProps = NativeStackScreenProps<
   RootStackParams,
-  'aliasNewNamespace'
+  'newAliasNamespace'
 >;
 
-export const AliasNewNamespaceScreen = (
-  props: AliasNewNamespaceScreenProps,
+export const NewAliasNamespaceScreen = (
+  props: NewAliasNamespaceScreenProps,
 ) => {
   const dispatch = useAppDispatch();
   const mainState = useAppSelector(state => state.main);

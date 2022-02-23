@@ -16,9 +16,9 @@ import { IconAccessory } from '../util/types';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
   const mainState = useAppSelector(state => state.main);
-
-  // todo
-  const aliases = [];
+  const aliases = mainState.aliases;
+  // todo use memoized selector, sorted
+  const aliasKeys = Object.keys(aliases);
 
   const onRefresh = () => {
     //todo
@@ -29,10 +29,12 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
   };
 
   const onAddAlias = () => {
-    if (aliases.length === 0) {
+    if (aliasKeys.length === 0) {
       onManageAliases();
     }
   };
+
+  const onAlias = (aliasKey: string) => {};
 
   const selectedRoute = props.state.routes[props.state.index];
   return (
@@ -125,6 +127,16 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
         />
       </View>
       <View style={{ marginTop: spacing.xs }}>
+        {aliasKeys.map(aliasKey => {
+          const alias = aliases[aliasKey];
+          return (
+            <DrawerCell
+              key={`aliascell-${aliasKey}`}
+              label={`#${alias.name}`}
+              onPress={() => onAlias(aliasKey)}
+            />
+          );
+        })}
         <DrawerCell
           label="Add Alias"
           rightIcon={{ name: 'add-outline', color: colors.primaryBase }}
