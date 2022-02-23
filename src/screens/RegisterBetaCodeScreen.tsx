@@ -109,7 +109,6 @@ export const RegisterBetaCodeScreen = (props: RegisterBetaCodeScreenProps) => {
             value={code}
             error={null}
             label="Beta Code"
-            placeholder="000000"
             autoFocus={false}
             autoCapitalize="none"
             autoCorrect={false}

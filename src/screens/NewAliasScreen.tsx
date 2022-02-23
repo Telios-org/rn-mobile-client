@@ -29,6 +29,8 @@ import { registerAlias, registerNamespace } from '../mainSlice';
 import { MultiSelectInput } from '../components/MultiSelectInput';
 import { InputModal } from '../components/InputModal';
 import { validateEmail } from '../util/regexHelpers';
+import { useSelector } from 'react-redux';
+import { aliasesForwardAddressesSelector } from '../util/selectors';
 
 type NewAliasFormValues = {
   alias: string;
@@ -51,33 +53,20 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
   const dispatch = useAppDispatch();
   const mainState = useAppSelector(state => state.main);
   const namespace = mainState.aliasNamespace;
+  const existingForwardingAddresses = useSelector(
+    aliasesForwardAddressesSelector,
+  );
 
   // TODO: dev vs prod switch
   const emailPostfix = envApi.devMail;
 
   const inputModalRef = React.useRef<Modalize>();
 
-  const existingForwardingAddresses = []; // TODO get from existing aliases - memoize.
   const [forwardingAddresses, setForwardingAddresses] = React.useState<
     string[]
   >(existingForwardingAddresses);
 
-  // const [alias, setAlias] = React.useState('');
-  // const [loadingCreate, setLoadingCreate] = React.useState(false);
-
-  // const onCreate = async () => {
-  //   setLoadingCreate(true);
-  //   const response = await dispatch(registerAlias({}));
-  //   setLoadingCreate(false);
-  //   if (response.type === registerNamespace.rejected.type) {
-  //     // todo specific error here
-  //     Alert.alert('Error', 'Unable to create namespace');
-  //   } else {
-  //     props.navigation.goBack();
-  //   }
-  // };
   const onMoreInfo = () => {
-    // todo helper text
     Alert.alert('Not implemented');
   };
 
@@ -102,11 +91,8 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
           domain: emailPostfix,
           address: values.alias,
           description: values.description,
-          fwdAddresses: values.forwardAddresses,
+          fwdAddresses: values.forwardAddresses || [],
           disabled: false,
-          // count:
-          // createdAt: string;
-          // updatedAt: string;
         }),
       );
       actions.setSubmitting(false);

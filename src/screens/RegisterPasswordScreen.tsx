@@ -201,20 +201,23 @@ export const RegisterPasswordScreen = (props: RegisterPasswordScreenProps) => {
                     ]}>
                     {'Time to crack password'}
                   </Text>
-                  <View
-                    style={{
-                      backgroundColor: colors.success,
-                      borderRadius: 30,
-                      paddingVertical: spacing.xs,
-                      paddingHorizontal: spacing.md,
-                    }}>
-                    <Text style={[fonts.small.medium, { color: colors.white }]}>
-                      {
-                        strengthResult?.crack_times_display
-                          .offline_slow_hashing_1e4_per_second
-                      }
-                    </Text>
-                  </View>
+                  {!!values.password && (
+                    <View
+                      style={{
+                        backgroundColor: colors.success,
+                        borderRadius: 30,
+                        paddingVertical: spacing.xs,
+                        paddingHorizontal: spacing.md,
+                      }}>
+                      <Text
+                        style={[fonts.small.medium, { color: colors.white }]}>
+                        {
+                          strengthResult?.crack_times_display
+                            .offline_slow_hashing_1e4_per_second
+                        }
+                      </Text>
+                    </View>
+                  )}
                 </View>
               </View>
             )}

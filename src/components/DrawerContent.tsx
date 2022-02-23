@@ -49,10 +49,11 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
           justifyContent: 'space-between',
           alignItems: 'center',
           paddingHorizontal: spacing.md,
+          marginTop: spacing.sm,
         }}>
         <Image
           source={{ uri: 'logo-horizontal' }}
-          style={{ width: '50%' }}
+          style={{ width: '40%', height: '100%' }}
           resizeMode={'contain'}
         />
         <IconButton
@@ -64,7 +65,7 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
       <TouchableOpacity
         onPress={() => props.navigation.navigate('profile')}
         style={{
-          marginTop: spacing.md,
+          marginTop: spacing.sm,
           paddingHorizontal: spacing.sm,
         }}>
         <View

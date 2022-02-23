@@ -12,3 +12,18 @@ export const aliasesComputedSelector = createSelector(
     };
   },
 );
+
+export const aliasesForwardAddressesSelector = createSelector(
+  aliasesSelector,
+  aliases => {
+    const addresses: { [address: string]: string } = {};
+    for (const alias of Object.values(aliases)) {
+      if (alias.fwdAddresses) {
+        alias.fwdAddresses.forEach(address => {
+          addresses[address] = address;
+        });
+      }
+    }
+    return Object.keys(addresses).sort();
+  },
+);

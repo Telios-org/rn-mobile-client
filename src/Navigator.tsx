@@ -27,7 +27,6 @@ import { SentScreen } from './screens/SentScreen';
 import { TrashScreen } from './screens/TrashScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { AliasManageScreen } from './screens/AliasManageScreen';
-import { AliasNewNamespaceScreen } from './screens/AliasNewNamespaceScreen';
 import { NewAliasNamespaceScreen } from './screens/NewAliasNamespaceScreen';
 import { NewAliasScreen } from './screens/NewAliasScreen';
 

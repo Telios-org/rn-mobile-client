@@ -57,8 +57,8 @@ export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
             style={{
               backgroundColor: colors.primaryLightest,
               borderRadius: borderRadius,
-              padding: spacing.md,
-              marginVertical: spacing.sm,
+              padding: spacing.lg,
+              marginVertical: spacing.md,
             }}>
             <Text style={[{ flex: 1 }, fonts.large.bold]}>
               {account?.mnemonic}
