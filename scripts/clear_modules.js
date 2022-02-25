@@ -1,19 +1,19 @@
 #!/usr/bin/env node
-const { rmdir, readdir } = require('fs').promises
-const { join } = require('path')
+const { rm, readdir } = require('fs').promises;
+const { join } = require('path');
 
-const { MODULE_FOLDER } = require('./constants')
+const { MODULE_FOLDER } = require('./constants');
 
-const SODIUM_NATIVE_FOLDER = join(MODULE_FOLDER, 'sodium-native-nodejs-mobile')
+const SODIUM_NATIVE_FOLDER = join(MODULE_FOLDER, 'sodium-native-nodejs-mobile');
 
-run().catch((e) => {
+run().catch(e => {
   process.nextTick(() => {
-    throw e
-  })
-})
+    throw e;
+  });
+});
 
-async function run () {
-  console.log('Deleting unnecessary modules and build-specific files')
+async function run() {
+  console.log('Deleting unnecessary modules and build-specific files');
   const TO_PRESERVE = [
     'sodium-native-nodejs-mobile',
     'utp-native-nodejs-mobile',
@@ -26,22 +26,24 @@ async function run () {
     'fsctl',
     'sqlite3',
     'crc32-universal',
-    '@journeyapps'
-  ]
+    '@journeyapps',
+  ];
 
-  const moduleNames = await readdir(MODULE_FOLDER)
-  const nonEssentialModules = moduleNames.filter((name) => !TO_PRESERVE.includes(name))
+  const moduleNames = await readdir(MODULE_FOLDER);
+  const nonEssentialModules = moduleNames.filter(
+    name => !TO_PRESERVE.includes(name),
+  );
 
   const toDelete = [
     join(SODIUM_NATIVE_FOLDER, 'libsodium'),
     join(SODIUM_NATIVE_FOLDER, 'lib'),
-    ...nonEssentialModules.map((name) => join(MODULE_FOLDER, name))
-  ]
+    ...nonEssentialModules.map(name => join(MODULE_FOLDER, name)),
+  ];
 
   for (const folder of toDelete) {
-    await rmdir(folder, {
+    await rm(folder, {
       recursive: true,
-      force: true
-    })
+      force: true,
+    });
   }
 }

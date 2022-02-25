@@ -4,7 +4,7 @@ import {
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { Image, StyleProp, Text, View, ViewStyle } from 'react-native';
+import { Alert, Image, StyleProp, Text, View, ViewStyle } from 'react-native';
 import { IconButton } from './IconButton';
 import { colors } from '../util/colors';
 import { borderRadius, spacing } from '../util/spacing';
@@ -37,7 +37,9 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
     }
   };
 
-  const onAlias = (aliasKey: string) => {};
+  const onAlias = (aliasKey: string) => {
+    Alert.alert('Not implemented');
+  };
 
   const selectedRoute = props.state.routes[props.state.index];
   return (

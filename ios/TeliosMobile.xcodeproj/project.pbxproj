@@ -220,6 +220,7 @@
 				7F8A743F2745C27700B0A67F /* Build bundle.js */,
 				7F8A74402745C4DC00B0A67F /* Clear Modules */,
 				ABBFE86FE1B5467C7412088C /* [CP-User] [NODEJS MOBILE] Sign Native Modules */,
+				8A4E4ED427C93C3200420C9C /* Post-minify Node.js Mobile project */,
 				2DF04586BB033D148CAA0EAD /* [CP-User] [NODEJS MOBILE] Remove Simulator Strip */,
 			);
 			buildRules = (
@@ -448,6 +449,24 @@
 			shellPath = /bin/sh;
 			shellScript = "#!/bin/sh\nset -e\n\n# Delete unnecessary node modules and patch dependencies before native build\nexport NODEJS_PROJECT_DIR=$CODESIGNING_FOLDER_PATH/nodejs-project/\nexport PATH=$PATH:~/.nvm/versions/node/v12.19.1/bin\necho \"Running node: $(node -v)\"\n\n# $PROJECT_DIR/../nodejs-assets/build-native-modules-MacOS-helper-script-node.sh $PROJECT_DIR/../scripts/prepare_modules.js\nnode $PROJECT_DIR/../scripts/prepare_modules.js\n";
 		};
+		8A4E4ED427C93C3200420C9C /* Post-minify Node.js Mobile project */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Post-minify Node.js Mobile project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Removing all files in node_modules except .node, .so, .a\nfind $CODESIGNING_FOLDER_PATH/nodejs-project/node_modules \\\n  -type f \\\n   ! \\( \\\n    -name \"*.node\" \\\n    \\) \\\n  -print0 | xargs -0 rm -rf\n# We used to keep .so files too, but those are \n# counted as executables by App Store policies\n# -o -name \"*.so\" \\\n# -o -name \"*.a\" \\  \n# Delete symbolic links\nfind $CODESIGNING_FOLDER_PATH/nodejs-project/node_modules -depth -type l -delete\n# Delete empty directories\nfind $CODESIGNING_FOLDER_PATH/nodejs-project/node_modules -depth -type d -empty -delete\n";
+		};
 		993723CD4B2F36E19897A347 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -467,6 +486,7 @@
 		};
 		ABBFE86FE1B5467C7412088C /* [CP-User] [NODEJS MOBILE] Sign Native Modules */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -650,8 +670,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8N8TTW6C2K;
 				INFOPLIST_FILE = TeliosMobile/Info.plist;
@@ -667,7 +687,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.telios.mobile.dev;
 				PRODUCT_NAME = TeliosMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "TeliosDev-AppStoreDistribution";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";

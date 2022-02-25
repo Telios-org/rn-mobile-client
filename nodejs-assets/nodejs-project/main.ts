@@ -4,7 +4,8 @@ console.log('RUNNING NODE VERSION: ', process.version);
 
 const bridge = require('rn-bridge');
 const Hypercore = require('hypercore');
-const HypercoreInTelios = require('./node_modules/@telios/nebula/node_modules/corestore/node_modules/hypercore/index');
+const HypercoreInTelios1 = require('./node_modules/@telios/nebula/node_modules/corestore/node_modules/hypercore/index');
+const HypercoreInTelios2 = require('./node_modules/@telios/nebula-drive/node_modules/hypercore/index');
 
 const { ClientBackend } = require('@telios/telios-client-backend');
 
@@ -17,9 +18,13 @@ Hypercore.defaultStorage = (storage: any, opts = {}) => {
 };
 // // There is another instance of Hypercore in @telios libraries,
 // // do the same monkey-patch here too.
-const originalStorage2 = HypercoreInTelios.defaultStorage;
-HypercoreInTelios.defaultStorage = (storage: any, opts = {}) => {
-  return originalStorage2(storage, { ...opts, lock: -1 });
+const originalStorageInTelios1 = HypercoreInTelios1.defaultStorage;
+HypercoreInTelios1.defaultStorage = (storage: any, opts = {}) => {
+  return originalStorageInTelios1(storage, { ...opts, lock: -1 });
+};
+const originalStorageInTelios2 = HypercoreInTelios2.defaultStorage;
+HypercoreInTelios2.defaultStorage = (storage: any, opts = {}) => {
+  return originalStorageInTelios2(storage, { ...opts, lock: -1 });
 };
 
 // const channel = bridge.channel;

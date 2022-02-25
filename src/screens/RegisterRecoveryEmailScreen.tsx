@@ -56,7 +56,7 @@ export const RegisterRecoveryEmailScreen = (
     Keyboard.dismiss();
     setLoadingSubmit(true);
     try {
-      await dispatch(
+      const registerResponse = await dispatch(
         registerFlow({
           email: email,
           masterPassword: password,
@@ -64,9 +64,13 @@ export const RegisterRecoveryEmailScreen = (
           code: code,
         }),
       );
-      // on success, Navigator will auto-transition into authenticated space.
-      props.navigation.navigate('registerSuccess');
-      // setLoadingSubmit(false);
+      if (registerResponse.type === registerFlow.fulfilled.type) {
+        // on success, Navigator will auto-transition into authenticated space.
+        props.navigation.navigate('registerSuccess');
+      } else {
+        console.log('error', registerResponse);
+        setLoadingSubmit(false);
+      }
     } catch (e) {
       setLoadingSubmit(false);
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 import { colors } from '../util/colors';
+import { spacing } from '../util/spacing';
 import { IconButton } from './IconButton';
 
 export type NavIconButtonProps = {
@@ -8,6 +9,8 @@ export type NavIconButtonProps = {
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
+  padLeft?: boolean;
+  padRight?: boolean;
 };
 export const NavIconButton = (props: NavIconButtonProps) => (
   <IconButton
@@ -15,6 +18,11 @@ export const NavIconButton = (props: NavIconButtonProps) => (
     name={props.icon.name}
     size={props.icon.size || 26}
     color={props.icon.color || colors.inkDarker}
-    style={{ width: 45, height: '100%' }}
+    loading={props.loading}
+    style={{
+      paddingLeft: props.padLeft ? spacing.md : spacing.xs,
+      paddingRight: props.padRight ? spacing.md : spacing.xs,
+      alignSelf: 'stretch',
+    }}
   />
 );

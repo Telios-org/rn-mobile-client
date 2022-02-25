@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { format, formatISO, isToday } from 'date-fns';
+import Toast from 'react-native-toast-message';
 
 import { Alert, FlatList, ScrollView, Text, View } from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { TextInput } from 'react-native-gesture-handler';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
-import { OutgoingEmail, sendEmail } from '../mainSlice';
+import { OutgoingEmail, saveMailToDB, sendEmail } from '../mainSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button } from '../components/Button';
 import { fonts, textStyles } from '../util/fonts';
@@ -21,6 +22,7 @@ export type ComposeScreenProps = NativeStackScreenProps<
 export const ComposeScreen = (props: ComposeScreenProps) => {
   const mainState = useAppSelector(state => state.main);
   const dispatch = useAppDispatch();
+  const userEmailAddress = mainState.mailbox?.address;
 
   const subjectInputRef = React.useRef<TextInput>();
   const bodyInputRef = React.useRef<TextInput>();
@@ -30,6 +32,35 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   const [to, setTo] = React.useState('');
   const [subject, setSubject] = React.useState('');
   const [body, setBody] = React.useState('');
+
+  const onClose = async () => {
+    props.navigation.goBack();
+
+    try {
+      const saveResponse = await dispatch(
+        saveMailToDB({
+          messageType: 'Draft',
+          messages: [
+            {
+              from: [{ address: userEmailAddress }],
+              to: [{ address: to }],
+              subject: subject,
+              date: formatISO(Date.now()),
+              text_body: body,
+            },
+          ],
+        }),
+      );
+      if (saveResponse.type === saveMailToDB.fulfilled.type) {
+        Toast.show({
+          type: 'info',
+          text1: 'Draft Saved',
+        });
+      }
+    } catch (e) {
+      console.log('error saving draft', e);
+    }
+  };
 
   const onSend = async () => {
     if (!to || !subject || !body || !mainState.mailbox || isSending) {
@@ -70,7 +101,8 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
       headerLeft: () => (
         <NavIconButton
           icon={{ name: 'close-outline', size: 28 }}
-          onPress={() => props.navigation.goBack()}
+          onPress={onClose}
+          padRight
         />
       ),
       headerRight: () => (
@@ -78,6 +110,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
           icon={{ name: 'send-outline', color: colors.primaryBase, size: 22 }}
           onPress={onSend}
           loading={isSending}
+          padLeft
         />
       ),
     });
@@ -97,7 +130,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
         style={{
           flexDirection: 'row',
           paddingVertical: spacing.sm,
-          borderBottomColor: colors.skyBase,
+          borderBottomColor: colors.skyLight,
           borderBottomWidth: 1,
           paddingHorizontal: spacing.md,
           height: 50,
@@ -132,7 +165,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
         style={{
           flexDirection: 'row',
           paddingVertical: spacing.sm,
-          borderBottomColor: colors.skyBase,
+          borderBottomColor: colors.skyLight,
           borderBottomWidth: 1,
           paddingHorizontal: spacing.md,
           height: 50,

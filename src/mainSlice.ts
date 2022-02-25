@@ -54,6 +54,21 @@ export type LoginAccount = {
 
 export type MailMeta = { account_key: string; msg: string; _id: string };
 
+export type EmailDraft = {
+  _id?: string;
+  attachments?: Array<any>;
+  bcc?: Array<any>;
+  cc?: Array<any>;
+  date: string;
+  from: Array<ToFrom>;
+  headers?: Array<any>;
+  html_body?: string;
+  sender?: Array<any>;
+  subject?: string;
+  text_body?: string;
+  to: Array<ToFrom>;
+};
+
 export type EmailContent = {
   _id: string;
   attachments: Array<any>;
@@ -415,7 +430,7 @@ export const accountLogout = createNodeCalloutAsyncThunk<
 // if there is any interruption between inserting into DB and 'mark as synced' call succeeding
 type SaveMailToDBRequest = {
   messageType: 'Incoming' | 'Draft';
-  messages: Array<EmailContent & { bodyAsText: string; bodyAsHTML: string }>;
+  messages: Array<EmailDraft & { bodyAsText?: string; bodyAsHTML?: string }>;
 };
 type SaveMailToDBResponse = {
   msgArr: Array<LocalEmail>;
@@ -435,27 +450,46 @@ export const saveMailToDB = createAsyncThunk(
         payload: data,
       });
 
-      // use a custom predicate for our listener
-      // to match up specific request / responses
-      registerOneTimeListener(
-        {
-          eventName: `node/${SaveMailToDBEventName}:callback`,
-          customPredicate: action => {
-            return action.data.msgArr?.[0]?.id === firstEmailId;
+      if (firstEmailId) {
+        // use a custom predicate for our listener
+        // to match up specific request / responses
+        // -- this is necessary because often when receiving emails, we get many concurrent running
+        // requests to save to DB, and we need a way to match up each request/response pair.
+        registerOneTimeListener(
+          {
+            eventName: `node/${SaveMailToDBEventName}:callback`,
+            customPredicate: action => {
+              return action.data.msgArr?.[0]?.id === firstEmailId;
+            },
           },
-        },
-        event => {
-          if (event.error) {
-            reject(event.error);
-          } else {
-            // TODO: break this part out into a separate flow
-            // TODO: batch these up, rather than call for every single item inserted to DB.
-            const emailIds: string[] = event.data.msgArr.map(item => item.id);
-            thunkAPI.dispatch(updateMailAsSynced({ msgArray: emailIds }));
-            resolve(event.data);
-          }
-        },
-      );
+          event => {
+            if (event.error) {
+              reject(event.error);
+            } else {
+              // TODO: break this part out into a separate flow
+              // TODO: batch these up, rather than call for every single item inserted to DB.
+              const emailIds: string[] = event.data.msgArr.map(item => item.id);
+              thunkAPI.dispatch(updateMailAsSynced({ msgArray: emailIds }));
+              resolve(event.data);
+            }
+          },
+        );
+      } else {
+        // if the email we're saving has no _id, we need to assume the next node callback is the match
+        // -- this assumption could break if emails are rolling in concurrently as a user saves a Draft, for instance.
+        registerOneTimeListener(
+          {
+            eventName: `node/${SaveMailToDBEventName}:callback`,
+          },
+          event => {
+            if (event.error) {
+              reject(event.error);
+            } else {
+              resolve(event.data);
+            }
+          },
+        );
+      }
     });
   },
 );

@@ -4,6 +4,7 @@ import 'react-native-gesture-handler';
 import nodejs from 'nodejs-mobile-react-native';
 import AppLoading from 'expo-app-loading';
 import { Host } from 'react-native-portalize';
+import Toast from 'react-native-toast-message';
 
 import React from 'react';
 import { store } from './store';
@@ -46,6 +47,7 @@ export default function App() {
       ) : (
         <AppLoading />
       )}
+      <Toast />
     </Provider>
   );
 }
