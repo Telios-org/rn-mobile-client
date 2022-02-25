@@ -6,7 +6,11 @@ import { Text, View, Animated } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { Button } from '../components/Button';
-import { MainStackParams, RootStackParams } from '../Navigator';
+import {
+  InboxStackParams,
+  MainStackParams,
+  RootStackParams,
+} from '../Navigator';
 import { spacing } from '../util/spacing';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getNewMailFlow, LocalEmail } from '../mainSlice';
@@ -14,6 +18,8 @@ import { colors } from '../util/colors';
 import { fonts, textStyles } from '../util/fonts';
 import { Icon } from '../components/Icon';
 import { EmailCell } from '../components/EmailCell';
+import { useSelector } from 'react-redux';
+import { inboxMailIdsSelector } from '../util/selectors';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -23,6 +29,7 @@ export type InboxScreenProps = CompositeScreenProps<
 export const InboxScreen = (props: InboxScreenProps) => {
   const mainState = useAppSelector(state => state.main);
   const dispatch = useAppDispatch();
+  const inboxMailIds = useSelector(inboxMailIdsSelector);
 
   const headerTitleAnimation = React.useRef(new Animated.Value(0)).current;
 
@@ -57,7 +64,15 @@ export const InboxScreen = (props: InboxScreenProps) => {
     props.navigation.navigate('compose');
   };
 
+  const onSelectEmail = (emailId: string) => {
+    props.navigation.navigate('inbox', {
+      screen: 'emailDetail',
+      params: { emailId: emailId },
+    });
+  };
+
   const listData = Object.values(mainState.mail) as Array<Partial<LocalEmail>>;
+
   if (listData.length === 0 && !mainState.loadingGetMailMeta) {
     listData.push({ _id: 'MAIL_EMPTY' });
   }
@@ -99,7 +114,9 @@ export const InboxScreen = (props: InboxScreenProps) => {
     if (item._id === 'MAIL_EMPTY') {
       return <EmptyComponent />;
     } else {
-      return <EmailCell email={item} />;
+      return (
+        <EmailCell email={item} onPress={() => onSelectEmail(item.emailId)} />
+      );
     }
   };
 

@@ -7,7 +7,11 @@ import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 
-export const EmailCell = (props: { email: LocalEmail }) => {
+export type EmailCellProps = {
+  email: LocalEmail;
+  onPress?: () => void;
+};
+export const EmailCell = (props: EmailCellProps) => {
   let fromName;
   let fromEmail;
   if (props.email?.fromJSON) {
@@ -23,7 +27,7 @@ export const EmailCell = (props: { email: LocalEmail }) => {
   const displayDate = isToday(date) ? timeFormatted : dateFormatted;
   return (
     <TouchableOpacity
-      onPress={() => {}}
+      onPress={props.onPress}
       style={{
         paddingHorizontal: spacing.md,
         paddingVertical: spacing.md,

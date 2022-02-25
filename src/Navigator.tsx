@@ -1,5 +1,8 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  NavigatorScreenParams,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
@@ -29,6 +32,7 @@ import { ProfileScreen } from './screens/ProfileScreen';
 import { AliasManageScreen } from './screens/AliasManageScreen';
 import { NewAliasNamespaceScreen } from './screens/NewAliasNamespaceScreen';
 import { NewAliasScreen } from './screens/NewAliasScreen';
+import { EmailDetailScreen } from './screens/EmailDetailScreen';
 
 export type RootStackParams = {
   test: undefined;
@@ -54,7 +58,7 @@ export type RootStackParams = {
 };
 
 export type MainStackParams = {
-  inbox: undefined;
+  inbox: NavigatorScreenParams<InboxStackParams>;
   drafts: undefined;
   sent: undefined;
   trash: undefined;
@@ -63,8 +67,44 @@ export type MainStackParams = {
   aliasMailbox: undefined;
 };
 
+export type InboxStackParams = {
+  inboxMain: undefined;
+  emailDetail: { emailId: string };
+};
+
 const Stack = createNativeStackNavigator<RootStackParams>();
 const Drawer = createDrawerNavigator<MainStackParams>();
+
+const InboxStack = createNativeStackNavigator<InboxStackParams>();
+const InboxRoot = () => (
+  <InboxStack.Navigator initialRouteName={'inboxMain'}>
+    <InboxStack.Screen
+      name="inboxMain"
+      component={InboxScreen}
+      options={({ navigation, route }) => ({
+        title: '',
+        headerTintColor: colors.inkDarker,
+        headerLeft: props => (
+          <NavIconButton
+            icon={{ name: 'menu-outline' }}
+            onPress={() => navigation.openDrawer()}
+          />
+        ),
+        headerRight: props => (
+          <NavIconButton
+            icon={{ name: 'search-outline' }}
+            onPress={() => navigation.navigate('search')}
+          />
+        ),
+      })}
+    />
+    <InboxStack.Screen
+      name="emailDetail"
+      component={EmailDetailScreen}
+      options={{ title: '' }}
+    />
+  </InboxStack.Navigator>
+);
 
 function Main() {
   return (
@@ -79,17 +119,8 @@ function Main() {
       drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen
         name={'inbox'}
-        component={InboxScreen}
-        options={({ navigation, route }) => ({
-          headerTintColor: colors.inkDarker,
-          title: '',
-          headerRight: props => (
-            <NavIconButton
-              icon={{ name: 'search-outline' }}
-              onPress={() => navigation.navigate('search')}
-            />
-          ),
-        })}
+        component={InboxRoot}
+        options={{ headerShown: false }}
       />
       <Drawer.Screen
         name={'drafts'}

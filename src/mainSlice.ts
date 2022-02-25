@@ -186,8 +186,9 @@ interface MainState {
   loginAccount?: LoginAccount;
   mailMeta: { [id: string]: MailMeta };
   mail: { [id: string]: LocalEmail };
+  mailIdsForFolder: { [folderId: string]: string[] };
   mailbox?: Mailbox; // assuming only one for now
-  folders?: Array<MailboxFolder>;
+  folders: Array<MailboxFolder>;
 
   // loadingRegisterAccount?: boolean;
   // errorRegisterAccount?: Error;
@@ -206,6 +207,8 @@ interface MainState {
 const initialState: MainState = {
   mail: {},
   mailMeta: {},
+  mailIdsForFolder: {},
+  folders: [],
   localUsernames: [],
   aliases: {},
 };
@@ -259,9 +262,15 @@ export const registerFlow = createAsyncThunk(
     if (saveMailboxResponse.type === saveMailbox.rejected.type) {
       throw new Error(JSON.stringify(saveMailboxResponse.payload));
     }
+    const mailboxData = saveMailboxResponse.payload as SaveMailboxResponse;
+    const mailboxId = mailboxData.mailboxId;
 
     await storeAsyncStorageSavedUsername(data.email);
     await storeAsyncStorageLastUsername(data.email);
+
+    if (mailboxId) {
+      thunkAPI.dispatch(getFoldersNamespacesAliasesFlow({ mailboxId }));
+    }
 
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
@@ -286,40 +295,13 @@ export const loginFlow = createAsyncThunk(
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
 
-    // get mailboxes and folders and namespaces
-    // TODO: move this out
     const getMailboxesResponse = await thunkAPI.dispatch(getMailboxes());
     if (getMailboxesResponse.type === getMailboxes.fulfilled.type) {
       const mailboxes = getMailboxesResponse.payload as GetMailboxesResponse;
       const mailboxId = mailboxes[0]?._id;
-      if (mailboxId) {
-        const namespacesResponse = await thunkAPI.dispatch(
-          getNamespacesForMailbox({ id: mailboxId }),
-        );
-        if (
-          namespacesResponse.type === getNamespacesForMailbox.fulfilled.type
-        ) {
-          const namespaces =
-            namespacesResponse.payload as GetNamespacesForMailboxResponse;
-          thunkAPI.dispatch(
-            getAliases({
-              namespaceKeys: namespaces?.map(namespace => namespace.name),
-            }),
-          );
-        }
 
-        const getFoldersResponse = await thunkAPI.dispatch(
-          getMailboxFolders({ id: mailboxId }),
-        );
-        if (getFoldersResponse.type === getMailboxFolders.fulfilled.type) {
-          const folders =
-            getFoldersResponse.payload as GetMailboxFoldersResponse;
-          const inbox = folders.find(folder => folder.name === 'Inbox');
-          if (!inbox) {
-            throw new Error('inbox folder not found');
-          }
-          thunkAPI.dispatch(getMailByFolder({ id: inbox.folderId }));
-        }
+      if (mailboxId) {
+        thunkAPI.dispatch(getFoldersNamespacesAliasesFlow({ mailboxId }));
       }
     }
   },
@@ -344,6 +326,38 @@ export const getNewMailFlow = createAsyncThunk(
     // should we expect errors back from getMessageBatch?
     // what if it takes forever to get a message?
     // for now - don't re-throw any errors from getMessageBatch
+  },
+);
+
+export const getFoldersNamespacesAliasesFlow = createAsyncThunk(
+  'flow/getFoldersNamespacesAliases',
+  async (data: { mailboxId: string }, thunkAPI): Promise<void> => {
+    const { mailboxId } = data;
+
+    const getFoldersResponse = await thunkAPI.dispatch(
+      getMailboxFolders({ id: mailboxId }),
+    );
+    if (getFoldersResponse.type === getMailboxFolders.fulfilled.type) {
+      const folders = getFoldersResponse.payload as GetMailboxFoldersResponse;
+      const inbox = folders.find(folder => folder.name === 'Inbox');
+      if (!inbox) {
+        throw new Error('inbox folder not found');
+      }
+      thunkAPI.dispatch(getMailByFolder({ id: inbox._id }));
+    }
+
+    const namespacesResponse = await thunkAPI.dispatch(
+      getNamespacesForMailbox({ id: mailboxId }),
+    );
+    if (namespacesResponse.type === getNamespacesForMailbox.fulfilled.type) {
+      const namespaces =
+        namespacesResponse.payload as GetNamespacesForMailboxResponse;
+      thunkAPI.dispatch(
+        getAliases({
+          namespaceKeys: namespaces?.map(namespace => namespace.name),
+        }),
+      );
+    }
   },
 );
 
@@ -459,7 +473,7 @@ export const saveMailToDB = createAsyncThunk(
           {
             eventName: `node/${SaveMailToDBEventName}:callback`,
             customPredicate: action => {
-              return action.data.msgArr?.[0]?.id === firstEmailId;
+              return action.data.msgArr?.[0]?.emailId === firstEmailId;
             },
           },
           event => {
@@ -628,7 +642,7 @@ export const mainSlice = createSlice({
     builder.addCase(saveMailToDB.fulfilled, (state, action) => {
       const emails = action.payload.msgArr;
       for (const email of emails) {
-        state.mail[email.id] = email;
+        state.mail[email.emailId] = email;
       }
     });
     builder.addCase(getMailboxes.fulfilled, (state, action) => {
@@ -641,9 +655,12 @@ export const mainSlice = createSlice({
     });
     builder.addCase(getMailByFolder.fulfilled, (state, action) => {
       const emails = action.payload;
+      const folderId = action.meta.arg.id;
+      const mailIds = Object.keys(emails);
       for (const email of emails) {
         state.mail[email.emailId] = email;
       }
+      state.mailIdsForFolder[folderId] = mailIds;
     });
     builder.addCase(updateMailAsSynced.fulfilled, (state, action) => {
       for (const id of action.payload) {

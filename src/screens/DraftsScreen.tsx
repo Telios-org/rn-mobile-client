@@ -12,6 +12,8 @@ import { spacing } from '../util/spacing';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icon } from '../components/Icon';
 import { EmailCell } from '../components/EmailCell';
+import { useSelector } from 'react-redux';
+import { draftsMailIdsSelector } from '../util/selectors';
 
 export type DraftsScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'drafts'>,
@@ -38,6 +40,7 @@ export type DraftsScreenProps = CompositeScreenProps<
 export const DraftsScreen = (props: DraftsScreenProps) => {
   const mainState = useAppSelector(state => state.main);
   const dispatch = useAppDispatch();
+  const draftMailIds = useSelector(draftsMailIdsSelector);
 
   const headerTitleAnimation = React.useRef(new Animated.Value(0)).current;
 
@@ -70,6 +73,9 @@ export const DraftsScreen = (props: DraftsScreenProps) => {
     });
   }, [props.navigation]); // TODO: is this going to cause performance issues?
 
+  // const listData = draftMailIds.map(mailId => mainState.mail[mailId]) as Array<
+  //   Partial<LocalEmail>
+  // >;
   const listData = Object.values(mainState.mail) as Array<Partial<LocalEmail>>;
   if (listData.length === 0 && !mainState.loadingGetMailMeta) {
     listData.push({ _id: 'MAIL_EMPTY' });
