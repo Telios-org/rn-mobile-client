@@ -654,7 +654,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.telios.mobile.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = io.telios.mobile;
 				PRODUCT_NAME = TeliosMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -685,9 +685,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.telios.mobile.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = io.telios.mobile;
 				PRODUCT_NAME = TeliosMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "TeliosDev-AppStoreDistribution";
+				PROVISIONING_PROFILE_SPECIFIER = "Telios-AppStoreDistribution";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
