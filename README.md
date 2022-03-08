@@ -6,7 +6,8 @@ A mobile client for [telios](https://telios.io).
 
 ## Building
 
-- set up node.js 12.19.x (use nvm?)
+- set up node.js 12.19.x using [nvm](https://github.com/nvm-sh/nvm)
+  - this version
 - set up [node-gyp](https://www.npmjs.com/package/node-gyp) with `npm install -g node-gyp`
 - set up react-native and it's dependencies
 - `yarn` to install deps
@@ -17,12 +18,14 @@ A mobile client for [telios](https://telios.io).
   - Set up `ANDROID_NDK_HOME` environment variable (should be something like `$ANDROID_HOME/ndk/21.4.7075529`)
   - Make sure you have a bunch of RAM on your machine. Might take over 4GB to build the native deps
 - iOS:
-  - Set up XCode 12.4.x
+  - Set up XCode 12+
   - `sudo gem install cocoapods`
   - `pod setup`
   - `brew install autoconf automake libtool openssl`
   - `cd ios && pod install && cd ../`
-- Run `npm run prepare-node-project` to patch modules and install the nodejs-mobile dependencies
+- Run `yarn run prepare-node-project` to patch modules and install the nodejs-mobile dependencies. (this process may take 5-10 minutes)
+  - Make sure it uses the right platform - `install_modules` will only build Node libs for iOS _or_ Android, not both.
+  - Use `--ios` or `--android` args to specify. By default, it will use the logic `platform = process.platform === 'darwin' ? IOS : ANDROID`
 
 Run either `yarn android` or `yarn ios` to run on the respective platforms. iOS only works on Macs and you need to register your phone for signing in xcode first. As well, only the release version of Android seems to be working at the moment. Something gets messed up with the bridge.
 
@@ -49,3 +52,11 @@ Run either `yarn android` or `yarn ios` to run on the respective platforms. iOS 
 - If using android, try clearing `android/app/build`
 - Try running the app from within Android Studio or XCode
 - Use `console.trace` inside the node_modules to track stuff down inside nodejs-mobile threads
+
+## Distribution
+
+### iOS
+
+- Manually bump the version and build numbers prior to Archive, or upload to AppStoreConnect will fail.
+- Manual Signing is needed for Release builds (Automatic is fine for Debug). Download Distribution Certificate from developer.apple.com and import into Xcode manually.
+- On Archive and Upload to App Store Connect, make sure to uncheck `Upload your app's symbols` otherwise upload will fail (due to inability to understand Node library symbol files)
