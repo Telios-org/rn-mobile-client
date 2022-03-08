@@ -30,7 +30,7 @@ HypercoreInTelios2.defaultStorage = (storage: any, opts = {}) => {
 // const channel = bridge.channel;
 
 const userDataPath = bridge.app.datadir();
-const env = 'development';
+const env = 'production';
 
 console.log('userDataPath', userDataPath);
 

@@ -29,7 +29,7 @@ export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
   const modalizeRef = React.useRef<Modalize>(null);
 
   // TODO: dev vs prod switch
-  const emailPostfix = envApi.devMail;
+  const emailPostfix = envApi.prodMail;
 
   const [username, setUsername] = React.useState('');
   const [error, setError] = React.useState<string | undefined>();
@@ -209,7 +209,7 @@ const getEmailAvailability = async (
 ): Promise<Result<{ isAvailable: boolean }>> => {
   try {
     console.log('verifying email');
-    const response = await fetch(`${envApi.dev}/mailbox/addresses/${email}`, {
+    const response = await fetch(`${envApi.prod}/mailbox/addresses/${email}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

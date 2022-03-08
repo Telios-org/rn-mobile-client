@@ -58,7 +58,7 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
   );
 
   // TODO: dev vs prod switch
-  const emailPostfix = envApi.devMail;
+  const emailPostfix = envApi.prodMail;
 
   const inputModalRef = React.useRef<Modalize>();
 

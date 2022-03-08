@@ -147,7 +147,7 @@ const validateBetaCode = async (
 ): Promise<Result<{ status: number }>> => {
   try {
     console.log('verifying beta code');
-    const response = await fetch(`${envApi.dev}/account/beta/verify`, {
+    const response = await fetch(`${envApi.prod}/account/beta/verify`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
