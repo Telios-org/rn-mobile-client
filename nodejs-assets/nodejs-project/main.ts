@@ -2,6 +2,9 @@
 
 console.log('RUNNING NODE VERSION: ', process.version);
 
+import 'intl';
+import 'intl/locale-data/jsonp/en';
+
 const bridge = require('rn-bridge');
 const Hypercore = require('hypercore');
 const HypercoreInTelios1 = require('./node_modules/@telios/nebula/node_modules/corestore/node_modules/hypercore/index');
