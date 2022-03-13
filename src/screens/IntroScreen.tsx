@@ -12,7 +12,7 @@ export type IntroScreenProps = NativeStackScreenProps<RootStackParams, 'intro'>;
 
 export const IntroScreen = (props: IntroScreenProps) => {
   const onRegister = () => {
-    props.navigation.navigate('registerBetaCode');
+    props.navigation.navigate('register');
   };
 
   const onLogin = () => {

@@ -76,7 +76,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   };
 
   const onRegisterNewAccount = () => {
-    props.navigation.navigate('registerBetaCode');
+    props.navigation.navigate('register');
   };
 
   return (

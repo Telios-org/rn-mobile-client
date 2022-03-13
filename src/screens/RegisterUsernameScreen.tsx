@@ -7,7 +7,7 @@ import { Modalize } from 'react-native-modalize';
 
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import { RootStackParams } from '../Navigator';
+import { RegisterStackParams, RootStackParams } from '../Navigator';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
@@ -17,7 +17,7 @@ import { debounce } from 'lodash';
 import { validateTeliosEmail } from '../util/regexHelpers';
 
 export type RegisterUsernameScreenProps = NativeStackScreenProps<
-  RootStackParams,
+  RegisterStackParams,
   'registerUsername'
 >;
 

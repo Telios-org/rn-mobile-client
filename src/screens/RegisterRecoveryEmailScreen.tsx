@@ -8,10 +8,11 @@ import {
   ScrollView,
   InputAccessoryView,
   Keyboard,
+  Alert,
 } from 'react-native';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import { RootStackParams } from '../Navigator';
+import { RegisterStackParams } from '../Navigator';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
@@ -21,7 +22,7 @@ import { registerFlow } from '../mainSlice';
 import { Modalize } from 'react-native-modalize';
 
 export type RegisterRecoveryEmailScreenProps = NativeStackScreenProps<
-  RootStackParams,
+  RegisterStackParams,
   'registerRecoveryEmail'
 >;
 
@@ -38,6 +39,12 @@ export const RegisterRecoveryEmailScreen = (
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
   const [showLoadingText, setShowLoadingText] = React.useState(false);
   const modalizeRef = React.useRef<Modalize>();
+
+  React.useLayoutEffect(() => {
+    props.navigation.setOptions({
+      headerBackVisible: !loadingSubmit,
+    });
+  }, [loadingSubmit]);
 
   React.useEffect(() => {
     if (loadingSubmit && !showLoadingText) {
@@ -68,7 +75,7 @@ export const RegisterRecoveryEmailScreen = (
         // on success, Navigator will auto-transition into authenticated space.
         props.navigation.navigate('registerSuccess');
       } else {
-        console.log('error', registerResponse);
+        Alert.alert('Error', 'An error occurred');
         setLoadingSubmit(false);
       }
     } catch (e) {

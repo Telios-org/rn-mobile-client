@@ -5,15 +5,16 @@ import * as Clipboard from 'expo-clipboard';
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { Button } from '../components/Button';
-import { RootStackParams } from '../Navigator';
+import { RegisterStackParams, RootStackParams } from '../Navigator';
 import { fonts } from '../util/fonts';
 import { borderRadius, spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { useAppSelector } from '../hooks';
+import { CompositeScreenProps } from '@react-navigation/native';
 
-export type RegisterSuccessScreenProps = NativeStackScreenProps<
-  RootStackParams,
-  'registerSuccess'
+export type RegisterSuccessScreenProps = CompositeScreenProps<
+  NativeStackScreenProps<RegisterStackParams, 'registerSuccess'>,
+  NativeStackScreenProps<RootStackParams>
 >;
 
 export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
@@ -26,7 +27,7 @@ export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
   };
 
   const onDone = () => {
-    props.navigation.pop();
+    props.navigation.navigate('main');
   };
 
   return (

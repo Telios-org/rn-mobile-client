@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import { RootStackParams } from '../Navigator';
+import { RegisterStackParams } from '../Navigator';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
@@ -21,7 +21,7 @@ import envApi from '../../env_api.json';
 import { debounce } from 'lodash';
 
 export type RegisterBetaCodeScreenProps = NativeStackScreenProps<
-  RootStackParams,
+  RegisterStackParams,
   'registerBetaCode'
 >;
 

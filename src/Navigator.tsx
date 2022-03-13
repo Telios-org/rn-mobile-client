@@ -7,7 +7,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import { IntroScreen } from './screens/IntroScreen';
-import { RegisterScreen } from './screens/RegisterScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { InboxScreen } from './screens/InboxScreen';
 import { useAppSelector, useIsAuthenticated } from './hooks';
@@ -37,11 +36,17 @@ import { EmailDetailScreen } from './screens/EmailDetailScreen';
 export type RootStackParams = {
   test: undefined;
   intro: undefined;
-  register: undefined;
   login: undefined;
   main: undefined;
+  register: undefined;
+
   compose: undefined;
   search: undefined;
+  newAliasNamespace: undefined;
+  newAlias: undefined;
+};
+
+export type RegisterStackParams = {
   registerBetaCode: undefined;
   registerConsent: { code: string };
   registerUsername: { code: string; accepted: boolean };
@@ -53,8 +58,6 @@ export type RootStackParams = {
     password: string;
   };
   registerSuccess: undefined;
-  newAliasNamespace: undefined;
-  newAlias: undefined;
 };
 
 export type MainStackParams = {
@@ -73,6 +76,7 @@ export type InboxStackParams = {
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
+const RegisterStack = createNativeStackNavigator<RegisterStackParams>();
 const Drawer = createDrawerNavigator<MainStackParams>();
 
 const InboxStack = createNativeStackNavigator<InboxStackParams>();
@@ -156,6 +160,59 @@ function Main() {
   );
 }
 
+function Register() {
+  return (
+    <RegisterStack.Navigator
+      initialRouteName="registerBetaCode"
+      screenOptions={{
+        headerBackTitleVisible: false,
+        headerTransparent: true,
+        title: '',
+        headerTintColor: colors.primaryDark,
+      }}>
+      <RegisterStack.Screen
+        name="registerBetaCode"
+        component={RegisterBetaCodeScreen}
+        options={({ navigation, route }) => ({
+          title: '',
+          headerTintColor: colors.inkDarker,
+          headerBackVisible: true,
+          headerLeft: props => (
+            <NavIconButton
+              icon={{ name: 'chevron-back', color: colors.primaryDark }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
+      />
+      <RegisterStack.Screen
+        name="registerConsent"
+        component={RegisterConsentScreen}
+      />
+      <RegisterStack.Screen
+        name="registerUsername"
+        component={RegisterUsernameScreen}
+      />
+      <RegisterStack.Screen
+        name="registerPassword"
+        component={RegisterPasswordScreen}
+      />
+      <RegisterStack.Screen
+        name="registerRecoveryEmail"
+        component={RegisterRecoveryEmailScreen}
+      />
+      <RegisterStack.Screen
+        name="registerSuccess"
+        component={RegisterSuccessScreen}
+        options={{
+          headerBackVisible: false,
+          gestureEnabled: false,
+        }}
+      />
+    </RegisterStack.Navigator>
+  );
+}
+
 export const Navigator = () => {
   const localUsernames = useAppSelector(state => state.main.localUsernames);
   const hasLocalAccount = localUsernames.length > 0;
@@ -163,6 +220,12 @@ export const Navigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={hasLocalAccount ? 'login' : 'intro'}>
+        <Stack.Screen
+          name="register"
+          component={Register}
+          options={{ headerShown: false }}
+        />
+
         {isAuthenticated ? (
           <>
             <Stack.Group>
@@ -196,14 +259,7 @@ export const Navigator = () => {
                   ),
                 })}
               />
-              <Stack.Screen
-                name="registerSuccess"
-                component={RegisterSuccessScreen}
-                options={{
-                  headerTransparent: true,
-                  title: '',
-                }}
-              />
+
               <Stack.Screen
                 name="newAliasNamespace"
                 component={NewAliasNamespaceScreen}
@@ -240,11 +296,6 @@ export const Navigator = () => {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name={'register'}
-              component={RegisterScreen}
-              options={{ title: 'Register' }}
-            />
-            <Stack.Screen
               name={'login'}
               component={LoginScreen}
               options={{ headerShown: false }}
@@ -254,36 +305,6 @@ export const Navigator = () => {
               component={TestScreen}
               options={{ title: 'Test' }}
             />
-
-            {/* register screens */}
-            <Stack.Group
-              screenOptions={{
-                headerBackTitleVisible: false,
-                headerTransparent: true,
-                title: '',
-                headerTintColor: colors.primaryDark,
-              }}>
-              <Stack.Screen
-                name="registerBetaCode"
-                component={RegisterBetaCodeScreen}
-              />
-              <Stack.Screen
-                name="registerConsent"
-                component={RegisterConsentScreen}
-              />
-              <Stack.Screen
-                name="registerUsername"
-                component={RegisterUsernameScreen}
-              />
-              <Stack.Screen
-                name="registerPassword"
-                component={RegisterPasswordScreen}
-              />
-              <Stack.Screen
-                name="registerRecoveryEmail"
-                component={RegisterRecoveryEmailScreen}
-              />
-            </Stack.Group>
           </>
         )}
       </Stack.Navigator>

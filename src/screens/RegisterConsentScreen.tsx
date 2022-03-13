@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import { RootStackParams } from '../Navigator';
+import { RegisterStackParams, RootStackParams } from '../Navigator';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
@@ -31,7 +31,7 @@ const urlPrivacyPolicy =
   'https://docs.google.com/document/u/1/d/e/2PACX-1vTIL7a6NbUhBDxHmRy5tW0e5H4YoBWXUO1WvPseVuEATSLHMIemVAG6nnRe_xIJZ-s5YYPh2C05JwKR/pub';
 
 export type RegisterConsentScreenProps = NativeStackScreenProps<
-  RootStackParams,
+  RegisterStackParams,
   'registerConsent'
 >;
 

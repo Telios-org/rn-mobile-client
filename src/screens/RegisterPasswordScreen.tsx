@@ -16,7 +16,7 @@ import * as Yup from 'yup';
 
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import { RootStackParams } from '../Navigator';
+import { RegisterStackParams, RootStackParams } from '../Navigator';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
@@ -49,7 +49,7 @@ const RegisterPasswordFormSchema = Yup.object().shape({
 });
 
 export type RegisterPasswordScreenProps = NativeStackScreenProps<
-  RootStackParams,
+  RegisterStackParams,
   'registerPassword'
 >;
 
