@@ -33,6 +33,11 @@ import { NewAliasNamespaceScreen } from './screens/NewAliasNamespaceScreen';
 import { NewAliasScreen } from './screens/NewAliasScreen';
 import { EmailDetailScreen } from './screens/EmailDetailScreen';
 
+export type CoreStackProps = {
+  register: undefined;
+  core: undefined;
+};
+
 export type RootStackParams = {
   test: undefined;
   intro: undefined;
@@ -75,6 +80,7 @@ export type InboxStackParams = {
   emailDetail: { emailId: string };
 };
 
+const CoreStack = createNativeStackNavigator<CoreStackProps>();
 const Stack = createNativeStackNavigator<RootStackParams>();
 const RegisterStack = createNativeStackNavigator<RegisterStackParams>();
 const Drawer = createDrawerNavigator<MainStackParams>();
@@ -109,6 +115,97 @@ const InboxRoot = () => (
     />
   </InboxStack.Navigator>
 );
+
+function CoreScreen() {
+  const localUsernames = useAppSelector(state => state.main.localUsernames);
+  const hasLocalAccount = localUsernames.length > 0;
+  const isAuthenticated = useIsAuthenticated();
+  return (
+    <Stack.Navigator initialRouteName={hasLocalAccount ? 'login' : 'intro'}>
+      {isAuthenticated ? (
+        <>
+          <Stack.Group>
+            <Stack.Screen
+              name="main"
+              component={Main}
+              options={{ headerShown: false }}
+            />
+          </Stack.Group>
+          <Stack.Group
+            screenOptions={{
+              presentation: 'containedModal',
+              headerTintColor: colors.inkDarkest,
+              headerBackTitleVisible: false,
+            }}>
+            <Stack.Screen
+              name="compose"
+              component={ComposeScreen}
+              options={{ title: 'Compose' }}
+            />
+            <Stack.Screen
+              name="search"
+              component={SearchScreen}
+              options={({ navigation }) => ({
+                title: 'Search',
+                headerLeft: () => (
+                  <NavIconButton
+                    icon={{ name: 'close-outline', size: 28 }}
+                    onPress={() => navigation.goBack()}
+                  />
+                ),
+              })}
+            />
+
+            <Stack.Screen
+              name="newAliasNamespace"
+              component={NewAliasNamespaceScreen}
+              options={({ navigation }) => ({
+                title: 'Create Namespace',
+                headerLeft: () => (
+                  <NavIconButton
+                    icon={{ name: 'close-outline', size: 28 }}
+                    onPress={() => navigation.goBack()}
+                  />
+                ),
+              })}
+            />
+            <Stack.Screen
+              name="newAlias"
+              component={NewAliasScreen}
+              options={({ navigation }) => ({
+                title: 'Create New Alias',
+                headerLeft: () => (
+                  <NavIconButton
+                    icon={{ name: 'close-outline', size: 28 }}
+                    onPress={() => navigation.goBack()}
+                  />
+                ),
+              })}
+            />
+          </Stack.Group>
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name={'intro'}
+            component={IntroScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name={'login'}
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="test"
+            component={TestScreen}
+            options={{ title: 'Test' }}
+          />
+        </>
+      )}
+    </Stack.Navigator>
+  );
+}
 
 function Main() {
   return (
@@ -214,100 +311,23 @@ function Register() {
 }
 
 export const Navigator = () => {
-  const localUsernames = useAppSelector(state => state.main.localUsernames);
-  const hasLocalAccount = localUsernames.length > 0;
-  const isAuthenticated = useIsAuthenticated();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={hasLocalAccount ? 'login' : 'intro'}>
-        <Stack.Screen
+      <CoreStack.Navigator initialRouteName="core">
+        <CoreStack.Screen
           name="register"
           component={Register}
+          options={{
+            presentation: 'containedModal',
+            headerShown: false,
+          }}
+        />
+        <CoreStack.Screen
+          name="core"
+          component={CoreScreen}
           options={{ headerShown: false }}
         />
-
-        {isAuthenticated ? (
-          <>
-            <Stack.Group>
-              <Stack.Screen
-                name="main"
-                component={Main}
-                options={{ headerShown: false }}
-              />
-            </Stack.Group>
-            <Stack.Group
-              screenOptions={{
-                presentation: 'containedModal',
-                headerTintColor: colors.inkDarkest,
-                headerBackTitleVisible: false,
-              }}>
-              <Stack.Screen
-                name="compose"
-                component={ComposeScreen}
-                options={{ title: 'Compose' }}
-              />
-              <Stack.Screen
-                name="search"
-                component={SearchScreen}
-                options={({ navigation }) => ({
-                  title: 'Search',
-                  headerLeft: () => (
-                    <NavIconButton
-                      icon={{ name: 'close-outline', size: 28 }}
-                      onPress={() => navigation.goBack()}
-                    />
-                  ),
-                })}
-              />
-
-              <Stack.Screen
-                name="newAliasNamespace"
-                component={NewAliasNamespaceScreen}
-                options={({ navigation }) => ({
-                  title: 'Create Namespace',
-                  headerLeft: () => (
-                    <NavIconButton
-                      icon={{ name: 'close-outline', size: 28 }}
-                      onPress={() => navigation.goBack()}
-                    />
-                  ),
-                })}
-              />
-              <Stack.Screen
-                name="newAlias"
-                component={NewAliasScreen}
-                options={({ navigation }) => ({
-                  title: 'Create New Alias',
-                  headerLeft: () => (
-                    <NavIconButton
-                      icon={{ name: 'close-outline', size: 28 }}
-                      onPress={() => navigation.goBack()}
-                    />
-                  ),
-                })}
-              />
-            </Stack.Group>
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name={'intro'}
-              component={IntroScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name={'login'}
-              component={LoginScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="test"
-              component={TestScreen}
-              options={{ title: 'Test' }}
-            />
-          </>
-        )}
-      </Stack.Navigator>
+      </CoreStack.Navigator>
     </NavigationContainer>
   );
 };

@@ -33,9 +33,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   const [subject, setSubject] = React.useState('');
   const [body, setBody] = React.useState('');
 
-  const onClose = async () => {
-    props.navigation.goBack();
-
+  const onSaveDraft = async () => {
     try {
       const saveResponse = await dispatch(
         saveMailToDB({
@@ -59,6 +57,30 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
       }
     } catch (e) {
       console.log('error saving draft', e);
+    }
+  };
+
+  const onClose = () => {
+    const shouldPromptSaveDraft = to || subject || body;
+    if (shouldPromptSaveDraft) {
+      Alert.alert('Save Draft', 'Unsaved drafts will be lost', [
+        {
+          text: 'No',
+          onPress: () => {
+            props.navigation.goBack();
+          },
+          style: 'destructive',
+        },
+        {
+          text: 'Save',
+          onPress: () => {
+            onSaveDraft();
+            props.navigation.goBack();
+          },
+        },
+      ]);
+    } else {
+      props.navigation.goBack();
     }
   };
 
