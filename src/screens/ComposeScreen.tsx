@@ -8,11 +8,11 @@ import { MainStackParams, RootStackParams } from '../Navigator';
 import { TextInput } from 'react-native-gesture-handler';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
-import { OutgoingEmail, saveMailToDB, sendEmail } from '../mainSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button } from '../components/Button';
 import { fonts, textStyles } from '../util/fonts';
 import { NavIconButton } from '../components/NavIconButton';
+import { OutgoingEmail, saveDraft, sendEmail } from '../store/mail';
 
 export type ComposeScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -20,9 +20,9 @@ export type ComposeScreenProps = NativeStackScreenProps<
 >;
 
 export const ComposeScreen = (props: ComposeScreenProps) => {
-  const mainState = useAppSelector(state => state.main);
+  const mailState = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const userEmailAddress = mainState.mailbox?.address;
+  const userEmailAddress = mailState.mailbox?.address;
 
   const subjectInputRef = React.useRef<TextInput>();
   const bodyInputRef = React.useRef<TextInput>();
@@ -36,20 +36,16 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   const onSaveDraft = async () => {
     try {
       const saveResponse = await dispatch(
-        saveMailToDB({
-          messageType: 'Draft',
-          messages: [
-            {
-              from: [{ address: userEmailAddress }],
-              to: [{ address: to }],
-              subject: subject,
-              date: formatISO(Date.now()),
-              text_body: body,
-            },
-          ],
+        saveDraft({
+          from: [{ address: userEmailAddress }],
+          to: [{ address: to }],
+          subject: subject,
+          date: formatISO(Date.now()),
+          text_body: body,
         }),
       );
-      if (saveResponse.type === saveMailToDB.fulfilled.type) {
+
+      if (saveResponse.type === saveDraft.fulfilled.type) {
         Toast.show({
           type: 'info',
           text1: 'Draft Saved',
@@ -57,6 +53,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
       }
     } catch (e) {
       console.log('error saving draft', e);
+      Alert.alert('Error', 'Failed to save draft');
     }
   };
 
@@ -85,10 +82,10 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   };
 
   const onSend = async () => {
-    if (!to || !subject || !body || !mainState.mailbox || isSending) {
+    if (!to || !subject || !body || !mailState.mailbox || isSending) {
       Alert.alert(
         'Error',
-        `missing one of: to-${to} sub-${subject} body-${body} mailbox-${!!mainState.mailbox} isSending-${isSending}`,
+        `missing one of: to-${to} sub-${subject} body-${body} mailbox-${!!mailState.mailbox} isSending-${isSending}`,
       );
       return;
     }
@@ -96,7 +93,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
     setIsSending(true);
 
     const email: OutgoingEmail = {
-      from: [{ address: mainState.mailbox.address }],
+      from: [{ address: mailState.mailbox.address }],
       to: [{ address: to }],
       subject: subject,
       date: formatISO(new Date()),
@@ -139,7 +136,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   }, [props.navigation, to, subject, body, isSending]); // TODO: is this going to cause performance issues?
 
   console.log(
-    `to-${to} sub-${subject} body-${body} mailbox-${!!mainState.mailbox} isSending-${isSending}`,
+    `to-${to} sub-${subject} body-${body} mailbox-${!!mailState.mailbox} isSending-${isSending}`,
   );
 
   return (

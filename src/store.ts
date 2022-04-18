@@ -1,11 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { eventListenerMiddleware } from './eventListenerMiddleware';
 import { fileFetchedMiddleware } from './fileFetchedMiddleware';
-import { mainReducer } from './mainSlice';
+import { accountReducer } from './store/account';
+import { aliasesReducer } from './store/aliases';
+import { contactsReducer } from './store/contacts';
+import { mailReducer } from './store/mail';
+import { systemReducer } from './store/system';
 
 export const store = configureStore({
   reducer: {
-    main: mainReducer,
+    account: accountReducer,
+    aliases: aliasesReducer,
+    contacts: contactsReducer,
+    mail: mailReducer,
+    system: systemReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()

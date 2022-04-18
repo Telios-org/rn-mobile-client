@@ -5,10 +5,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView, Text, View } from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch } from '../hooks';
-import { accountLogout } from '../mainSlice';
 import { colors } from '../util/colors';
 import { TableCell } from '../components/TableCell';
 import { spacing } from '../util/spacing';
+import { accountLogout } from '../store/account';
 
 export type ProfileScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'profile'>,

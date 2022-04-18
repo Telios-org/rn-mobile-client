@@ -117,7 +117,7 @@ const InboxRoot = () => (
 );
 
 function CoreScreen() {
-  const localUsernames = useAppSelector(state => state.main.localUsernames);
+  const localUsernames = useAppSelector(state => state.account.localUsernames);
   const hasLocalAccount = localUsernames.length > 0;
   const isAuthenticated = useIsAuthenticated();
   return (

@@ -13,7 +13,7 @@ import envApi from '../../env_api.json';
 import { Icon } from '../components/Icon';
 import { randomLetters, randomWords } from '../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { registerNamespace } from '../mainSlice';
+import { registerNamespace } from '../store/aliases';
 
 export type NewAliasNamespaceScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -24,13 +24,16 @@ export const NewAliasNamespaceScreen = (
   props: NewAliasNamespaceScreenProps,
 ) => {
   const dispatch = useAppDispatch();
-  const mainState = useAppSelector(state => state.main);
+  const { mail, aliases } = useAppSelector(state => ({
+    mail: state.mail,
+    aliases: state.aliases,
+  }));
 
   const [namespace, setNamespace] = React.useState(randomLetters());
   const [loadingCreate, setLoadingCreate] = React.useState(false);
 
   const onCreate = async () => {
-    const mailboxId = mainState.mailbox._id;
+    const mailboxId = mail.mailbox._id;
     if (!mailboxId) {
       return;
     }
@@ -59,7 +62,7 @@ export const NewAliasNamespaceScreen = (
   };
 
   // TODO: dev vs prod switch
-  const emailPostfix = envApi.devMail;
+  const emailPostfix = envApi.prodMail;
 
   return (
     <ScrollView

@@ -25,12 +25,12 @@ import envApi from '../../env_api.json';
 import { Icon } from '../components/Icon';
 import { randomLetters, randomWords } from '../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { registerAlias, registerNamespace } from '../mainSlice';
 import { MultiSelectInput } from '../components/MultiSelectInput';
 import { InputModal } from '../components/InputModal';
 import { validateEmail } from '../util/regexHelpers';
 import { useSelector } from 'react-redux';
-import { aliasesForwardAddressesSelector } from '../util/selectors';
+import { aliasesForwardAddressesSelector } from '../store/aliasesSelectors';
+import { registerAlias } from '../store/aliases';
 
 type NewAliasFormValues = {
   alias: string;
@@ -51,8 +51,9 @@ export type NewAliasScreenProps = NativeStackScreenProps<
 
 export const NewAliasScreen = (props: NewAliasScreenProps) => {
   const dispatch = useAppDispatch();
-  const mainState = useAppSelector(state => state.main);
-  const namespace = mainState.aliasNamespace;
+  const aliases = useAppSelector(state => state.aliases);
+  const mail = useAppSelector(state => state.mail);
+  const namespace = aliases.aliasNamespace;
   const existingForwardingAddresses = useSelector(
     aliasesForwardAddressesSelector,
   );
@@ -74,7 +75,7 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
     values: NewAliasFormValues,
     actions: FormikHelpers<NewAliasFormValues>,
   ) => {
-    const mailboxId = mainState.mailbox._id;
+    const mailboxId = mail.mailbox._id;
     if (!mailboxId) {
       return;
     }

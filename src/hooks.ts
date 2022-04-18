@@ -7,6 +7,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export const useIsAuthenticated = () => {
   return useAppSelector(
-    state => !!(state.main.signupAccount?.uid || state.main.loginAccount?.uid),
+    state =>
+      !!(state.account.signupAccount?.uid || state.account.loginAccount?.uid),
   );
 };

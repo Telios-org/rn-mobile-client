@@ -24,7 +24,7 @@ export type RegisterSuccessScreenProps = CompositeScreenProps<
 export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
   const headerHeight = useHeaderHeight();
 
-  const account = useAppSelector(state => state.main.signupAccount);
+  const account = useAppSelector(state => state.account.signupAccount);
 
   const onCopyToClipboard = () => {
     Clipboard.setString(account.mnemonic);

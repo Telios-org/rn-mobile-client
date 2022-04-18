@@ -13,13 +13,13 @@ import {
 } from '../Navigator';
 import { spacing } from '../util/spacing';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { getNewMailFlow, LocalEmail } from '../mainSlice';
 import { colors } from '../util/colors';
 import { fonts, textStyles } from '../util/fonts';
 import { Icon } from '../components/Icon';
 import { EmailCell } from '../components/EmailCell';
 import { useSelector } from 'react-redux';
-import { inboxMailIdsSelector } from '../util/selectors';
+import { inboxMailIdsSelector } from '../store/mailSelectors';
+import { getNewMailFlow, LocalEmail } from '../store/mail';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -27,7 +27,7 @@ export type InboxScreenProps = CompositeScreenProps<
 >;
 
 export const InboxScreen = (props: InboxScreenProps) => {
-  const mainState = useAppSelector(state => state.main);
+  const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
   const inboxMailIds = useSelector(inboxMailIdsSelector);
 
@@ -71,9 +71,9 @@ export const InboxScreen = (props: InboxScreenProps) => {
     });
   };
 
-  const listData = Object.values(mainState.mail) as Array<Partial<LocalEmail>>;
+  const listData = Object.values(mail.mail) as Array<Partial<LocalEmail>>;
 
-  if (listData.length === 0 && !mainState.loadingGetMailMeta) {
+  if (listData.length === 0 && !mail.loadingGetMailMeta) {
     listData.push({ _id: 'MAIL_EMPTY' });
   }
   // const listData: Array<LocalEmail> = [];
@@ -178,7 +178,7 @@ export const InboxScreen = (props: InboxScreenProps) => {
         }}>
         <Text style={fonts.title2}>{'Inbox'}</Text>
         <Text style={[fonts.regular.regular, { color: colors.inkLighter }]}>
-          {mainState.mailbox?.address}
+          {mail.mailbox?.address}
         </Text>
       </View>
     );

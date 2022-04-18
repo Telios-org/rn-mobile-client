@@ -17,8 +17,8 @@ import { fonts } from '../util/fonts';
 import { Button } from '../components/Button';
 import { Icon } from '../components/Icon';
 import { useAppSelector } from '../hooks';
-import { aliasesComputedSelector } from '../util/selectors';
 import { useSelector } from 'react-redux';
+import { aliasesComputedSelector } from '../store/aliasesSelectors';
 
 export type AliasManageScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasManage'>,
@@ -26,9 +26,7 @@ export type AliasManageScreenProps = CompositeScreenProps<
 >;
 
 export const AliasManageScreen = (props: AliasManageScreenProps) => {
-  const mainState = useAppSelector(state => state.main);
-
-  const namespace = mainState.aliasNamespace;
+  const { aliasNamespace } = useAppSelector(state => state.aliases);
   const { aliases, aliasKeys } = useSelector(aliasesComputedSelector);
 
   const onAlias = (aliasKey: string) => {
@@ -46,14 +44,14 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
       <View style={{ margin: spacing.lg }}>
         <TableCell
           label="Namespace"
-          caption={namespace?.name || 'None set'}
+          caption={aliasNamespace?.name || 'None set'}
           iconRight={{
             name: 'information-circle-outline',
             color: colors.primaryBase,
           }}
           onPress={() => Alert.alert('Not impelmented')}
         />
-        {!namespace && (
+        {!aliasNamespace && (
           <Button
             title="Create Namespace"
             onPress={onCreateNamespace}
@@ -68,7 +66,7 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
             marginTop: spacing.xl,
           }}>
           <Text style={fonts.title3}>{'Aliases'}</Text>
-          {namespace ? (
+          {aliasNamespace ? (
             <Button
               size="small"
               title="Add"

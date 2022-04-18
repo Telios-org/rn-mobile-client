@@ -11,7 +11,7 @@ import { store } from './store';
 import { Provider } from 'react-redux';
 import { ListenerContainer } from './ListenerContainer';
 import { Navigator } from './Navigator';
-import { getStoredUsernames } from './mainSlice';
+import { getStoredUsernames } from './store/account';
 import { StatusBar } from 'react-native';
 
 setTimeout(() => {

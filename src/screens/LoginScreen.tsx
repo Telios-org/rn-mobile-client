@@ -19,10 +19,10 @@ import { useHeaderHeight } from '@react-navigation/elements';
 
 import { RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { loginFlow } from '../mainSlice';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
 import { SingleSelectInput } from '../components/SingleSelectInput';
+import { loginFlow } from '../store/account';
 
 const SYNC_EXISTING = 'sync_existing';
 
@@ -42,7 +42,9 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const dispatch = useAppDispatch();
   const headerHeight = useHeaderHeight();
 
-  const { localUsernames, lastUsername } = useAppSelector(state => state.main);
+  const { localUsernames, lastUsername } = useAppSelector(
+    state => state.account,
+  );
 
   const onSubmit = async (
     values: LoginFormValues,

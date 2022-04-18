@@ -4,41 +4,22 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Animated, Text, View } from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { getMailByFolder, LocalEmail } from '../mainSlice';
 import { fonts, textStyles } from '../util/fonts';
 import { colors } from '../util/colors';
-import { Button } from '../components/Button';
 import { spacing } from '../util/spacing';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icon } from '../components/Icon';
 import { EmailCell } from '../components/EmailCell';
 import { useSelector } from 'react-redux';
-import { draftsMailIdsSelector } from '../util/selectors';
+import { draftsMailIdsSelector } from '../store/mailSelectors';
+import { getMailByFolder, LocalEmail } from '../store/mail';
 
 export type DraftsScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'drafts'>,
   NativeStackScreenProps<RootStackParams>
 >;
 
-// export const DraftsScreen = (props: DraftsScreenProps) => {
-//   const mainState = useAppSelector(state => state.main);
-//   const dispatch = useAppDispatch();
-
-//   React.useLayoutEffect(() => {
-//     console.log('drafts screen useLayoutEffect');
-//     const draftsFolder = mainState.folders?.find(
-//       a => a.name?.toLowerCase() === 'drafts',
-//     );
-//     if (draftsFolder?._id) {
-//       dispatch(getMailByFolder({ id: draftsFolder._id }));
-//     }
-//   }, []);
-
-//   return <View style={{ flex: 1 }}></View>;
-// };
-
 export const DraftsScreen = (props: DraftsScreenProps) => {
-  const mainState = useAppSelector(state => state.main);
+  const mailState = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
   const draftMailIds = useSelector(draftsMailIdsSelector);
 
@@ -46,11 +27,11 @@ export const DraftsScreen = (props: DraftsScreenProps) => {
 
   React.useLayoutEffect(() => {
     console.log('drafts screen useLayoutEffect');
-    const draftsFolder = mainState.folders?.find(
+    const draftsFolder = mailState.folders?.find(
       a => a.name?.toLowerCase() === 'drafts',
     );
-    if (draftsFolder?._id) {
-      dispatch(getMailByFolder({ id: draftsFolder._id }));
+    if (draftsFolder?.folderId) {
+      dispatch(getMailByFolder({ id: draftsFolder.folderId }));
     }
   }, []);
 
@@ -73,11 +54,11 @@ export const DraftsScreen = (props: DraftsScreenProps) => {
     });
   }, [props.navigation]); // TODO: is this going to cause performance issues?
 
-  // const listData = draftMailIds.map(mailId => mainState.mail[mailId]) as Array<
+  // const listData = draftMailIds.map(mailId => mailState.mail[mailId]) as Array<
   //   Partial<LocalEmail>
   // >;
-  const listData = Object.values(mainState.mail) as Array<Partial<LocalEmail>>;
-  if (listData.length === 0 && !mainState.loadingGetMailMeta) {
+  const listData = Object.values(mailState.mail) as Array<Partial<LocalEmail>>;
+  if (listData.length === 0 && !mailState.loadingGetMailMeta) {
     listData.push({ _id: 'MAIL_EMPTY' });
   }
   // const listData: Array<LocalEmail> = [];

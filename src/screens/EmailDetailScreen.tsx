@@ -12,11 +12,12 @@ import {
 import { TextInput } from 'react-native-gesture-handler';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
-import { OutgoingEmail, saveMailToDB, sendEmail, ToFrom } from '../mainSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { Button } from '../components/Button';
 import { fonts, textStyles } from '../util/fonts';
 import { NavIconButton } from '../components/NavIconButton';
+import { FolderName, getFolderIdByName } from '../store/mailSelectors';
+import { deleteMail, ToFrom } from '../store/mail';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
   InboxStackParams,
@@ -24,15 +25,40 @@ export type EmailDetailScreenProps = NativeStackScreenProps<
 >;
 
 export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
-  const mainState = useAppSelector(state => state.main);
+  const mailState = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const userEmailAddress = mainState.mailbox?.address;
+  const userEmailAddress = mailState.mailbox?.address;
 
   const { emailId } = props.route.params;
-  const email = mainState.mail[emailId];
+  const email = mailState.mail[emailId];
 
-  const onDelete = () => {
-    Alert.alert('Not implemented');
+  // TODO: this might be slow at scale, if trash is huge.
+  const trashFolderId = getFolderIdByName(mailState, FolderName.trash);
+  const isTrash = mailState.mailIdsForFolder[trashFolderId].includes(emailId);
+
+  const onDelete = async () => {
+    try {
+      if (isTrash) {
+        // permanently delete if already in trash
+        const deleteResponse = await dispatch(
+          deleteMail({
+            messageIds: [emailId],
+          }),
+        );
+
+        if (deleteResponse.type === deleteMail.rejected.type) {
+          throw new Error('Error deleting mail'); // todo, not a descriptive error
+        }
+
+        if (deleteResponse.type === deleteMail.fulfilled.type) {
+        } else {
+        }
+      } else {
+      }
+    } catch (e) {
+      console.log('error saving draft', e);
+      Alert.alert('Error', 'Failed to delete mail');
+    }
   };
 
   const onToggleUnread = () => {

@@ -18,8 +18,8 @@ import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { validateEmail } from '../util/regexHelpers';
 import { useAppDispatch } from '../hooks';
-import { registerFlow } from '../mainSlice';
 import { Modalize } from 'react-native-modalize';
+import { registerFlow } from '../store/account';
 
 export type RegisterRecoveryEmailScreenProps = NativeStackScreenProps<
   RegisterStackParams,

@@ -1,6 +1,6 @@
 import { Middleware, MiddlewareAPI } from 'redux';
-import { Email, mainSlice, saveMailToDB } from './mainSlice';
 import { AppDispatch } from './store';
+import { Email, saveMailToDB } from './store/mail';
 
 type FileFetchedPayload = {
   _id: string;

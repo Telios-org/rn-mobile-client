@@ -14,10 +14,10 @@ import { Icon } from './Icon';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { IconAccessory } from '../util/types';
 import { useSelector } from 'react-redux';
-import { aliasesComputedSelector } from '../util/selectors';
+import { aliasesComputedSelector } from '../store/aliasesSelectors';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
-  const mainState = useAppSelector(state => state.main);
+  const mail = useAppSelector(state => state.mail);
 
   const { aliases, aliasKeys } = useSelector(aliasesComputedSelector);
 
@@ -82,9 +82,7 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
             justifyContent: 'space-between',
           }}>
           <View style={{ flex: 1 }}>
-            <Text style={fonts.small.regular}>
-              {mainState.mailbox?.address}
-            </Text>
+            <Text style={fonts.small.regular}>{mail.mailbox?.address}</Text>
           </View>
           <Avatar touchable={true} />
         </View>

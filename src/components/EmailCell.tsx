@@ -2,7 +2,7 @@ import { format, isToday } from 'date-fns';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { LocalEmail } from '../mainSlice';
+import { LocalEmail } from '../store/mail';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
