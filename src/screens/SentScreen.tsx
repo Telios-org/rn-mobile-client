@@ -1,11 +1,18 @@
 import React from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View } from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { FolderName, getFolderIdByName } from '../store/mailSelectors';
+import { useSelector } from 'react-redux';
+import {
+  FolderName,
+  getFolderIdByName,
+  sentMailListSelector,
+} from '../store/mailSelectors';
 import { getMailByFolder } from '../store/mail';
+import { MailList, MailListItem } from '../components/MailList';
+import { NavTitle } from '../components/NavTitle';
+import { MailListHeader } from '../components/MailListHeader';
 
 export type SentScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'sent'>,
@@ -13,15 +20,36 @@ export type SentScreenProps = CompositeScreenProps<
 >;
 
 export const SentScreen = (props: SentScreenProps) => {
-  const mailState = useAppSelector(state => state.mail);
-  const sentFolderId = getFolderIdByName(mailState, FolderName.sent);
+  const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
+  const sentMailList = useSelector(sentMailListSelector);
 
   React.useLayoutEffect(() => {
-    if (sentFolderId) {
-      dispatch(getMailByFolder({ id: sentFolderId }));
-    }
-  }, []);
+    dispatch(
+      getMailByFolder({ id: getFolderIdByName(mail, FolderName.drafts) }),
+    );
+  }, [mail.folders]);
 
-  return <View style={{ flex: 1 }}></View>;
+  const onSelectEmail = (emailId: string) => {
+    // todo: navigate
+  };
+
+  const renderHeader = () => <MailListHeader title="Sent" />;
+
+  const listData: MailListItem[] = sentMailList.map(item => ({
+    id: item.emailId,
+    mail: item,
+    onSelect: () => onSelectEmail(item.emailId),
+  }));
+
+  return (
+    <MailList
+      navigation={props.navigation}
+      renderNavigationTitle={() => <NavTitle>{'Sent'}</NavTitle>}
+      headerComponent={renderHeader}
+      loading={mail.loadingGetMailMeta}
+      items={listData}
+      disableUnreadFilters={true}
+    />
+  );
 };

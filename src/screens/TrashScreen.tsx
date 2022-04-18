@@ -1,11 +1,18 @@
 import React from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View } from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { FolderName, getFolderIdByName } from '../store/mailSelectors';
+import { useSelector } from 'react-redux';
+import {
+  FolderName,
+  getFolderIdByName,
+  trashMailListSelector,
+} from '../store/mailSelectors';
 import { getMailByFolder } from '../store/mail';
+import { MailList, MailListItem } from '../components/MailList';
+import { NavTitle } from '../components/NavTitle';
+import { MailListHeader } from '../components/MailListHeader';
 
 export type TrashScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'trash'>,
@@ -13,15 +20,36 @@ export type TrashScreenProps = CompositeScreenProps<
 >;
 
 export const TrashScreen = (props: TrashScreenProps) => {
-  const mailState = useAppSelector(state => state.mail);
-  const trashFolderId = getFolderIdByName(mailState, FolderName.trash);
+  const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
+  const trashMailList = useSelector(trashMailListSelector);
 
   React.useLayoutEffect(() => {
-    if (trashFolderId) {
-      dispatch(getMailByFolder({ id: trashFolderId }));
-    }
-  }, []);
+    dispatch(
+      getMailByFolder({ id: getFolderIdByName(mail, FolderName.drafts) }),
+    );
+  }, [mail.folders]);
 
-  return <View style={{ flex: 1 }}></View>;
+  const onSelectEmail = (emailId: string) => {
+    // todo: navigate
+  };
+
+  const renderHeader = () => <MailListHeader title="Trash" />;
+
+  const listData: MailListItem[] = trashMailList.map(item => ({
+    id: item.emailId,
+    mail: item,
+    onSelect: () => onSelectEmail(item.emailId),
+  }));
+
+  return (
+    <MailList
+      navigation={props.navigation}
+      renderNavigationTitle={() => <NavTitle>{'Trash'}</NavTitle>}
+      headerComponent={renderHeader}
+      loading={mail.loadingGetMailMeta}
+      items={listData}
+      disableUnreadFilters={true}
+    />
+  );
 };

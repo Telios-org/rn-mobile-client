@@ -28,41 +28,47 @@ export const folderIdByNameSelector = (
   return getFolderIdByName(state.mail, folderName);
 };
 
-const mailAndFoldersSelector = (state: RootState) => ({
-  mail: state.mail.mail,
-  folders: state.mail.folders,
-  mailIdsForFolder: state.mail.mailIdsForFolder,
-});
+const createSelectorMailIdsForFolder = (folderName: FolderName) =>
+  createSelector(
+    (state: RootState) => state.mail,
+    mailState => {
+      const inboxId = getFolderIdByName(mailState, folderName);
+      const mailIds = mailState.mailIdsForFolder[inboxId];
+      return mailIds || [];
+    },
+  );
 
-export const inboxMailIdsSelector = createSelector(
-  (state: RootState) => state.mail,
-  mailState => {
-    const inboxId = getFolderIdByName(mailState, FolderName.inbox);
-    const mailIds = mailState.mailIdsForFolder[inboxId];
-    return mailIds || [];
-  },
+export const inboxMailIdsSelector = createSelectorMailIdsForFolder(
+  FolderName.inbox,
 );
-export const draftsMailIdsSelector = createSelector(
-  (state: RootState) => state.mail,
-  mailState => {
-    const inboxId = getFolderIdByName(mailState, FolderName.drafts);
-    const mailIds = mailState.mailIdsForFolder[inboxId];
-    return mailIds || [];
-  },
+export const draftsMailIdsSelector = createSelectorMailIdsForFolder(
+  FolderName.drafts,
 );
-export const sentMailIdsSelector = createSelector(
-  (state: RootState) => state.mail,
-  mailState => {
-    const inboxId = getFolderIdByName(mailState, FolderName.sent);
-    const mailIds = mailState.mailIdsForFolder[inboxId];
-    return mailIds || [];
-  },
+export const sentMailIdsSelector = createSelectorMailIdsForFolder(
+  FolderName.sent,
 );
-export const trashMailIdsSelector = createSelector(
-  (state: RootState) => state.mail,
-  mailState => {
-    const inboxId = getFolderIdByName(mailState, FolderName.trash);
-    const mailIds = mailState.mailIdsForFolder[inboxId];
-    return mailIds || [];
-  },
+export const trashMailIdsSelector = createSelectorMailIdsForFolder(
+  FolderName.trash,
+);
+
+const createSelectorMailListForFolder = (folderName: FolderName) =>
+  createSelector(
+    (state: RootState) => state.mail,
+    createSelectorMailIdsForFolder(folderName),
+    (mailState, mailIds) => {
+      const mailList = mailIds.map(id => mailState.mail[id]);
+      return mailList;
+    },
+  );
+export const inboxMailListSelector = createSelectorMailListForFolder(
+  FolderName.inbox,
+);
+export const draftsMailListSelector = createSelectorMailListForFolder(
+  FolderName.drafts,
+);
+export const sentMailListSelector = createSelectorMailListForFolder(
+  FolderName.sent,
+);
+export const trashMailListSelector = createSelectorMailListForFolder(
+  FolderName.trash,
 );
