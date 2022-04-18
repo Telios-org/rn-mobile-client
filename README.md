@@ -7,7 +7,8 @@ A mobile client for [telios](https://telios.io).
 ## Building
 
 - set up node.js 12.19.x using [nvm](https://github.com/nvm-sh/nvm)
-  - this version
+  - this version specifically is needed, and referenced in lots of build scripts.
+  - common troubleshooting for build failures in Xcode is to check logs for `"Running node: $(node -v)"` and make sure version is 12.19.x
 - set up [node-gyp](https://www.npmjs.com/package/node-gyp) with `npm install -g node-gyp`
 - set up react-native and it's dependencies
 - `yarn` to install deps
@@ -28,6 +29,10 @@ A mobile client for [telios](https://telios.io).
   - Use `--ios` or `--android` args to specify. By default, it will use the logic `platform = process.platform === 'darwin' ? IOS : ANDROID`
 
 Run either `yarn android` or `yarn ios` to run on the respective platforms. iOS only works on Macs and you need to register your phone for signing in xcode first. As well, only the release version of Android seems to be working at the moment. Something gets messed up with the bridge.
+
+### Updating Dependencies
+
+- If `/nodejs-assets/nodejs-project/node_modules` gets cleared out (which is often necessary for debugging or whatever), or sometimes when installing updated packages within nodejs-assets, you'll need to run `yarn run prepare-node-project` again from root to rebuild the node libraries.
 
 ## How it works:
 

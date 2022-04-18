@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@hyperswarm/dht": "^5.0.11",
-    "@telios/telios-client-backend": "3.3.0",
+    "@telios/telios-client-backend": "3.5.12",
     "intl": "^1.2.5",
     "sodium-native-nodejs-mobile": "^3.2.0-2",
     "utp-native-nodejs-mobile": "github:rangermauve/utp-native-nodejs-mobile#ios-support"
