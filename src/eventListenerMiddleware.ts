@@ -32,6 +32,12 @@ export const removeAllListenersForEvent = (eventName: string) => {
   }
 };
 
+/*
+  eventListenerMiddleware
+
+  Used to watch for specific redux actions, and potentially call one of our registered `oneTimeListeners`
+  See explanation in nodeActions.ts for how this is used. 
+*/
 export const eventListenerMiddleware: Middleware<{}, {}> =
   () => next => action => {
     // this is way too complex, feels like there should be a better way

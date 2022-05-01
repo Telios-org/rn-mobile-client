@@ -65,3 +65,29 @@ Run either `yarn android` or `yarn ios` to run on the respective platforms. iOS 
 - Manually bump the version and build numbers prior to Archive, or upload to AppStoreConnect will fail.
 - Manual Signing is needed for Release builds (Automatic is fine for Debug). Download Distribution Certificate from developer.apple.com and import into Xcode manually.
 - On Archive and Upload to App Store Connect, make sure to uncheck `Upload your app's symbols` otherwise upload will fail (due to inability to understand Node library symbol files)
+
+### Dev vs Prod apps
+
+There are two different apps setup in Dev console. Telios, and Telios Dev. Telios is pointed to production backend, Telios Dev pointed to dev.
+
+- When distributing an update, set the correct Bundle Identifier, Display Name, and update App Icon to match.
+- There is a branch named `prod` which will contain these changes.
+
+Bundle Identifier:
+
+- Prod: `io.telios.mobile`
+- Dev: `io.telios.mobile.dev`
+
+## Tech
+
+- Redux / Redux Toolkit
+
+  - We use Redux instead of a more localized state management like Contexts/Hooks because we must be aware of all the incoming events from our Node process. Redux is used to observe all incoming Node events and respond accordingly. It also provides great visibility into all the events happening across our system.
+  - [redux-toolkit](https://redux-toolkit.js.org/) removes much of the boilerplate of a vanilla Redux implementation.
+  - Recommended to use a Redux debug tool like [React Native Debugger](https://github.com/jhen0409/react-native-debugger)
+  - Action names: in general, actions which come from Node are prefixed `node/` and actions initiated within React Native app are prefixed `local/`
+
+- Node / Redux communication
+  - React Native communicates with Node by sending events via `nodejs.channel.send` (see `nodeActions.ts`), and receiving events via ` nodejs.channel.addListener` (see `nodeListener.ts`). This utilizes the same technology that React Native's bridge to Native iOS/Android uses, but certain messages are forwarded to Node.
+  - The `nodejs-assets/nodejs-project` directory of this project contains code that is executed in the Node environment. We are essentially only using [telios-client-backend](https://github.com/Telios-org/telios-client-backend) here, and forwarding all events to the library.
+    - Reference telios-client-backend documentation to see what events we receive/respond to.
