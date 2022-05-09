@@ -24,7 +24,7 @@ export type RegisterUsernameScreenProps = NativeStackScreenProps<
 const accessoryId = 'input-username-accessory';
 
 export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
-  const { code, accepted } = props.route.params;
+  const { accepted } = props.route.params;
   const headerHeight = useHeaderHeight();
   const modalizeRef = React.useRef<Modalize>(null);
 
@@ -77,7 +77,6 @@ export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
       return;
     }
     props.navigation.navigate('registerPassword', {
-      code,
       accepted,
       email: getEmail(username),
     });

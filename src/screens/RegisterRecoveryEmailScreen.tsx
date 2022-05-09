@@ -31,7 +31,7 @@ const accessoryId = 'input-recoveryemail-accessory';
 export const RegisterRecoveryEmailScreen = (
   props: RegisterRecoveryEmailScreenProps,
 ) => {
-  const { code, email, password } = props.route.params;
+  const { email, password } = props.route.params;
 
   const dispatch = useAppDispatch();
   const headerHeight = useHeaderHeight();
@@ -68,7 +68,6 @@ export const RegisterRecoveryEmailScreen = (
           email: email,
           masterPassword: password,
           recoveryEmail: recoveryEmail,
-          code: code,
         }),
       );
       if (registerResponse.type === registerFlow.fulfilled.type) {

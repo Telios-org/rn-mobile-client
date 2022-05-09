@@ -30,11 +30,11 @@ export const DraftsScreen = (props: DraftsScreenProps) => {
   const dispatch = useAppDispatch();
   const draftsMailList = useSelector(draftsMailListSelector);
 
-  React.useLayoutEffect(() => {
-    dispatch(
-      getMailByFolder({ id: getFolderIdByName(mail, FolderName.drafts) }),
-    );
-  }, [mail.folders]);
+  // React.useLayoutEffect(() => {
+  //   dispatch(
+  //     getMailByFolder({ id: getFolderIdByName(mail, FolderName.drafts) }),
+  //   );
+  // }, [mail.folders]);
 
   const onSelectEmail = (emailId: string) => {
     // todo: navigate

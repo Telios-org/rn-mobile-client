@@ -26,7 +26,7 @@ export const TrashScreen = (props: TrashScreenProps) => {
 
   React.useLayoutEffect(() => {
     dispatch(
-      getMailByFolder({ id: getFolderIdByName(mail, FolderName.drafts) }),
+      getMailByFolder({ id: getFolderIdByName(mail, FolderName.trash) }),
     );
   }, [mail.folders]);
 

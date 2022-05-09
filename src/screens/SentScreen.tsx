@@ -25,9 +25,7 @@ export const SentScreen = (props: SentScreenProps) => {
   const sentMailList = useSelector(sentMailListSelector);
 
   React.useLayoutEffect(() => {
-    dispatch(
-      getMailByFolder({ id: getFolderIdByName(mail, FolderName.drafts) }),
-    );
+    dispatch(getMailByFolder({ id: getFolderIdByName(mail, FolderName.sent) }));
   }, [mail.folders]);
 
   const onSelectEmail = (emailId: string) => {

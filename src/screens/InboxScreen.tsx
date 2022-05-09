@@ -28,9 +28,11 @@ export const InboxScreen = (props: InboxScreenProps) => {
   const inboxMailList = useSelector(inboxMailListSelector);
 
   React.useLayoutEffect(() => {
-    dispatch(
-      getMailByFolder({ id: getFolderIdByName(mail, FolderName.inbox) }),
-    );
+    const inboxFolderId = getFolderIdByName(mail, FolderName.inbox);
+    if (!inboxFolderId) {
+      return;
+    }
+    dispatch(getMailByFolder({ id: inboxFolderId }));
   }, [mail.folders]);
 
   const onRefresh = async () => {

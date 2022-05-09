@@ -90,7 +90,6 @@ export const registerFlow = createAsyncThunk(
       masterPassword: string;
       email: string;
       recoveryEmail: string;
-      code: string;
     },
     thunkAPI,
   ): Promise<void> => {
@@ -99,7 +98,6 @@ export const registerFlow = createAsyncThunk(
         password: data.masterPassword,
         email: data.email,
         recoveryEmail: data.recoveryEmail,
-        vcode: data.code,
       }),
     );
     if (registerAccountResponse.type === registerNewAccount.rejected.type) {
@@ -156,6 +154,8 @@ export const loginFlow = createAsyncThunk(
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
 
+    // load mailboxes, then folders immediately after login.
+    // these are needed in order to fetch mail.
     const getMailboxesResponse = await thunkAPI.dispatch(getMailboxes());
     if (getMailboxesResponse.type === getMailboxes.fulfilled.type) {
       const mailboxes = getMailboxesResponse.payload as GetMailboxesResponse;
@@ -204,7 +204,6 @@ export type RegisterAccountRequest = {
   password: string;
   email: string;
   recoveryEmail: string;
-  vcode: string;
 };
 export type RegisterAccountResponse = SignupAccount;
 export const registerNewAccount = createNodeCalloutAsyncThunk<

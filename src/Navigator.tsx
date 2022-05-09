@@ -13,15 +13,12 @@ import { useAppSelector, useIsAuthenticated } from './hooks';
 import { DrawerContent } from './components/DrawerContent';
 import { ComposeScreen } from './screens/ComposeScreen';
 import { TestScreen } from './screens/TestScreen';
-import { RegisterBetaCodeScreen } from './screens/RegisterBetaCodeScreen';
 import { colors } from './util/colors';
 import { RegisterConsentScreen } from './screens/RegisterConsentScreen';
 import { RegisterUsernameScreen } from './screens/RegisterUsernameScreen';
 import { RegisterPasswordScreen } from './screens/RegisterPasswordScreen';
 import { RegisterRecoveryEmailScreen } from './screens/RegisterRecoveryEmailScreen';
 import { RegisterSuccessScreen } from './screens/RegisterSuccessScreen';
-import { Icon } from './components/Icon';
-import { TouchableOpacity } from 'react-native';
 import { SearchScreen } from './screens/SearchScreen';
 import { NavIconButton } from './components/NavIconButton';
 import { DraftsScreen } from './screens/DraftsScreen';
@@ -52,12 +49,10 @@ export type RootStackParams = {
 };
 
 export type RegisterStackParams = {
-  registerBetaCode: undefined;
-  registerConsent: { code: string };
-  registerUsername: { code: string; accepted: boolean };
-  registerPassword: { code: string; accepted: boolean; email: string };
+  registerConsent: undefined;
+  registerUsername: { accepted: boolean };
+  registerPassword: { accepted: boolean; email: string };
   registerRecoveryEmail: {
-    code: string;
     accepted: boolean;
     email: string;
     password: string;
@@ -260,28 +255,13 @@ function Main() {
 function Register() {
   return (
     <RegisterStack.Navigator
-      initialRouteName="registerBetaCode"
+      initialRouteName="registerConsent"
       screenOptions={{
         headerBackTitleVisible: false,
         headerTransparent: true,
         title: '',
         headerTintColor: colors.primaryDark,
       }}>
-      <RegisterStack.Screen
-        name="registerBetaCode"
-        component={RegisterBetaCodeScreen}
-        options={({ navigation, route }) => ({
-          title: '',
-          headerTintColor: colors.inkDarker,
-          headerBackVisible: true,
-          headerLeft: props => (
-            <NavIconButton
-              icon={{ name: 'chevron-back', color: colors.primaryDark }}
-              onPress={() => navigation.goBack()}
-            />
-          ),
-        })}
-      />
       <RegisterStack.Screen
         name="registerConsent"
         component={RegisterConsentScreen}

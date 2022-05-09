@@ -36,7 +36,6 @@ export type RegisterConsentScreenProps = NativeStackScreenProps<
 >;
 
 export const RegisterConsentScreen = (props: RegisterConsentScreenProps) => {
-  const { code } = props.route.params;
   const headerHeight = useHeaderHeight();
 
   const [selected1, setSelected1] = React.useState(false);
@@ -48,7 +47,7 @@ export const RegisterConsentScreen = (props: RegisterConsentScreenProps) => {
     if (!isValid) {
       return;
     }
-    props.navigation.navigate('registerUsername', { code, accepted: true });
+    props.navigation.navigate('registerUsername', { accepted: true });
   };
 
   return (

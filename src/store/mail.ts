@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import nodejs from 'nodejs-mobile-react-native';
 import { registerOneTimeListener } from '../eventListenerMiddleware';
+import { FileFetchedPayload } from '../fileFetchedMiddleware';
 import { createNodeCalloutAsyncThunk } from '../util/nodeActions';
 import { accountLogout } from './account';
 import { FolderName, getFolderIdByName } from './mailSelectors';
@@ -201,6 +202,13 @@ export const getMessageBatch = createNodeCalloutAsyncThunk<
   GetMessageBatchResponse
 >('messageHandler:newMessageBatch');
 
+export type GetMessageRequest = GetNewMailMetaResponse;
+export type GetMessageResponse = {};
+export const getMessage = createNodeCalloutAsyncThunk<
+  GetMessageBatchRequest,
+  GetMessageBatchResponse
+>('messageHandler:newMessage');
+
 export type SaveDraftRequest = EmailDraft;
 export const saveDraft = createAsyncThunk(
   'flow/saveDraft',
@@ -289,7 +297,6 @@ export const saveMailToDB = createAsyncThunk(
               const emailIds: string[] = event.data.msgArr.map(
                 item => item._id,
               );
-              console.log('savemailtodb event', event, emailIds);
               thunkAPI.dispatch(updateMailAsSynced({ msgArray: emailIds }));
               resolve(event.data);
             }
@@ -353,7 +360,17 @@ export const sendEmail = createNodeCalloutAsyncThunk<
 export const mailSlice = createSlice({
   name: 'mail',
   initialState,
-  reducers: {},
+  reducers: {
+    fileFetched: (state, action: PayloadAction<FileFetchedPayload>) => {
+      const email = {
+        ...action.payload.email.content,
+        _id: action.payload._id,
+        bodyAsText: action.payload.email.content.text_body,
+        bodyAsHTML: action.payload.email.content.html_body,
+      };
+      // TODO: update state with new email
+    },
+  },
   extraReducers: builder => {
     builder.addCase(saveMailbox.fulfilled, (state, action) => {
       state.mailbox = action.payload;
@@ -388,7 +405,13 @@ export const mailSlice = createSlice({
           ];
         }
       } else if (action.meta.arg.messageType === 'Incoming') {
-        // todo: which inbox?
+        for (const message of action.payload.msgArr) {
+          const folderId = message.folderId;
+          state.mailIdsForFolder[folderId] = [
+            message.emailId,
+            ...state.mailIdsForFolder[folderId],
+          ];
+        }
       }
     });
     builder.addCase(getMailboxes.fulfilled, (state, action) => {

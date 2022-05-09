@@ -56,7 +56,7 @@ export type RegisterPasswordScreenProps = NativeStackScreenProps<
 const accessoryId = 'input-password-accessory';
 
 export const RegisterPasswordScreen = (props: RegisterPasswordScreenProps) => {
-  const { code, accepted, email } = props.route.params;
+  const { accepted, email } = props.route.params;
   const headerHeight = useHeaderHeight();
   const modalizeRef = React.useRef<Modalize>();
   const inputRefVerify = React.useRef<TextInput>();
@@ -76,7 +76,6 @@ export const RegisterPasswordScreen = (props: RegisterPasswordScreenProps) => {
       const password = formRef.current.values.password;
       console.log('submitting pw', password);
       props.navigation.navigate('registerRecoveryEmail', {
-        code,
         accepted,
         email,
         password,
