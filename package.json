@@ -5,8 +5,8 @@
   "scripts": {
     "postinstall": "patch-package",
     "prepare-node-project": "node ./scripts/install_modules.js && node ./scripts/patch_modules.js",
-    "prepare-node-project-android": "yarn run prepare-node-project --android",
-    "prepare-node-project-ios": "yarn run prepare-node-project --ios",
+    "prepare-node-project-android": "node ./scripts/install_modules.js --android && node ./scripts/patch_modules.js",
+    "prepare-node-project-ios": "node ./scripts/install_modules.js --ios && node ./scripts/patch_modules.js",
     "android": "react-native run-android --variant release",
     "ios": "react-native run-ios",
     "start": "react-native start",

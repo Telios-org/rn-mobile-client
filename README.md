@@ -25,11 +25,12 @@ A mobile client for [telios](https://telios.io).
   - `pod setup`
   - `brew install autoconf automake libtool openssl`
   - `cd ios && pod install && cd ../`
+- Before install nodejs dependencies run this command `git config --global url.https://github.com/.insteadOf git://github.com/`, due to the issue with Github restricted ssh port
 - Run `yarn run prepare-node-project` to patch modules and install the nodejs-mobile dependencies. (this process may take 5-10 minutes)
   - Make sure it uses the right platform - `install_modules` will only build Node libs for iOS _or_ Android, not both.
   - Use `--ios` or `--android` args to specify. By default, it will use the logic `platform = process.platform === 'darwin' ? IOS : ANDROID`
 
-Run either `yarn android` or `yarn ios` to run on the respective platforms. iOS only works on Macs and you need to register your phone for signing in xcode first. As well, only the release version of Android seems to be working at the moment. Something gets messed up with the bridge.
+Run either `yarn android` or `yarn ios` to run on the respective platforms. iOS only works on Macs and you need to register your phone for signing in xcode first. Android has "Debug" and "Release" variants. For Release, keystore will need to be generated.
 
 ### Updating Dependencies
 
