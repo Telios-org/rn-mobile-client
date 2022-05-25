@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { rm, readdir } = require('fs').promises;
+const { rmdir, readdir } = require('fs').promises;
 const { join } = require('path');
 
 const { MODULE_FOLDER } = require('./constants');
@@ -41,7 +41,7 @@ async function run() {
   ];
 
   for (const folder of toDelete) {
-    await rm(folder, {
+    await rmdir(folder, {
       recursive: true,
       force: true,
     });

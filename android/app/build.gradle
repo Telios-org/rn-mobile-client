@@ -169,8 +169,6 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            minifyEnabled true
-            shrinkResources true
             if (nativeArchitectures) {
                 ndk {
                     abiFilters "armeabi-v7a", "arm64-v8a"
