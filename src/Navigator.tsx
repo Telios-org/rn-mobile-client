@@ -29,6 +29,8 @@ import { AliasManageScreen } from './screens/AliasManageScreen';
 import { NewAliasNamespaceScreen } from './screens/NewAliasNamespaceScreen';
 import { NewAliasScreen } from './screens/NewAliasScreen';
 import { EmailDetailScreen } from './screens/EmailDetailScreen';
+import RNBootSplash from 'react-native-bootsplash';
+import { Platform } from 'react-native';
 
 export type CoreStackProps = {
   register: undefined;
@@ -292,7 +294,12 @@ function Register() {
 
 export const Navigator = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      onReady={() => {
+        if (Platform.OS === 'android') {
+          RNBootSplash.hide({ fade: true });
+        }
+      }}>
       <CoreStack.Navigator initialRouteName="core">
         <CoreStack.Screen
           name="register"
