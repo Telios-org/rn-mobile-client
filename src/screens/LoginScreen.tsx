@@ -1,16 +1,8 @@
 import { Formik, FormikHelpers } from 'formik';
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { View, Text, ScrollView, Image, Alert } from 'react-native';
 import { Button } from '../components/Button';
-import { Input, InputProps } from '../components/Input';
+import { Input } from '../components/Input';
 import * as Yup from 'yup';
 
 import { spacing } from '../util/spacing';
@@ -36,7 +28,10 @@ const LoginFormSchema = Yup.object().shape({
   password: Yup.string().required('Required'),
 });
 
-export type LoginScreenProps = NativeStackScreenProps<RootStackParams, 'login'>;
+export type LoginScreenProps = NativeStackScreenProps<
+  RootStackParams,
+  'register'
+>;
 
 export const LoginScreen = (props: LoginScreenProps) => {
   const dispatch = useAppDispatch();
@@ -73,8 +68,9 @@ export const LoginScreen = (props: LoginScreenProps) => {
   };
 
   const onForgotPassword = () => {
-    // todo navigate
-    Alert.alert('Not implemented yet');
+    props.navigation.navigate('register', {
+      screen: 'forgotPassword',
+    });
   };
 
   const onRegisterNewAccount = () => {

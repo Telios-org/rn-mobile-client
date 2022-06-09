@@ -31,6 +31,8 @@ import { NewAliasScreen } from './screens/NewAliasScreen';
 import { EmailDetailScreen } from './screens/EmailDetailScreen';
 import RNBootSplash from 'react-native-bootsplash';
 import { Platform } from 'react-native';
+import ForgotPassword from './screens/ForgotPassword';
+import RecoverNewPassword from './screens/RecoverNewPassword';
 
 export type CoreStackProps = {
   register: undefined;
@@ -42,8 +44,7 @@ export type RootStackParams = {
   intro: undefined;
   login: undefined;
   main: undefined;
-  register: undefined;
-
+  register: NavigatorScreenParams<RegisterStackParams> | undefined;
   compose: undefined;
   search: undefined;
   newAliasNamespace: undefined;
@@ -60,6 +61,8 @@ export type RegisterStackParams = {
     password: string;
   };
   registerSuccess: undefined;
+  forgotPassword: undefined;
+  recoverNewPassword: { passphrase: string };
 };
 
 export type MainStackParams = {
@@ -287,6 +290,30 @@ function Register() {
           headerBackVisible: false,
           gestureEnabled: false,
         }}
+      />
+      <RegisterStack.Screen
+        name="forgotPassword"
+        component={ForgotPassword}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <NavIconButton
+              icon={{ name: 'chevron-back', size: 28 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
+      />
+      <RegisterStack.Screen
+        name="recoverNewPassword"
+        component={RecoverNewPassword}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <NavIconButton
+              icon={{ name: 'chevron-back', size: 28 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
       />
     </RegisterStack.Navigator>
   );
