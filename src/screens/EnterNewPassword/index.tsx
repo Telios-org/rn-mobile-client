@@ -1,12 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useHeaderHeight } from '@react-navigation/elements';
-
 import React, { useRef, useState } from 'react';
-import { View, Text, ScrollView, TextInput, Alert } from 'react-native';
+import { View, Text, TextInput, Alert } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
-
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { RegisterStackParams, RootStackParams } from '../../Navigator';
@@ -18,6 +15,8 @@ import styles from './styles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { recoveryPassFlow } from '../../store/account';
 import { CompositeScreenProps } from '@react-navigation/native';
+import ScrollableContainer from '../../components/ScrollableContainer';
+import NextButton from '../../components/NextButton';
 
 const zxcvbn = require('zxcvbn');
 
@@ -47,7 +46,7 @@ const RegisterPasswordFormSchema = Yup.object().shape({
 });
 
 export type RegisterPasswordScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<RegisterStackParams, 'recoverNewPassword'>,
+  NativeStackScreenProps<RegisterStackParams, 'enterNewPassword'>,
   NativeStackScreenProps<RootStackParams>
 >;
 
@@ -55,7 +54,6 @@ export default ({ route, navigation }: RegisterPasswordScreenProps) => {
   const { passphrase } = route.params;
   const dispatch = useAppDispatch();
   const email = useAppSelector(state => state.account.lastUsername);
-  const headerHeight = useHeaderHeight();
   const modalizeRef = useRef<Modalize>(null);
   const inputRefVerify = useRef<TextInput>(null);
   const formRef = useRef<FormikProps<RegisterPasswordFormValues>>(null);
@@ -63,7 +61,7 @@ export default ({ route, navigation }: RegisterPasswordScreenProps) => {
   const [strengthResult, setStrengthResult] = useState<PasswordResultsType>();
 
   const onSubmit = async () => {
-    if (!formRef.current) {
+    if (!formRef.current || !passphrase) {
       return;
     }
     if (
@@ -112,122 +110,110 @@ export default ({ route, navigation }: RegisterPasswordScreenProps) => {
 
   return (
     <>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[
-          { marginTop: headerHeight },
-          styles.scrollViewContent,
-        ]}>
-        <View style={styles.content}>
-          <Text style={fonts.title2}>Enter New Password</Text>
-          <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
-            Set your local master password. This is used to encrypt your stuff.
-            Don’t forget it!
-          </Text>
-          <Formik
-            innerRef={formRef}
-            initialValues={{ password: '', verifyPassword: '' }}
-            validationSchema={RegisterPasswordFormSchema}
-            validate={validate}
-            onSubmit={onSubmit}>
-            {({
-              handleChange,
-              handleBlur,
-              values,
-              errors,
-              touched,
-              isSubmitting,
-            }) => (
-              <>
-                <View style={{ marginTop: spacing.lg }}>
-                  <Input
-                    onChangeText={handleChange('password')}
-                    onBlur={handleBlur('password')}
-                    value={values.password}
-                    error={
-                      touched.password && errors.password
-                        ? errors.password
-                        : undefined
-                    }
-                    label="New Master Password"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    autoComplete="password"
-                    secureTextEntry
-                    iconLeft={{ name: 'lock-closed-outline' }}
-                    returnKeyType="next"
-                    onSubmitEditing={() => {
-                      console.log('next', inputRefVerify);
-                      inputRefVerify.current?.focus();
-                    }}
-                  />
+      <ScrollableContainer>
+        <Text style={fonts.title2}>Enter New Password</Text>
+        <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
+          Set your local master password. This is used to encrypt your stuff.
+          Don’t forget it!
+        </Text>
+        <Formik
+          innerRef={formRef}
+          initialValues={{ password: '', verifyPassword: '' }}
+          validationSchema={RegisterPasswordFormSchema}
+          validate={validate}
+          onSubmit={onSubmit}>
+          {({
+            handleChange,
+            handleBlur,
+            values,
+            errors,
+            touched,
+            isSubmitting,
+          }) => (
+            <>
+              <View style={{ marginTop: spacing.lg }}>
+                <Input
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  value={values.password}
+                  error={
+                    touched.password && errors.password
+                      ? errors.password
+                      : undefined
+                  }
+                  label="New Master Password"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  autoComplete="password"
+                  secureTextEntry
+                  iconLeft={{ name: 'lock-closed-outline' }}
+                  returnKeyType="next"
+                  onSubmitEditing={() => {
+                    console.log('next', inputRefVerify);
+                    inputRefVerify.current?.focus();
+                  }}
+                />
 
-                  <PasswordStrengthBars
-                    value={strengthResult?.score || 0}
-                    style={{ marginTop: spacing.sm }}
-                  />
+                <PasswordStrengthBars
+                  value={strengthResult?.score || 0}
+                  style={{ marginTop: spacing.sm }}
+                />
 
-                  <Input
-                    ref={inputRefVerify}
-                    onChangeText={handleChange('verifyPassword')}
-                    onBlur={handleBlur('verifyPassword')}
-                    value={values.verifyPassword}
-                    error={
-                      touched.verifyPassword && errors.verifyPassword
-                        ? errors.verifyPassword
-                        : undefined
-                    }
-                    label="Confirm New Password"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    autoComplete="password"
-                    secureTextEntry={true}
-                    iconLeft={{ name: 'lock-closed-outline' }}
-                    style={{ marginTop: spacing.md }}
-                  />
+                <Input
+                  ref={inputRefVerify}
+                  onChangeText={handleChange('verifyPassword')}
+                  onBlur={handleBlur('verifyPassword')}
+                  value={values.verifyPassword}
+                  error={
+                    touched.verifyPassword && errors.verifyPassword
+                      ? errors.verifyPassword
+                      : undefined
+                  }
+                  label="Confirm New Password"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  autoComplete="password"
+                  secureTextEntry={true}
+                  iconLeft={{ name: 'lock-closed-outline' }}
+                  style={{ marginTop: spacing.md }}
+                />
 
-                  <View style={styles.timeCrack}>
-                    <Text style={styles.timeCrackText}>
-                      {'Time to crack password'}
-                    </Text>
-                    {!!values.password && (
-                      <View style={styles.strength}>
-                        <Text
-                          style={[fonts.small.medium, { color: colors.white }]}>
-                          {
-                            strengthResult?.crack_times_display
-                              .offline_slow_hashing_1e4_per_second
-                          }
-                        </Text>
-                      </View>
-                    )}
-                  </View>
+                <View style={styles.timeCrack}>
+                  <Text style={styles.timeCrackText}>
+                    {'Time to crack password'}
+                  </Text>
+                  {!!values.password && (
+                    <View style={styles.strength}>
+                      <Text
+                        style={[fonts.small.medium, { color: colors.white }]}>
+                        {
+                          strengthResult?.crack_times_display
+                            .offline_slow_hashing_1e4_per_second
+                        }
+                      </Text>
+                    </View>
+                  )}
                 </View>
-                <View style={styles.whatsThis}>
-                  <Button
-                    size="small"
-                    type="text"
-                    title="whats this?"
-                    onPress={() => {
-                      // todo show modal
-                      modalizeRef.current?.open();
-                    }}
-                  />
-                </View>
-                <View style={styles.nextBtnContainer}>
-                  <Button
-                    size="large"
-                    title="Next"
-                    disabled={!formValid}
-                    onPress={onSubmit}
-                    loading={isSubmitting}
-                  />
-                </View>
-              </>
-            )}
-          </Formik>
-        </View>
-      </ScrollView>
+              </View>
+              <View style={styles.whatsThis}>
+                <Button
+                  size="small"
+                  type="text"
+                  title="whats this?"
+                  onPress={() => {
+                    modalizeRef.current?.open();
+                  }}
+                />
+              </View>
+              <NextButton
+                disabled={!formValid}
+                onSubmit={onSubmit}
+                loading={isSubmitting}
+              />
+            </>
+          )}
+        </Formik>
+      </ScrollableContainer>
 
       <Modalize ref={modalizeRef} adjustToContentHeight={true}>
         <View style={styles.modalContainer}>

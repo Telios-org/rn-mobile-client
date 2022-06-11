@@ -32,7 +32,9 @@ import { EmailDetailScreen } from './screens/EmailDetailScreen';
 import RNBootSplash from 'react-native-bootsplash';
 import { Platform } from 'react-native';
 import ForgotPassword from './screens/ForgotPassword';
-import RecoverNewPassword from './screens/RecoverNewPassword';
+import RecoverAccount from './screens/RecoverAccount';
+import RecoverAccountCode from './screens/RecoverAccountCode';
+import EnterNewPassword from './screens/EnterNewPassword';
 
 export type CoreStackProps = {
   register: undefined;
@@ -62,7 +64,9 @@ export type RegisterStackParams = {
   };
   registerSuccess: undefined;
   forgotPassword: undefined;
-  recoverNewPassword: { passphrase: string };
+  enterNewPassword: { passphrase?: string; hasValidCode?: boolean };
+  recoverAccount: undefined;
+  recoverAccountCode: { recoveryEmail: string };
 };
 
 export type MainStackParams = {
@@ -84,6 +88,15 @@ const CoreStack = createNativeStackNavigator<CoreStackProps>();
 const Stack = createNativeStackNavigator<RootStackParams>();
 const RegisterStack = createNativeStackNavigator<RegisterStackParams>();
 const Drawer = createDrawerNavigator<MainStackParams>();
+
+const showBackArrow = ({ navigation }: any) => ({
+  headerLeft: () => (
+    <NavIconButton
+      icon={{ name: 'chevron-back', size: 28 }}
+      onPress={() => navigation.goBack()}
+    />
+  ),
+});
 
 const InboxStack = createNativeStackNavigator<InboxStackParams>();
 const InboxRoot = () => (
@@ -294,26 +307,22 @@ function Register() {
       <RegisterStack.Screen
         name="forgotPassword"
         component={ForgotPassword}
-        options={({ navigation }) => ({
-          headerLeft: () => (
-            <NavIconButton
-              icon={{ name: 'chevron-back', size: 28 }}
-              onPress={() => navigation.goBack()}
-            />
-          ),
-        })}
+        options={showBackArrow}
       />
       <RegisterStack.Screen
-        name="recoverNewPassword"
-        component={RecoverNewPassword}
-        options={({ navigation }) => ({
-          headerLeft: () => (
-            <NavIconButton
-              icon={{ name: 'chevron-back', size: 28 }}
-              onPress={() => navigation.goBack()}
-            />
-          ),
-        })}
+        name="enterNewPassword"
+        component={EnterNewPassword}
+        options={showBackArrow}
+      />
+      <RegisterStack.Screen
+        name="recoverAccount"
+        component={RecoverAccount}
+        options={showBackArrow}
+      />
+      <RegisterStack.Screen
+        name="recoverAccountCode"
+        component={RecoverAccountCode}
+        options={showBackArrow}
       />
     </RegisterStack.Navigator>
   );
