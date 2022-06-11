@@ -98,7 +98,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
         <Text style={fonts.regular.regular}>{'Log in with your account'}</Text>
         <Formik
           initialValues={{
-            email: lastUsername,
+            email: lastUsername || '',
             password: '',
           }}
           validationSchema={LoginFormSchema}
@@ -133,7 +133,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
                   },
                 ]}
                 value={values.email}
-                error={touched.email && errors.email}
+                error={touched.email && errors.email ? errors.email : undefined}
                 onSelect={value => {
                   if (value === SYNC_EXISTING) {
                     onSyncExistingAccount();
@@ -147,32 +147,35 @@ export const LoginScreen = (props: LoginScreenProps) => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
-                error={touched.password && errors.password}
+                error={
+                  touched.password && errors.password
+                    ? errors.password
+                    : undefined
+                }
                 label="Master Password"
                 autoCapitalize="none"
                 autoCorrect={false}
                 autoComplete="password"
                 secureTextEntry={true}
                 iconLeft={{ name: 'lock-closed-outline' }}
-                style={{ marginTop: spacing.md }}
+                style={{ marginVertical: spacing.md }}
                 returnKeyType="go"
                 onSubmitEditing={() => handleSubmit()}
               />
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                  marginTop: spacing.md,
-                }}>
-                <Button
-                  onPress={onForgotPassword}
-                  size="small"
-                  type="text"
-                  title="Forgot Password"
-                />
-              </View>
-
+              {lastUsername && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                  }}>
+                  <Button
+                    onPress={onForgotPassword}
+                    size="small"
+                    type="text"
+                    title="Forgot Password"
+                  />
+                </View>
+              )}
               <Button
                 style={{ marginTop: spacing.xl }}
                 onPress={handleSubmit}
