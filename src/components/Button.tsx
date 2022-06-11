@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
-import { borderRadius, spacing } from '../util/spacing';
+import { spacing } from '../util/spacing';
 import { IconAccessory } from '../util/types';
 import { Icon } from './Icon';
 
@@ -59,10 +59,10 @@ export const Button = (props: ButtonProps) => {
 
   return (
     <TouchableOpacity
-      disabled={loading}
+      disabled={loading || disabled}
       style={[
         {
-          backgroundColor: getBgColor(),
+          backgroundColor: getBgColor() || undefined,
           paddingHorizontal:
             type === 'text' ? 0 : size === 'small' ? spacing.md : spacing.xl,
           paddingVertical: size === 'small' ? spacing.sm : spacing.md,

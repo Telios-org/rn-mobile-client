@@ -136,6 +136,17 @@ export const registerFlow = createAsyncThunk(
   },
 );
 
+export const recoveryPassFlow = createAsyncThunk<void, RecoveryPasswordRequest>(
+  'flow/recoveryPass',
+  async (data, thunkAPI) => {
+    try {
+      await thunkAPI.dispatch(recoverAccountPass(data)).unwrap();
+    } catch (e: any) {
+      throw new Error(e.message);
+    }
+  },
+);
+
 export const loginFlow = createAsyncThunk(
   'flow/login',
   async (
@@ -210,6 +221,18 @@ export const registerNewAccount = createNodeCalloutAsyncThunk<
   RegisterAccountRequest,
   RegisterAccountResponse
 >('account:create');
+
+export type RecoveryPasswordRequest = {
+  passphrase: string;
+  email: string;
+  newPass: string;
+};
+
+type RecoveryPasswordResponse = {};
+export const recoverAccountPass = createNodeCalloutAsyncThunk<
+  RecoveryPasswordRequest,
+  RecoveryPasswordResponse
+>('account:resetPassword');
 
 export type AccountLoginRequest = { email: string; password: string };
 export type AccountLoginResponse = LoginAccount;
