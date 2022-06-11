@@ -1,18 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../util/colors';
 import { spacing } from '../../util/spacing';
 import { fonts } from '../../util/fonts';
 
 export default StyleSheet.create({
-  container: {
-    margin: spacing.lg,
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  scrollViewContainer: { flexGrow: 1 },
   resetText: {
     ...fonts.regular.regular,
     marginTop: spacing.sm,
