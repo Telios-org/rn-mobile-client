@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
+import { FilterOption } from '../components/MailList';
 import { RootState } from '../store';
 import { MailState } from '../store/mail';
 
@@ -71,4 +72,35 @@ export const sentMailListSelector = createSelectorMailListForFolder(
 );
 export const trashMailListSelector = createSelectorMailListForFolder(
   FolderName.trash,
+);
+
+export const messageListFilters = (state: RootState) =>
+  state.global.messageListFilters;
+
+export const readFilter = createSelector(
+  [messageListFilters],
+  filters => filters.readStatus,
+);
+
+export const filteredInboxMailListSelector = createSelector(
+  [inboxMailListSelector, readFilter],
+  (inboxMails, readCondition) => {
+    let filteredInboxMailList;
+
+    switch (readCondition) {
+      case FilterOption.Unread:
+        filteredInboxMailList = [...inboxMails.filter(item => item.unread)];
+        break;
+
+      case FilterOption.Read:
+        filteredInboxMailList = [...inboxMails.filter(item => !item.unread)];
+        break;
+
+      case FilterOption.All:
+      default:
+        filteredInboxMailList = [...inboxMails];
+        break;
+    }
+    return filteredInboxMailList;
+  },
 );
