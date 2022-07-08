@@ -7,15 +7,16 @@ import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useSelector } from 'react-redux';
 import {
+  filteredInboxMailListSelector,
   FolderName,
   getFolderIdByName,
-  inboxMailListSelector,
 } from '../store/mailSelectors';
-import { getMailByFolder, getNewMailFlow } from '../store/mail';
+import { getMailByFolder, getMessageById, getNewMailFlow } from '../store/mail';
 import { MailList, MailListItem } from '../components/MailList';
 import { ComposeNewEmailButton } from '../components/ComposeNewEmailButton';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';
+import { setMessageListFilters } from '../store/global';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -25,7 +26,7 @@ export type InboxScreenProps = CompositeScreenProps<
 export const InboxScreen = (props: InboxScreenProps) => {
   const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const inboxMailList = useSelector(inboxMailListSelector);
+  const inboxMailList = useSelector(filteredInboxMailListSelector);
 
   React.useLayoutEffect(() => {
     const inboxFolderId = getFolderIdByName(mail, FolderName.inbox);
@@ -44,10 +45,15 @@ export const InboxScreen = (props: InboxScreenProps) => {
   };
 
   const onSelectEmail = (emailId: string) => {
+    // dispatch(getMessageById({ id: emailId }));
     props.navigation.navigate('inbox', {
       screen: 'emailDetail',
       params: { emailId: emailId },
     });
+  };
+
+  const filterListItems = (filterItem: object) => {
+    dispatch(setMessageListFilters({ ...filterItem }));
   };
 
   const listData: MailListItem[] = inboxMailList.map(item => ({
@@ -69,6 +75,7 @@ export const InboxScreen = (props: InboxScreenProps) => {
         loading={mail.loadingGetMailMeta}
         onRefresh={onRefresh}
         items={listData}
+        filterListItems={filterListItems}
       />
       <ComposeNewEmailButton onPress={onNewEmail} />
     </View>
