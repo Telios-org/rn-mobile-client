@@ -4,6 +4,7 @@ import { fileFetchedMiddleware } from './fileFetchedMiddleware';
 import { accountReducer } from './store/account';
 import { aliasesReducer } from './store/aliases';
 import { contactsReducer } from './store/contacts';
+import { globalReducer } from './store/global';
 import { mailReducer } from './store/mail';
 import { systemReducer } from './store/system';
 
@@ -14,6 +15,7 @@ export const store = configureStore({
     contacts: contactsReducer,
     mail: mailReducer,
     system: systemReducer,
+    global: globalReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()
