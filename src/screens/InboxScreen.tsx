@@ -11,12 +11,12 @@ import {
   FolderName,
   getFolderIdByName,
 } from '../store/mailSelectors';
-import { getMailByFolder, getMessageById, getNewMailFlow } from '../store/mail';
+import { getMailByFolder, getNewMailFlow } from '../store/mail';
 import { MailList, MailListItem } from '../components/MailList';
 import { ComposeNewEmailButton } from '../components/ComposeNewEmailButton';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';
-import { setMessageListFilters } from '../store/global';
+import { updateMessageListFilters } from '../store/global';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -45,7 +45,6 @@ export const InboxScreen = (props: InboxScreenProps) => {
   };
 
   const onSelectEmail = (emailId: string) => {
-    // dispatch(getMessageById({ id: emailId }));
     props.navigation.navigate('inbox', {
       screen: 'emailDetail',
       params: { emailId: emailId },
@@ -53,7 +52,7 @@ export const InboxScreen = (props: InboxScreenProps) => {
   };
 
   const filterListItems = (filterItem: object) => {
-    dispatch(setMessageListFilters({ ...filterItem }));
+    dispatch(updateMessageListFilters({ ...filterItem }));
   };
 
   const listData: MailListItem[] = inboxMailList.map(item => ({

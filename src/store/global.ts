@@ -18,7 +18,7 @@ export const globalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
-    setMessageListFilters(state, action: PayloadAction<MessageListFilters>) {
+    updateMessageListFilters(state, action: PayloadAction<MessageListFilters>) {
       state.messageListFilters = action.payload;
     },
   },
@@ -31,6 +31,6 @@ export const globalSlice = createSlice({
   },
 });
 
-export const { setMessageListFilters } = globalSlice.actions;
+export const { updateMessageListFilters } = globalSlice.actions;
 
 export const globalReducer = globalSlice.reducer;

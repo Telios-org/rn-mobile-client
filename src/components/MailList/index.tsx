@@ -1,14 +1,15 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Text, View, Animated, StyleSheet } from 'react-native';
+import { Text, View, Animated } from 'react-native';
 
-import { Button } from '../components/Button';
-import { spacing } from '../util/spacing';
-import { colors } from '../util/colors';
-import { fonts } from '../util/fonts';
-import { Icon } from '../components/Icon';
-import { EmailCell } from '../components/EmailCell';
-import { LocalEmail } from '../store/mail';
+import { Button } from '../../components/Button';
+import { colors } from '../../util/colors';
+import { fonts } from '../../util/fonts';
+import { Icon } from '../../components/Icon';
+import { EmailCell } from '../../components/EmailCell';
+import { LocalEmail } from '../../store/mail';
+
+import styles from './styles';
 
 export type MailListItem = {
   id: string;
@@ -178,43 +179,3 @@ const EmptyComponent = () => (
     </Text>
   </View>
 );
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-
-  filterOptionsContainer: {
-    height: 55,
-    borderColor: colors.skyLighter,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    backgroundColor: colors.white,
-  },
-  disableFilterOptions: {
-    height: 1,
-    backgroundColor: colors.skyLighter,
-  },
-  filterOptionsFirstItem: {
-    paddingRight: spacing.md,
-  },
-  filterOptionsItem: {
-    paddingHorizontal: spacing.md,
-  },
-  filterOptionsItemSelectedText: {
-    color: colors.primaryBase,
-  },
-  filterOptionsItemUnselectedText: {
-    color: colors.skyDark,
-  },
-
-  emptyComponentContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: spacing.xxl,
-  },
-});
