@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Text, View, Animated, StyleProp } from 'react-native';
+import { Text, View, Animated } from 'react-native';
 
-import { Button } from '../components/Button';
-import { spacing } from '../util/spacing';
-import { colors } from '../util/colors';
-import { fonts } from '../util/fonts';
-import { Icon } from '../components/Icon';
-import { EmailCell } from '../components/EmailCell';
-import { LocalEmail } from '../store/mail';
+import { Button } from '../../components/Button';
+import { colors } from '../../util/colors';
+import { fonts } from '../../util/fonts';
+import { Icon } from '../../components/Icon';
+import { EmailCell } from '../../components/EmailCell';
+import { LocalEmail } from '../../store/mail';
+
+import styles from './styles';
 
 export type MailListItem = {
   id: string;
@@ -25,7 +26,14 @@ export type MailListProps = {
   refreshEnabled?: boolean;
   onRefresh?: () => Promise<void>;
   disableUnreadFilters?: boolean;
+  filterListItems?: (item: object) => void;
 };
+
+export enum FilterOption {
+  All = 'All',
+  Unread = 'Unread',
+  Read = 'Read',
+}
 
 export const MailList = ({
   items,
@@ -36,9 +44,10 @@ export const MailList = ({
   renderNavigationTitle,
   loading,
   disableUnreadFilters,
+  filterListItems,
 }: MailListProps) => {
-  const headerTitleAnimation = React.useRef(new Animated.Value(0)).current;
-  React.useLayoutEffect(() => {
+  const headerTitleAnimation = useRef(new Animated.Value(0)).current;
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerShadowVisible: false,
       headerTitle: () => (
@@ -55,7 +64,9 @@ export const MailList = ({
     });
   }, [navigation]); // TODO: is this going to cause performance issues?
 
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedFilterOption, setSelectedFilterOption] =
+    useState<FilterOption>(FilterOption.All);
 
   const onListRefresh = async () => {
     setIsRefreshing(true);
@@ -89,54 +100,42 @@ export const MailList = ({
   // TODO: hook these up
   const renderFilterHeader = () => {
     if (disableUnreadFilters) {
-      return (
-        <View
-          style={{
-            height: 1,
-            backgroundColor: colors.skyLighter,
-          }}
-        />
-      );
+      return <View style={styles.disableFilterOptions} />;
     }
     return (
-      <View
-        style={{
-          height: 55,
-          borderColor: colors.skyLighter,
-          borderTopWidth: 1,
-          borderBottomWidth: 1,
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: spacing.lg,
-          backgroundColor: colors.white,
-        }}>
-        <Button
-          title="All"
-          type="text"
-          size="small"
-          onPress={() => {}}
-          style={{ paddingRight: spacing.md }}
-          titleStyle={{ color: colors.primaryBase }}
-        />
-        <Button
-          title="Unread"
-          type="text"
-          size="small"
-          onPress={() => {}}
-          style={{ paddingHorizontal: spacing.md }}
-          titleStyle={{ color: colors.skyDark }}
-        />
-        <Button
-          title="Read"
-          type="text"
-          size="small"
-          onPress={() => {}}
-          style={{ paddingHorizontal: spacing.md }}
-          titleStyle={{ color: colors.skyDark }}
-        />
+      <View style={styles.filterOptionsContainer}>
+        {Object.keys(FilterOption)?.map(key =>
+          filterOptionsItem(FilterOption[key], true),
+        )}
       </View>
     );
   };
+
+  const filterMessagesByReadStatus = (optionType: FilterOption) => {
+    filterListItems?.({ readStatus: optionType });
+    setSelectedFilterOption(optionType);
+  };
+
+  const filterOptionsItem = (
+    optionType: FilterOption,
+    firstItem: boolean | undefined = false,
+  ) => (
+    <Button
+      title={optionType}
+      key={optionType}
+      type="text"
+      size="small"
+      onPress={() => filterMessagesByReadStatus(optionType)}
+      style={
+        firstItem ? styles.filterOptionsFirstItem : styles.filterOptionsItem
+      }
+      titleStyle={
+        selectedFilterOption === optionType
+          ? styles.filterOptionsItemSelectedText
+          : styles.filterOptionsItemUnselectedText
+      }
+    />
+  );
 
   const renderSectionHeader = ({ section: { id, data } }) => {
     if (id === 'MAIL') {
@@ -147,7 +146,7 @@ export const MailList = ({
 
   return (
     <Animated.SectionList
-      style={{ flex: 1, backgroundColor: colors.white }}
+      style={styles.sectionContainer}
       sections={sectionListData}
       stickySectionHeadersEnabled={true}
       onScroll={Animated.event(
@@ -173,12 +172,7 @@ export const MailList = ({
 };
 
 const EmptyComponent = () => (
-  <View
-    style={{
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingVertical: spacing.xxl,
-    }}>
+  <View style={styles.emptyComponentContainer}>
     <Icon name="file-tray-outline" size={50} color={colors.skyLight} />
     <Text style={[fonts.large.regular, { color: colors.skyLight }]}>
       {'No Messages'}

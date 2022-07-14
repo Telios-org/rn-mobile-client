@@ -2,9 +2,14 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import nodejs from 'nodejs-mobile-react-native';
 import { registerOneTimeListener } from '../eventListenerMiddleware';
 import { FileFetchedPayload } from '../fileFetchedMiddleware';
+import { RootState } from '../store';
 import { createNodeCalloutAsyncThunk } from '../util/nodeActions';
 import { accountLogout } from './account';
-import { FolderName, getFolderIdByName } from './mailSelectors';
+import {
+  folderIdByNameSelector,
+  FolderName,
+  getFolderIdByName,
+} from './mailSelectors';
 
 export type ToFrom = { address: string; name?: string };
 
@@ -271,6 +276,14 @@ export const saveMailToDB = createAsyncThunk(
   ): Promise<SaveMailToDBResponse> => {
     return new Promise((resolve, reject) => {
       const firstEmailId = data.messages[0]?._id;
+      const state: RootState = thunkAPI.getState();
+
+      const inboxFolderId = folderIdByNameSelector(state, FolderName.inbox);
+      const inboxMailIds = state?.mail?.mailIdsForFolder?.[inboxFolderId] || [];
+
+      if (inboxMailIds.includes(firstEmailId)) {
+        return;
+      }
       nodejs.channel.send({
         event: SaveMailToDBEventName,
         payload: data,
@@ -350,6 +363,20 @@ export const getMailByFolder = createNodeCalloutAsyncThunk<
   GetMailByFolderResponse
 >('email:getMessagesByFolderId');
 
+export type MarkAsUnreadRequest = { id: string | number };
+export type MarkAsUnreadResponse = any; //Array<LocalEmail>;
+export const markAsUnread = createNodeCalloutAsyncThunk<
+  MarkAsUnreadRequest,
+  MarkAsUnreadResponse
+>('email:markAsUnread');
+
+export type GetMessageByIdRequest = { id: string | number };
+export type GetMessageByIdResponse = any; //Array<LocalEmail>;
+export const getMessageById = createNodeCalloutAsyncThunk<
+  GetMessageByIdRequest,
+  GetMessageByIdResponse
+>('email:getMessageById');
+
 export type SendEmailRequest = { email: OutgoingEmail };
 export type SendEmailResponse = {}; // TODO;
 export const sendEmail = createNodeCalloutAsyncThunk<
@@ -362,12 +389,13 @@ export const mailSlice = createSlice({
   initialState,
   reducers: {
     fileFetched: (state, action: PayloadAction<FileFetchedPayload>) => {
-      const email = {
-        ...action.payload.email.content,
-        _id: action.payload._id,
-        bodyAsText: action.payload.email.content.text_body,
-        bodyAsHTML: action.payload.email.content.html_body,
-      };
+      const email = action.payload;
+      // const email = {
+      //   ...action.payload.email.content,
+      //   _id: action.payload._id,
+      //   bodyAsText: action.payload.email.content.text_body,
+      //   bodyAsHTML: action.payload.email.content.html_body,
+      // };
       // TODO: update state with new email
     },
   },
@@ -444,6 +472,14 @@ export const mailSlice = createSlice({
     });
     builder.addCase(sendEmail.rejected, (state, action) => {
       state.loadingSendEmail = false;
+    });
+
+    builder.addCase(getMessageById.fulfilled, (state, action) => {
+      const emailId = action.meta.arg.id;
+      state.mail[emailId] = { ...state.mail[emailId], unread: false };
+    });
+    builder.addCase(getMessageById.rejected, (state, action) => {
+      // TODO: set failure message
     });
 
     // clear state on logout

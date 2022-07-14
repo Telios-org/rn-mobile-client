@@ -7,15 +7,16 @@ import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useSelector } from 'react-redux';
 import {
+  filteredInboxMailListSelector,
   FolderName,
   getFolderIdByName,
-  inboxMailListSelector,
 } from '../store/mailSelectors';
 import { getMailByFolder, getNewMailFlow } from '../store/mail';
 import { MailList, MailListItem } from '../components/MailList';
 import { ComposeNewEmailButton } from '../components/ComposeNewEmailButton';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';
+import { updateMessageListFilters } from '../store/global';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -25,7 +26,7 @@ export type InboxScreenProps = CompositeScreenProps<
 export const InboxScreen = (props: InboxScreenProps) => {
   const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const inboxMailList = useSelector(inboxMailListSelector);
+  const inboxMailList = useSelector(filteredInboxMailListSelector);
 
   React.useLayoutEffect(() => {
     const inboxFolderId = getFolderIdByName(mail, FolderName.inbox);
@@ -50,6 +51,10 @@ export const InboxScreen = (props: InboxScreenProps) => {
     });
   };
 
+  const filterListItems = (filterItem: object) => {
+    dispatch(updateMessageListFilters({ ...filterItem }));
+  };
+
   const listData: MailListItem[] = inboxMailList.map(item => ({
     id: item.emailId,
     mail: item,
@@ -69,6 +74,7 @@ export const InboxScreen = (props: InboxScreenProps) => {
         loading={mail.loadingGetMailMeta}
         onRefresh={onRefresh}
         items={listData}
+        filterListItems={filterListItems}
       />
       <ComposeNewEmailButton onPress={onNewEmail} />
     </View>
