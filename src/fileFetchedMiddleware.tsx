@@ -17,10 +17,12 @@ export const fileFetchedMiddleware: Middleware<{}, {}> =
   (api: MiddlewareAPI<AppDispatch>) => next => action => {
     if (action.type === 'node/messageHandler:fileFetched') {
       const data = action.data as FileFetchedPayload;
-      api.dispatch(mailSlice.actions.fileFetched(data));
-      // api.dispatch(
-      //   saveMailToDB({ messageType: 'Incoming', messages: [email] }),
-      // );
+
+      const email = transformEmail(data);
+      // api.dispatch(mailSlice.actions.fileFetched(email));
+      api.dispatch(
+        saveMailToDB({ messageType: 'Incoming', messages: [email] }),
+      );
     } else if (action.type === 'node/account:newMessage') {
       const data = action.data as NewMessagePayload;
       // api.dispatch(getMessage(data));
@@ -28,3 +30,14 @@ export const fileFetchedMiddleware: Middleware<{}, {}> =
 
     return next(action);
   };
+
+function transformEmail(data) {
+  const email = data?.email?.content;
+
+  return {
+    ...email,
+    _id: data._id,
+    bodyAsText: email?.text_body,
+    bodyAsHTML: email?.html_body,
+  };
+}

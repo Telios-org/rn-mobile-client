@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useSelector } from 'react-redux';
+import { DefaultRootState, useSelector } from 'react-redux';
 import {
+  filteredInboxMailListSelector,
   FolderName,
   getFolderIdByName,
-  inboxMailListSelector,
 } from '../store/mailSelectors';
 import { getMailByFolder, getNewMailFlow } from '../store/mail';
-import { MailList, MailListItem } from '../components/MailList';
+import { FilterOption, MailList, MailListItem } from '../components/MailList';
 import { ComposeNewEmailButton } from '../components/ComposeNewEmailButton';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';
@@ -25,7 +25,12 @@ export type InboxScreenProps = CompositeScreenProps<
 export const InboxScreen = (props: InboxScreenProps) => {
   const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const inboxMailList = useSelector(inboxMailListSelector);
+  const [selectedFilterOption, setSelectedFilterOption] =
+    useState<FilterOption>(FilterOption.All);
+
+  const inboxMailList = useSelector((state: DefaultRootState) =>
+    filteredInboxMailListSelector(state, selectedFilterOption),
+  );
 
   React.useLayoutEffect(() => {
     const inboxFolderId = getFolderIdByName(mail, FolderName.inbox);
@@ -50,6 +55,10 @@ export const InboxScreen = (props: InboxScreenProps) => {
     });
   };
 
+  const setFilterOption = (filterItem: FilterOption) => {
+    setSelectedFilterOption(filterItem);
+  };
+
   const listData: MailListItem[] = inboxMailList.map(item => ({
     id: item.emailId,
     mail: item,
@@ -69,6 +78,8 @@ export const InboxScreen = (props: InboxScreenProps) => {
         loading={mail.loadingGetMailMeta}
         onRefresh={onRefresh}
         items={listData}
+        setFilterOption={setFilterOption}
+        selectedFilterOption={selectedFilterOption}
       />
       <ComposeNewEmailButton onPress={onNewEmail} />
     </View>

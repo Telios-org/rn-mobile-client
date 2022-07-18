@@ -45,7 +45,9 @@ export const EmailCell = (props: EmailCellProps) => {
       <View style={{ flex: 1, marginLeft: spacing.md }}>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1 }}>
-            <Text style={fonts.regular.bold}>{fromName}</Text>
+            <Text style={isUnread ? fonts.regular.bold : fonts.regular.regular}>
+              {fromName}
+            </Text>
           </View>
           <Text
             style={[
