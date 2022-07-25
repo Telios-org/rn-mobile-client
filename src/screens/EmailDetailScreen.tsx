@@ -17,7 +17,7 @@ import { Button } from '../components/Button';
 import { fonts, textStyles } from '../util/fonts';
 import { NavIconButton } from '../components/NavIconButton';
 import { FolderName, getFolderIdByName } from '../store/mailSelectors';
-import { deleteMail, ToFrom } from '../store/mail';
+import { deleteMail, getMessageById, ToFrom } from '../store/mail';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
   InboxStackParams,
@@ -34,7 +34,7 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
 
   // TODO: this might be slow at scale, if trash is huge.
   const trashFolderId = getFolderIdByName(mailState, FolderName.trash);
-  const isTrash = mailState.mailIdsForFolder[trashFolderId].includes(emailId);
+  const isTrash = mailState.mailIdsForFolder[trashFolderId]?.includes(emailId);
 
   const onDelete = async () => {
     try {
@@ -87,6 +87,10 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
       ),
     });
   }, [props.navigation]);
+
+  useEffect(() => {
+    dispatch(getMessageById({ id: emailId }));
+  }, []);
 
   console.log('rendering emailDetail', emailId);
 
