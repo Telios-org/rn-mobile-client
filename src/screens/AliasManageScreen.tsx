@@ -18,7 +18,8 @@ import { Button } from '../components/Button';
 import { Icon } from '../components/Icon';
 import { useAppSelector } from '../hooks';
 import { useSelector } from 'react-redux';
-import { aliasesComputedSelector } from '../store/aliasesSelectors';
+import { filterAliasesByNamespaceSelector } from '../store/aliasesSelectors';
+import { RootState } from '../store';
 
 export type AliasManageScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasManage'>,
@@ -27,7 +28,9 @@ export type AliasManageScreenProps = CompositeScreenProps<
 
 export const AliasManageScreen = (props: AliasManageScreenProps) => {
   const { aliasNamespace } = useAppSelector(state => state.aliases);
-  const { aliases, aliasKeys } = useSelector(aliasesComputedSelector);
+  const aliases = useSelector((state: RootState) =>
+    filterAliasesByNamespaceSelector(state, aliasNamespace[0].name),
+  );
 
   const onAlias = (aliasKey: string) => {
     Alert.alert('Not implemented');
@@ -44,7 +47,7 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
       <View style={{ margin: spacing.lg }}>
         <TableCell
           label="Namespace"
-          caption={aliasNamespace?.name || 'None set'}
+          caption={aliasNamespace[0]?.name || 'None set'}
           iconRight={{
             name: 'information-circle-outline',
             color: colors.primaryBase,
@@ -75,24 +78,23 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
             />
           ) : null}
         </View>
-        {aliasKeys.length > 0 ? (
+        {aliases.length > 0 ? (
           <View>
-            {aliasKeys.map(aliasKey => {
-              const alias = aliases[aliasKey];
+            {aliases.map(alias => {
               return (
                 <TableCell
-                  key={`managealias-cell-${aliasKey}`}
+                  key={`managealias-cell-${alias.aliasId}`}
                   label={`#${alias.name}`}
                   caption={alias.aliasId}
                   iconRight={
-                    alias.fwdAddresses?.length > 0
+                    alias.fwdAddresses && alias.fwdAddresses.length > 0
                       ? {
                           name: 'return-up-forward-outline',
                           color: colors.skyDark,
                         }
-                      : null
+                      : undefined
                   }
-                  onPress={() => onAlias(aliasKey)}
+                  onPress={() => onAlias(alias.name)}
                 />
               );
             })}

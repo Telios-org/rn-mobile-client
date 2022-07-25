@@ -10,7 +10,7 @@ import { IntroScreen } from './screens/IntroScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { InboxScreen } from './screens/InboxScreen';
 import { useAppSelector, useIsAuthenticated } from './hooks';
-import { DrawerContent } from './components/DrawerContent';
+import { DrawerContent } from './components/DraweContent/DrawerContent';
 import { ComposeScreen } from './screens/ComposeScreen';
 import { TestScreen } from './screens/TestScreen';
 import { colors } from './util/colors';
@@ -35,6 +35,7 @@ import ForgotPassword from './screens/ForgotPassword';
 import RecoverAccount from './screens/RecoverAccount';
 import RecoverAccountCode from './screens/RecoverAccountCode';
 import EnterNewPassword from './screens/EnterNewPassword';
+import { AliasInboxScreen } from './screens/AliasInbox';
 
 export type CoreStackProps = {
   register: undefined;
@@ -76,7 +77,7 @@ export type MainStackParams = {
   trash: undefined;
   profile: undefined;
   aliasManage: undefined;
-  aliasMailbox: undefined;
+  aliasInbox: { aliasId: string; namespaceKey: string }; // namespaceKey is required for drawer navigator
 };
 
 export type InboxStackParams = {
@@ -257,6 +258,13 @@ function Main() {
         options={{
           headerTransparent: true,
           title: '',
+        }}
+      />
+      <Drawer.Screen
+        name={'aliasInbox'}
+        component={AliasInboxScreen}
+        options={{
+          title: 'Manage Aliases',
         }}
       />
       <Drawer.Screen

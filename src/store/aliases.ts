@@ -3,36 +3,41 @@ import { createNodeCalloutAsyncThunk } from '../util/nodeActions';
 import { accountLogout } from './account';
 
 export type AliasNamespace = {
-  disabled: boolean;
+  disabled?: boolean;
   domain: string;
   mailboxId: string;
   name: string;
   privateKey: string;
   publicKey: string;
+  createdAt?: string;
+  updatedAt?: string;
   _id: string;
 };
 
 export type Alias = {
   aliasId: string;
-  count: number;
-  createdAt: string;
-  description: string;
-  disabled: boolean;
-  fwdAddresses: string[];
   name: string;
-  namespaceKey: string;
-  updatedAt: string;
-  whitelisted: number;
+  publicKey?: string;
+  privateKey?: string;
+  description?: string | undefined;
+  namespaceKey: string | undefined;
+  fwdAddresses?: string[];
+  count: number;
+  disabled?: boolean | undefined;
+  whitelisted?: boolean | undefined;
+  createdAt?: string;
+  updatedAt?: string;
   _id: string;
 };
 
 interface AliasesState {
-  aliasNamespace?: AliasNamespace;
-  aliases: { [id: string]: Alias };
+  aliasNamespace: AliasNamespace[];
+  aliases: Alias[];
 }
 
 const initialState: AliasesState = {
-  aliases: {},
+  aliases: [],
+  aliasNamespace: [],
 };
 
 type GetNamespacesForMailboxRequest = { id: string };
@@ -77,7 +82,7 @@ type RegisterAliasResponse = {
   name: string;
   namespaceKey: string;
   updatedAt: string;
-  whitelisted: number;
+  whitelisted?: boolean | undefined;
   _id: string;
 };
 export const registerAlias = createNodeCalloutAsyncThunk<
@@ -107,25 +112,21 @@ export const aliasesSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(registerNamespace.fulfilled, (state, action) => {
-      state.aliasNamespace = action.payload;
+      state.aliasNamespace.push(action.payload);
     });
     builder.addCase(getNamespacesForMailbox.fulfilled, (state, action) => {
-      state.aliasNamespace = action.payload[0];
+      state.aliasNamespace = action.payload;
     });
     builder.addCase(getAliases.fulfilled, (state, action) => {
-      const aliases = action.payload;
-      for (const alias of aliases) {
-        state.aliases[alias.aliasId] = alias;
-      }
+      state.aliases = action.payload;
     });
     builder.addCase(registerAlias.fulfilled, (state, action) => {
-      state.aliases[action.payload.aliasId] = action.payload;
+      state.aliases.push(action.payload);
     });
 
     // clear state on logout
     builder.addCase(accountLogout.fulfilled, () => {
-      const newState = { ...initialState };
-      return newState;
+      return { ...initialState };
     });
   },
 });
