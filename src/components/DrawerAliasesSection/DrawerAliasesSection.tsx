@@ -27,14 +27,6 @@ export default ({ navigation, selectedRoute }: DrawerAliasesProps) => {
     navigation.navigate('aliasManage');
   };
 
-  const onAddAlias = () => {
-    if (aliases.length === 0) {
-      onManageAliases();
-    } else {
-      navigation.navigate('newAlias');
-    }
-  };
-
   return (
     <>
       <View style={styles.sectionTitle}>
@@ -59,7 +51,7 @@ export default ({ navigation, selectedRoute }: DrawerAliasesProps) => {
         <DrawerCell
           label="Add Alias"
           rightIcon={{ name: 'add-outline', color: colors.primaryBase }}
-          onPress={onAddAlias}
+          onPress={onManageAliases}
         />
       </View>
     </>

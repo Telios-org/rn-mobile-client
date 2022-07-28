@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  InputAccessoryView,
-  KeyboardAvoidingView,
-  TextInput,
-  View,
-} from 'react-native';
+import React from 'react';
+import { KeyboardAvoidingView, StyleSheet, View } from 'react-native';
 
 import { Modalize } from 'react-native-modalize';
 import { Portal } from 'react-native-portalize';
@@ -12,7 +7,20 @@ import { spacing } from '../util/spacing';
 import { Button } from './Button';
 import { Input, InputProps } from './Input';
 
-const accessoryId = 'input-modal-accessory';
+const styles = StyleSheet.create({
+  inputContainer: {
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.xl,
+    marginBottom: spacing.lg,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    marginVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+  },
+  cancelBtn: { flex: 1, marginRight: spacing.md },
+  doneBtn: { flex: 1 },
+});
 
 export type InputModalProps = {
   inputProps: Omit<
@@ -46,20 +54,18 @@ export const InputModal = React.forwardRef<
   return (
     <>
       <Portal>
-        <Modalize ref={ref} adjustToContentHeight={true}>
+        <Modalize
+          ref={ref}
+          adjustToContentHeight={true}
+          scrollViewProps={{ keyboardShouldPersistTaps: 'always' }}>
           <KeyboardAvoidingView>
-            <View
-              style={{
-                marginHorizontal: spacing.lg,
-                marginTop: spacing.xl,
-                marginBottom: spacing.lg,
-              }}>
+            <View style={styles.inputContainer}>
               <Input
                 returnKeyType="done"
                 onSubmitEditing={onDone}
                 {...props.inputProps}
                 value={value}
-                error={touched && error}
+                error={touched ? error : undefined}
                 onChangeText={text => {
                   setValue(text);
                   if (!touched) {
@@ -67,35 +73,26 @@ export const InputModal = React.forwardRef<
                   }
                 }}
                 autoFocus={true}
-                inputAccessoryViewID={accessoryId}
+              />
+            </View>
+            <View style={styles.actionButtons}>
+              <Button
+                size="large"
+                type="outline"
+                style={styles.cancelBtn}
+                title="Cancel"
+                onPress={onCancel}
+              />
+              <Button
+                size="large"
+                style={styles.doneBtn}
+                title="Done"
+                onPress={onDone}
               />
             </View>
           </KeyboardAvoidingView>
         </Modalize>
       </Portal>
-      <InputAccessoryView nativeID={accessoryId}>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginVertical: spacing.sm,
-            paddingHorizontal: spacing.lg,
-          }}>
-          <Button
-            size="large"
-            type="outline"
-            style={{ flex: 1 }}
-            title="Cancel"
-            onPress={props.onCancel}
-          />
-          <View style={{ width: spacing.md }} />
-          <Button
-            size="large"
-            style={{ flex: 1 }}
-            title="Done"
-            onPress={onDone}
-          />
-        </View>
-      </InputAccessoryView>
     </>
   );
 });
