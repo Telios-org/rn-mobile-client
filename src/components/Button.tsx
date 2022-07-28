@@ -20,11 +20,13 @@ export interface ButtonProps {
   type?: 'primary' | 'secondary' | 'outline' | 'text';
   size?: 'block' | 'large' | 'small';
   iconRight?: IconAccessory;
+  iconLeft?: IconAccessory;
   disabled?: boolean;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
 }
+
 export const Button = (props: ButtonProps) => {
   const {
     title,
@@ -32,6 +34,7 @@ export const Button = (props: ButtonProps) => {
     type = 'primary',
     size = 'block',
     iconRight,
+    iconLeft,
     disabled = false,
     loading = false,
     style,
@@ -79,6 +82,15 @@ export const Button = (props: ButtonProps) => {
         style,
       ]}
       onPress={onPress}>
+      {iconLeft && (
+        <View style={{ marginRight: spacing.sm }}>
+          <Icon
+            name={iconLeft.name}
+            color={iconLeft.color || textColor}
+            size={iconLeft.size || 22}
+          />
+        </View>
+      )}
       {loading ? (
         <ActivityIndicator />
       ) : (

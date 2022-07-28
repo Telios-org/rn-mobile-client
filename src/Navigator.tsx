@@ -25,9 +25,9 @@ import { DraftsScreen } from './screens/DraftsScreen';
 import { SentScreen } from './screens/SentScreen';
 import { TrashScreen } from './screens/TrashScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
-import { AliasManageScreen } from './screens/AliasManageScreen';
-import { NewAliasNamespaceScreen } from './screens/NewAliasNamespaceScreen';
-import { NewAliasScreen } from './screens/NewAliasScreen';
+import { AliasManageScreen } from './screens/AliasManage/AliasManageScreen';
+import { NewAliasNamespaceScreen } from './screens/NewAliasNamespace/NewAliasNamespaceScreen';
+import { NewAliasScreen } from './screens/NewAlias/NewAliasScreen';
 import { EmailDetailScreen } from './screens/EmailDetailScreen';
 import RNBootSplash from 'react-native-bootsplash';
 import { Platform } from 'react-native';
@@ -36,6 +36,7 @@ import RecoverAccount from './screens/RecoverAccount';
 import RecoverAccountCode from './screens/RecoverAccountCode';
 import EnterNewPassword from './screens/EnterNewPassword';
 import { AliasInboxScreen } from './screens/AliasInbox';
+import { AliasInfoScreen } from './screens/AliasInfo';
 
 export type CoreStackProps = {
   register: undefined;
@@ -51,7 +52,8 @@ export type RootStackParams = {
   compose: undefined;
   search: undefined;
   newAliasNamespace: undefined;
-  newAlias: undefined;
+  newAlias: { namespace: string };
+  aliasInfo: { aliasId: string; aliasName: string };
 };
 
 export type RegisterStackParams = {
@@ -191,6 +193,19 @@ function CoreScreen() {
                 headerLeft: () => (
                   <NavIconButton
                     icon={{ name: 'close-outline', size: 28 }}
+                    onPress={() => navigation.goBack()}
+                  />
+                ),
+              })}
+            />
+            <Stack.Screen
+              name="aliasInfo"
+              component={AliasInfoScreen}
+              options={({ navigation, route }) => ({
+                title: `# ${route.params.aliasName}`,
+                headerLeft: () => (
+                  <NavIconButton
+                    icon={{ name: 'chevron-back', size: 28 }}
                     onPress={() => navigation.goBack()}
                   />
                 ),

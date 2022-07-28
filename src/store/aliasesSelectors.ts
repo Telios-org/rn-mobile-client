@@ -7,6 +7,12 @@ export const aliasesComputedSelector = createSelector(
   aliases => aliases.slice().sort((a, b) => a.aliasId.localeCompare(b.aliasId)), // copy the array before sorting it, because the array is frozen in strict mode
 );
 
+export const aliasSelectorById = createSelector(
+  aliasesSelector,
+  (state: RootState, id: string) => id,
+  (aliases, id) => aliases.find(a => a.aliasId === id),
+);
+
 export const aliasesForwardAddressesSelector = createSelector(
   aliasesSelector,
   aliases => {
@@ -23,7 +29,7 @@ export const aliasesForwardAddressesSelector = createSelector(
 );
 
 export const namespaceSelector = (state: RootState) =>
-  state.aliases.aliasNamespace;
+  state.aliases.aliasNamespaces;
 
 export const namespaceComputedSelector = createSelector(
   namespaceSelector,

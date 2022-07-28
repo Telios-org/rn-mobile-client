@@ -11,8 +11,7 @@ import { Modalize } from 'react-native-modalize';
 import { Portal } from 'react-native-portalize';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
-import { borderRadius, spacing } from '../util/spacing';
-import { Button } from './Button';
+import { spacing } from '../util/spacing';
 import { DropdownInput, DropdownInputProps } from './DropdownInput';
 import { Icon } from './Icon';
 
@@ -29,7 +28,7 @@ export type SingleSelectInputProps = Omit<DropdownInputProps, 'onPress'> & {
 };
 
 export const SingleSelectInput = (props: SingleSelectInputProps) => {
-  const { options, onSelect, ...restOfProps } = props;
+  const { onSelect, ...restOfProps } = props;
   const modalizeRef = React.useRef<Modalize>();
 
   const openModal = () => {
