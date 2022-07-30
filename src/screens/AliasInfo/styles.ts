@@ -16,8 +16,10 @@ export default StyleSheet.create({
   aliasLongNameContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: spacing.md,
   },
+  aliasTextContainer: { flex: 1 },
   lighterText: {
     ...fonts.small.regular,
     color: colors.inkLighter,

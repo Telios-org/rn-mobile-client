@@ -40,7 +40,7 @@ export const AliasInfoScreen = ({
   const emailPostfix = envApi.postfix;
 
   const onPressDeleteAlias = async () => {
-    if (alias && alias.namespaceKey) {
+    if (alias) {
       await dispatch(
         removeAliasFlow({
           aliasId,
@@ -62,12 +62,12 @@ export const AliasInfoScreen = ({
       <ScrollView style={styles.scrollView}>
         <View style={styles.sectionContainer}>
           <View style={styles.aliasLongNameContainer}>
-            <View>
+            <View style={styles.aliasTextContainer}>
               <Text style={fonts.title3}>Alias</Text>
               <Text style={styles.lighterText}>
                 {alias.namespaceKey}
                 <Text style={{ color: colors.primaryBase }}>
-                  {`#${alias.name}`}
+                  {!!alias.namespaceKey ? `#${alias.name}` : alias.name}
                 </Text>
                 {`@${emailPostfix}`}
               </Text>
@@ -81,11 +81,13 @@ export const AliasInfoScreen = ({
               <Icon name="copy-outline" size={24} color={colors.inkLighter} />
             </Pressable>
           </View>
-          <DescriptionSection
-            aliasId={alias.aliasId}
-            domain={emailPostfix}
-            aliasDescription={alias.description}
-          />
+          {!!alias.namespaceKey && (
+            <DescriptionSection
+              aliasId={alias.aliasId}
+              domain={emailPostfix}
+              aliasDescription={alias.description}
+            />
+          )}
           <Text style={styles.lighterText}>
             Created at {moment(alias.createdAt).format('MMM D YYYY')}
           </Text>

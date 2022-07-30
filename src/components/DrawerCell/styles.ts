@@ -23,4 +23,5 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
+  rightTextMargin: { marginLeft: 5 },
 });

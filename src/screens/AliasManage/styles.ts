@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '../../util/colors';
 import { spacing } from '../../util/spacing';
+import { fonts } from '../../util/fonts';
 
 export default StyleSheet.create({
   scrollView: {
@@ -19,5 +20,10 @@ export default StyleSheet.create({
   emptyAliasesContainer: {
     alignItems: 'center',
     marginVertical: spacing.xxl,
+  },
+  note: {
+    ...fonts.small.regular,
+    color: colors.inkLighter,
+    marginTop: 10,
   },
 });

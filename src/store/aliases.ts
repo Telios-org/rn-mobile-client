@@ -66,7 +66,7 @@ export const registerNamespace = createNodeCalloutAsyncThunk<
 >('alias:registerAliasNamespace');
 
 type RegisterAliasRequest = {
-  namespaceName: string;
+  namespaceName?: string;
   domain: string;
   address: string;
   description?: string;
@@ -139,7 +139,7 @@ export const updateAliasFlow = createAsyncThunk<
 });
 
 type RemoveAliasRequest = {
-  namespaceName: string;
+  namespaceName?: string;
   address: string;
   domain: string;
 };
