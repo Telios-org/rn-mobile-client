@@ -37,6 +37,7 @@ import RecoverAccountCode from './screens/RecoverAccountCode';
 import EnterNewPassword from './screens/EnterNewPassword';
 import { AliasInboxScreen } from './screens/AliasInbox';
 import { AliasInfoScreen } from './screens/AliasInfo';
+import NewAliasRandom from './screens/NewAliasRandom';
 
 export type CoreStackProps = {
   register: undefined;
@@ -53,6 +54,7 @@ export type RootStackParams = {
   search: undefined;
   newAliasNamespace: undefined;
   newAlias: { namespace: string };
+  newAliasRandom: undefined;
   aliasInfo: { aliasId: string; aliasName: string };
 };
 
@@ -190,6 +192,19 @@ function CoreScreen() {
               component={NewAliasScreen}
               options={({ navigation }) => ({
                 title: 'Create New Alias',
+                headerLeft: () => (
+                  <NavIconButton
+                    icon={{ name: 'close-outline', size: 28 }}
+                    onPress={() => navigation.goBack()}
+                  />
+                ),
+              })}
+            />
+            <Stack.Screen
+              name="newAliasRandom"
+              component={NewAliasRandom}
+              options={({ navigation }) => ({
+                title: 'Generate Random Alias',
                 headerLeft: () => (
                   <NavIconButton
                     icon={{ name: 'close-outline', size: 28 }}

@@ -11,7 +11,7 @@ import { Modalize } from 'react-native-modalize';
 import { Portal } from 'react-native-portalize';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
-import { borderRadius, spacing } from '../util/spacing';
+import { spacing } from '../util/spacing';
 import { Button } from './Button';
 import { DropdownInput, DropdownInputProps } from './DropdownInput';
 import { Icon } from './Icon';
@@ -42,7 +42,6 @@ export const MultiSelectInput = (props: MultiSelectInputProps) => {
   );
 
   const openModal = () => {
-    console.log('open modal', modalizeRef.current);
     modalizeRef.current?.open();
   };
 

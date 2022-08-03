@@ -16,6 +16,7 @@ import { RootState } from '../../store';
 import { AliasNamespace } from '../../store/aliases';
 import { SingleSelectInput } from '../../components/SingleSelectInput';
 import styles from './styles';
+import useRandomAliases from '../../hooks/useRandomAliases';
 
 export type AliasManageScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasManage'>,
@@ -26,15 +27,12 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
   const latestNamespace = useAppSelector(
     state => state.aliases.latestNamespace,
   );
-  const aliasNamespaces = useAppSelector(
-    state => state.aliases.aliasNamespaces,
-  );
-
+  const { namespaceNames, originalNamespaceNames } = useRandomAliases();
+  const hasNamespaces = originalNamespaceNames.length > 0;
   const [selectedNamespace, setSelectedNamespace] = useState<
     AliasNamespace['name']
-  >(aliasNamespaces[0]?.name);
-
-  const hasNamespaces = aliasNamespaces.length > 0;
+  >(namespaceNames[0]);
+  const isSelectedRandom = selectedNamespace === 'random';
   const aliases = useSelector((state: RootState) =>
     filterAliasesByNamespaceSelector(state, selectedNamespace),
   );
@@ -46,46 +44,61 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
     props.navigation.navigate('newAliasNamespace');
   };
   const onAddAlias = () => {
-    props.navigation.navigate('newAlias', { namespace: selectedNamespace });
+    if (selectedNamespace) {
+      props.navigation.navigate('newAlias', { namespace: selectedNamespace });
+    }
+  };
+  const onAddRandomAlias = () => {
+    setSelectedNamespace('random');
+    props.navigation.navigate('newAliasRandom');
   };
 
   useEffect(() => {
     if (latestNamespace) {
       setSelectedNamespace(latestNamespace.name);
+    } else {
+      setSelectedNamespace(namespaceNames[0]);
     }
-  }, [latestNamespace]);
+  }, [latestNamespace, namespaceNames]);
 
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.scrollViewContent}>
-        <View style={styles.sectionContainer}>
-          <Text style={fonts.title3}>Namespace</Text>
-          {hasNamespaces && (
-            <Button
-              size="small"
-              title="Add"
-              type="outline"
-              iconRight={{ name: 'add-outline' }}
-              onPress={onCreateNamespace}
-            />
-          )}
-        </View>
-        {hasNamespaces && (
+        {!isSelectedRandom && (
+          <View style={styles.sectionContainer}>
+            <Text style={fonts.title3}>Namespace</Text>
+            {hasNamespaces && (
+              <Button
+                size="small"
+                title="Add"
+                type="outline"
+                iconRight={{ name: 'add-outline' }}
+                onPress={onCreateNamespace}
+              />
+            )}
+          </View>
+        )}
+        {namespaceNames.length > 0 && (
           <SingleSelectInput
             modalTitle="Select Namespace"
-            options={[
-              ...aliasNamespaces.map(namespace => ({
-                label: namespace.name,
-                value: namespace.name,
-              })),
-            ]}
+            options={namespaceNames.map(namespaceName => ({
+              label: namespaceName,
+              value: namespaceName,
+              labelStyle:
+                namespaceName === 'random' ? { color: colors.primaryBase } : {},
+            }))}
             value={selectedNamespace}
             onSelect={value => {
               setSelectedNamespace(value);
             }}
           />
         )}
-        {aliasNamespaces.length === 0 && (
+        {isSelectedRandom && (
+          <Text style={styles.note}>
+            Random aliases are not tied to a namespace.
+          </Text>
+        )}
+        {originalNamespaceNames.length === 0 && (
           <Button
             title="Create Namespace"
             onPress={onCreateNamespace}
@@ -93,8 +106,14 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
           />
         )}
         <View style={[styles.sectionContainer, { marginTop: spacing.xl }]}>
-          <Text style={fonts.title3}>{'Aliases'}</Text>
-          {hasNamespaces ? (
+          <Text style={fonts.title3}>Aliases</Text>
+          <Button
+            type="outline"
+            size="small"
+            title="Add random"
+            onPress={onAddRandomAlias}
+          />
+          {hasNamespaces && !isSelectedRandom ? (
             <Button
               size="small"
               title="Add"

@@ -31,17 +31,29 @@ export const aliasesForwardAddressesSelector = createSelector(
 export const namespaceSelector = (state: RootState) =>
   state.aliases.aliasNamespaces;
 
-export const namespaceComputedSelector = createSelector(
+export const namespaceNameSelector = createSelector(
   namespaceSelector,
-  aliasNamespace =>
-    aliasNamespace.slice().sort((a, b) => a.name.localeCompare(b.name)),
+  namespaces =>
+    namespaces
+      .map(namespace => namespace.name)
+      .sort((a, b) => a.localeCompare(b)),
 );
 
 export const filterAliasesByNamespaceSelector = createSelector(
   [
     aliasesComputedSelector,
-    (state: RootState, namespaceKey: string) => namespaceKey,
+    (state: RootState, namespaceKey: string) => {
+      if (namespaceKey === 'random') {
+        return undefined;
+      }
+      return namespaceKey;
+    },
   ],
   (aliases, namespaceKey) =>
     aliases.filter(alias => alias.namespaceKey === namespaceKey),
+);
+
+export const hasRandomAliasSelector = createSelector(
+  aliasesComputedSelector,
+  aliases => aliases.some(alias => alias.namespaceKey === undefined),
 );
