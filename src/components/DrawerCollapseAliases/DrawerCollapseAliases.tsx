@@ -18,6 +18,7 @@ export const DrawerCollapseNamespace = (
 ) => {
   const [expanded, setExpanded] = useState(false);
   const [filteredAliases, setFilteredAliases] = useState<Alias[]>([]);
+  const isRandom = namespaceKey === 'random';
 
   const onPressNamespace = () => {
     setExpanded(!expanded);
@@ -33,9 +34,15 @@ export const DrawerCollapseNamespace = (
 
   useEffect(() => {
     if (expanded) {
-      setFilteredAliases(
-        aliases.filter(alias => alias.namespaceKey === namespaceKey),
-      );
+      if (isRandom) {
+        setFilteredAliases(
+          aliases.filter(alias => alias.namespaceKey === undefined),
+        );
+      } else {
+        setFilteredAliases(
+          aliases.filter(alias => alias.namespaceKey === namespaceKey),
+        );
+      }
     }
   }, [expanded, aliases]);
 
@@ -48,7 +55,13 @@ export const DrawerCollapseNamespace = (
           selectedRoute.params.namespaceKey === namespaceKey
         }
         rightText={totalUnreadCount > 0 ? `${totalUnreadCount}` : undefined}
-        label={`# ${namespaceKey}`}
+        label={namespaceKey}
+        leftIcon={
+          isRandom
+            ? { name: 'flash-outline', size: 16 }
+            : { name: 'arrow-redo-outline', size: 16 }
+        }
+        leftIconStyle={styles.iconWidth}
         onPress={onPressNamespace}
       />
       {filteredAliases.length > 0 && expanded && (
@@ -61,9 +74,12 @@ export const DrawerCollapseNamespace = (
                   selectedRoute.name === 'aliasInbox' &&
                   item.aliasId === selectedRoute.params.aliasId
                 }
+                leftIcon={{ name: 'at', size: 14 }}
+                leftIconStyle={styles.iconWidth}
                 rightText={item.count > 0 ? `${item.count}` : undefined}
-                label={`@ ${item.name}`}
+                label={item.name}
                 onPress={() => onPressAlias(item.aliasId)}
+                titleStyle={styles.aliasTitle}
               />
             );
           })}

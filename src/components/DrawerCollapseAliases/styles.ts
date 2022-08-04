@@ -5,4 +5,6 @@ export default StyleSheet.create({
   collapseContainer: {
     marginLeft: spacing.md,
   },
+  iconWidth: { width: 20 },
+  aliasTitle: { fontSize: 14 },
 });

@@ -66,7 +66,7 @@ export const registerNamespace = createNodeCalloutAsyncThunk<
 >('alias:registerAliasNamespace');
 
 type RegisterAliasRequest = {
-  namespaceName: string;
+  namespaceName?: string;
   domain: string;
   address: string;
   description?: string;
@@ -123,7 +123,7 @@ export const updateAliasFlow = createAsyncThunk<
   const alias = aliasSelectorById(thunkAPI.getState(), aliasId);
   const namespace = request.namespaceName || alias?.namespaceKey;
 
-  if (alias && namespace) {
+  if (alias) {
     await thunkAPI.dispatch(
       updateAlias({
         namespaceName: alias.namespaceKey,
@@ -134,12 +134,14 @@ export const updateAliasFlow = createAsyncThunk<
         ...requestData,
       }),
     );
-    await thunkAPI.dispatch(getAliases({ namespaceKeys: [namespace] }));
+    await thunkAPI.dispatch(
+      getAliases({ namespaceKeys: namespace ? [namespace] : [] }),
+    );
   }
 });
 
 type RemoveAliasRequest = {
-  namespaceName: string;
+  namespaceName?: string;
   address: string;
   domain: string;
 };
@@ -182,6 +184,8 @@ export const aliasesSlice = createSlice({
       state.aliasNamespaces = action.payload;
     });
     builder.addCase(getAliases.fulfilled, (state, action) => {
+      // TODO getAliases has a bug, it returns all aliases doesn't matter what namespaceKey was given.
+      //  When that will be fixed, update redux
       state.aliases = action.payload;
     });
     builder.addCase(registerAlias.fulfilled, (state, action) => {

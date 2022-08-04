@@ -43,9 +43,7 @@ export default ({
             style={[
               styles.statusIndicator,
               {
-                backgroundColor: isAliasActive
-                  ? colors.success
-                  : colors.inkLighter,
+                backgroundColor: isAliasActive ? colors.success : colors.error,
               },
             ]}
           />

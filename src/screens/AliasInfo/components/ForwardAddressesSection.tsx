@@ -2,11 +2,12 @@ import { View } from 'react-native';
 import styles from '../styles';
 import { MultiSelectInput } from '../../../components/MultiSelectInput';
 import { colors } from '../../../util/colors';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import useInputModal from '../../../hooks/useInputModal';
 import { updateAliasFlow } from '../../../store/aliases';
 import { useAppDispatch } from '../../../hooks';
 import { SectionPropsType } from './SectionPropsType';
+import { isEqual } from 'lodash';
 
 interface ForwardAddressesSectionProps extends SectionPropsType {
   aliasFwdAddresses: string[];
@@ -17,7 +18,6 @@ export default ({
   domain,
   aliasFwdAddresses,
 }: ForwardAddressesSectionProps) => {
-  const fireUpdate = useRef(false);
   const dispatch = useAppDispatch();
   const [fwdAddresses, setFwdAddresses] = useState<string[]>(aliasFwdAddresses);
   const { inputModal, openModal } = useInputModal({
@@ -27,19 +27,6 @@ export default ({
       }
     },
   });
-
-  useEffect(() => {
-    if (fireUpdate.current) {
-      dispatch(
-        updateAliasFlow({
-          aliasId: aliasId,
-          domain,
-          fwdAddresses: fwdAddresses,
-        }),
-      );
-    }
-    fireUpdate.current = true;
-  }, [fwdAddresses]);
 
   return (
     <>
@@ -64,7 +51,18 @@ export default ({
               onPress: openModal,
             },
           ]}
-          onChange={addresses => setFwdAddresses(addresses)}
+          onChange={addresses => {
+            if (!isEqual(addresses, aliasFwdAddresses)) {
+              dispatch(
+                updateAliasFlow({
+                  aliasId: aliasId,
+                  domain,
+                  fwdAddresses: addresses,
+                }),
+              );
+            }
+            setFwdAddresses(addresses);
+          }}
           buttonStyle={styles.multiSelectInput}
         />
       </View>
