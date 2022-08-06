@@ -1,15 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHeaderHeight } from '@react-navigation/elements';
-
-import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  InputAccessoryView,
-  Keyboard,
-  Alert,
-} from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { View, Text, ScrollView, Keyboard, Alert } from 'react-native';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { RegisterStackParams } from '../Navigator';
@@ -18,15 +10,12 @@ import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { validateEmail } from '../util/regexHelpers';
 import { useAppDispatch } from '../hooks';
-import { Modalize } from 'react-native-modalize';
 import { registerFlow } from '../store/account';
 
 export type RegisterRecoveryEmailScreenProps = NativeStackScreenProps<
   RegisterStackParams,
   'registerRecoveryEmail'
 >;
-
-const accessoryId = 'input-recoveryemail-accessory';
 
 export const RegisterRecoveryEmailScreen = (
   props: RegisterRecoveryEmailScreenProps,
@@ -35,18 +24,17 @@ export const RegisterRecoveryEmailScreen = (
 
   const dispatch = useAppDispatch();
   const headerHeight = useHeaderHeight();
-  const [recoveryEmail, setRecoveryEmail] = React.useState('');
-  const [loadingSubmit, setLoadingSubmit] = React.useState(false);
-  const [showLoadingText, setShowLoadingText] = React.useState(false);
-  const modalizeRef = React.useRef<Modalize>();
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [showLoadingText, setShowLoadingText] = useState(false);
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     props.navigation.setOptions({
       headerBackVisible: !loadingSubmit,
     });
   }, [loadingSubmit]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (loadingSubmit && !showLoadingText) {
       setTimeout(() => {
         setShowLoadingText(true);
@@ -124,7 +112,6 @@ export const RegisterRecoveryEmailScreen = (
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="email-address"
-            inputAccessoryViewID={accessoryId}
             iconLeft={{
               name: 'mail-outline',
             }}
@@ -149,16 +136,6 @@ export const RegisterRecoveryEmailScreen = (
           </View>
         </View>
       </ScrollView>
-
-      <InputAccessoryView nativeID={accessoryId}>
-        <View
-          style={{
-            paddingHorizontal: spacing.lg,
-            paddingVertical: spacing.md,
-          }}>
-          <NextButton />
-        </View>
-      </InputAccessoryView>
     </>
   );
 };

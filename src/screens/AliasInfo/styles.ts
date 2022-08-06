@@ -7,7 +7,6 @@ export default StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: colors.white,
-    paddingVertical: spacing.lg,
   },
   loading: {
     ...StyleSheet.absoluteFillObject,
@@ -18,6 +17,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing.md,
+    marginTop: spacing.lg,
   },
   aliasTextContainer: { flex: 1 },
   lighterText: {
@@ -52,6 +52,7 @@ export default StyleSheet.create({
   },
   deleteButton: {
     borderColor: colors.error,
+    marginBottom: 30,
   },
   multiSelectInput: {
     borderWidth: 0,

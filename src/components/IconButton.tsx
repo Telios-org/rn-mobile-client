@@ -1,6 +1,10 @@
 import React from 'react';
-import { ActivityIndicator, StyleProp, ViewStyle } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import { colors } from '../util/colors';
 import { Icon } from './Icon';
 
@@ -13,7 +17,7 @@ export type IconButtonProps = {
   style?: StyleProp<ViewStyle>;
 };
 export const IconButton = (props: IconButtonProps) => (
-  <TouchableOpacity
+  <Pressable
     disabled={props.loading}
     onPress={props.onPress}
     style={props.style}>
@@ -26,5 +30,5 @@ export const IconButton = (props: IconButtonProps) => (
         size={props.size || 24}
       />
     )}
-  </TouchableOpacity>
+  </Pressable>
 );
