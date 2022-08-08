@@ -1,17 +1,33 @@
 import React from 'react';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, StyleProp, ViewStyle } from 'react-native';
 import { Button, ButtonProps } from '../Button';
 import styles from './styles';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { isIOS } from '../../util/platform';
 
 interface NextButtonProps {
   disabled?: ButtonProps['disabled'];
   onSubmit: ButtonProps['onPress'];
   loading?: ButtonProps['loading'];
+  useKeyboardAvoidingView?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
-export default ({ disabled, onSubmit, loading }: NextButtonProps) => {
+export default ({
+  disabled,
+  onSubmit,
+  loading,
+  style,
+  useKeyboardAvoidingView = true,
+}: NextButtonProps) => {
+  const headerHeight = useHeaderHeight();
+
   return (
-    <View style={styles.button}>
+    <KeyboardAvoidingView
+      enabled={useKeyboardAvoidingView}
+      keyboardVerticalOffset={30 + headerHeight}
+      behavior={isIOS ? 'padding' : 'height'}
+      style={[styles.button, style]}>
       <Button
         size="block"
         title="Next"
@@ -19,6 +35,6 @@ export default ({ disabled, onSubmit, loading }: NextButtonProps) => {
         onPress={onSubmit}
         loading={loading}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };

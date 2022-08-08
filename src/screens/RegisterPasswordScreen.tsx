@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHeaderHeight } from '@react-navigation/elements';
-
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -16,7 +15,7 @@ import * as Yup from 'yup';
 
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import { RegisterStackParams, RootStackParams } from '../Navigator';
+import { RegisterStackParams } from '../Navigator';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
@@ -53,22 +52,19 @@ export type RegisterPasswordScreenProps = NativeStackScreenProps<
   'registerPassword'
 >;
 
-const accessoryId = 'input-password-accessory';
-
 export const RegisterPasswordScreen = (props: RegisterPasswordScreenProps) => {
   const { accepted, email } = props.route.params;
   const headerHeight = useHeaderHeight();
-  const modalizeRef = React.useRef<Modalize>();
-  const inputRefVerify = React.useRef<TextInput>();
-  const formRef = React.useRef<FormikProps<RegisterPasswordFormValues>>();
+  const modalizeRef = useRef<Modalize>();
+  const inputRefVerify = useRef<TextInput>(null);
+  const formRef = useRef<FormikProps<RegisterPasswordFormValues>>(null);
 
-  const [formValid, setFormValid] = React.useState(false);
-  const [strengthResult, setStrengthResult] = React.useState<
+  const [formValid, setFormValid] = useState(false);
+  const [strengthResult, setStrengthResult] = useState<
     undefined | PasswordResultsType
   >();
 
   const onSubmit = () => {
-    console.log('form ref', formRef.current);
     if (!formRef.current) {
       return;
     }
@@ -147,7 +143,7 @@ export const RegisterPasswordScreen = (props: RegisterPasswordScreenProps) => {
                   onChangeText={handleChange('password')}
                   onBlur={handleBlur('password')}
                   value={values.password}
-                  error={touched.password && errors.password}
+                  error={touched.password ? errors.password : undefined}
                   label="Master Password"
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -171,7 +167,9 @@ export const RegisterPasswordScreen = (props: RegisterPasswordScreenProps) => {
                   onChangeText={handleChange('verifyPassword')}
                   onBlur={handleBlur('verifyPassword')}
                   value={values.verifyPassword}
-                  error={touched.verifyPassword && errors.verifyPassword}
+                  error={
+                    touched.verifyPassword ? errors.verifyPassword : undefined
+                  }
                   label="Confirm Password"
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -179,7 +177,6 @@ export const RegisterPasswordScreen = (props: RegisterPasswordScreenProps) => {
                   secureTextEntry={true}
                   iconLeft={{ name: 'lock-closed-outline' }}
                   style={{ marginTop: spacing.md }}
-                  inputAccessoryViewID={accessoryId}
                 />
 
                 <View
@@ -232,7 +229,6 @@ export const RegisterPasswordScreen = (props: RegisterPasswordScreenProps) => {
               type="text"
               title="whats this?"
               onPress={() => {
-                // todo show modal
                 modalizeRef.current?.open();
               }}
             />
