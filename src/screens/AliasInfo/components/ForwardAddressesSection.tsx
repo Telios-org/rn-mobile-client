@@ -4,10 +4,10 @@ import { MultiSelectInput } from '../../../components/MultiSelectInput';
 import { colors } from '../../../util/colors';
 import React, { useState } from 'react';
 import useInputModal from '../../../hooks/useInputModal';
-import { updateAliasFlow } from '../../../store/aliases';
 import { useAppDispatch } from '../../../hooks';
 import { SectionPropsType } from './SectionPropsType';
 import { isEqual } from 'lodash';
+import { updateAliasFlow } from '../../../store/thunks/aliases';
 
 interface ForwardAddressesSectionProps extends SectionPropsType {
   aliasFwdAddresses: string[];

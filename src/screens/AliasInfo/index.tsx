@@ -8,17 +8,17 @@ import styles from './styles';
 import { fonts } from '../../util/fonts';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { aliasSelectorById } from '../../store/aliasesSelectors';
 import { colors } from '../../util/colors';
 import { Icon } from '../../components/Icon';
-import moment from 'moment';
 import { Button } from '../../components/Button';
 import * as Clipboard from 'expo-clipboard';
 import { useAppDispatch } from '../../hooks';
-import { removeAliasFlow } from '../../store/aliases';
 import DescriptionSection from './components/DescriptionSection';
 import ForwardAddressesSection from './components/ForwardAddressesSection';
 import CurrentStateSection from './components/CurrentStateSection';
+import { removeAliasFlow } from '../../store/thunks/aliases';
+import { aliasSelectors } from '../../store/adapters/aliases';
+import { format } from 'date-fns';
 
 export type AliasInfoScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -35,7 +35,7 @@ export const AliasInfoScreen = ({
   const dispatch = useAppDispatch();
   const aliasId = route.params.aliasId;
   const alias = useSelector((state: RootState) =>
-    aliasSelectorById(state, aliasId),
+    aliasSelectors.selectById(state.aliases, aliasId),
   );
 
   const emailPostfix = envApi.postfix;
@@ -46,7 +46,7 @@ export const AliasInfoScreen = ({
       try {
         await dispatch(
           removeAliasFlow({
-            aliasId,
+            aliasId: alias._id,
             address: alias.name,
             domain: emailPostfix,
             namespaceName: alias.namespaceKey,
@@ -90,19 +90,21 @@ export const AliasInfoScreen = ({
         </View>
         {!!alias.namespaceKey && (
           <DescriptionSection
-            aliasId={alias.aliasId}
+            aliasId={alias._id}
             domain={emailPostfix}
             aliasDescription={alias.description}
           />
         )}
-        <Text style={styles.lighterText}>
-          Created at {moment(alias.createdAt).format('MMM D YYYY')}
-        </Text>
+        {alias.createdAt && (
+          <Text style={styles.lighterText}>
+            Created {format(new Date(alias.createdAt), 'MMM dd yyyy')}
+          </Text>
+        )}
       </View>
       <SeparatorLine />
       <View style={styles.sectionContainer}>
         <CurrentStateSection
-          aliasId={alias.aliasId}
+          aliasId={alias._id}
           domain={emailPostfix}
           aliasDisabled={alias.disabled}
         />
@@ -110,7 +112,7 @@ export const AliasInfoScreen = ({
       <SeparatorLine />
       <ForwardAddressesSection
         domain={emailPostfix}
-        aliasId={alias.aliasId}
+        aliasId={alias._id}
         aliasFwdAddresses={alias.fwdAddresses || []}
       />
       <SeparatorLine />

@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { format, formatISO, isToday } from 'date-fns';
-import Toast from 'react-native-toast-message';
-
-import { Alert, FlatList, ScrollView, Text, View } from 'react-native';
-import {
-  InboxStackParams,
-  MainStackParams,
-  RootStackParams,
-} from '../Navigator';
-import { TextInput } from 'react-native-gesture-handler';
+import { format } from 'date-fns';
+import { Alert, ScrollView, Text, View } from 'react-native';
+import { InboxStackParams } from '../Navigator';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { Button } from '../components/Button';
-import { fonts, textStyles } from '../util/fonts';
+import { fonts } from '../util/fonts';
 import { NavIconButton } from '../components/NavIconButton';
-import { FolderName, getFolderIdByName } from '../store/mailSelectors';
 import { deleteMail, getMessageById, ToFrom } from '../store/mail';
+import { FolderName, getFolderIdByName } from '../store/selectors/mail';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
   InboxStackParams,
@@ -91,8 +83,6 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
   useEffect(() => {
     dispatch(getMessageById({ id: emailId }));
   }, []);
-
-  console.log('rendering emailDetail', emailId);
 
   if (!email) {
     return (

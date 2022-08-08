@@ -18,9 +18,9 @@ import { MultiSelectInput } from '../../components/MultiSelectInput';
 import { InputModal } from '../../components/InputModal';
 import { validateEmail } from '../../util/regexHelpers';
 import { useSelector } from 'react-redux';
-import { aliasesForwardAddressesSelector } from '../../store/aliasesSelectors';
-import { registerAlias } from '../../store/aliases';
+import { aliasesForwardAddressesSelector } from '../../store/selectors/aliases';
 import styles from './styles';
+import { registerAlias } from '../../store/thunks/aliases';
 
 type NewAliasFormValues = {
   alias: string;

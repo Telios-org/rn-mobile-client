@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  hasRandomAliasSelector,
-  namespaceNameSelector,
-} from '../store/aliasesSelectors';
+import { hasRandomAliasSelector } from '../store/selectors/aliases';
 import { useAppSelector } from '../hooks';
+import { namespaceNameSelector } from '../store/selectors/namespaces';
 
 export default () => {
   const hasRandomAliases = useAppSelector(hasRandomAliasSelector);

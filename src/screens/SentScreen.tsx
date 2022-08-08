@@ -8,7 +8,7 @@ import {
   FolderName,
   getFolderIdByName,
   sentMailListSelector,
-} from '../store/mailSelectors';
+} from '../store/selectors/mail';
 import { getMailByFolder } from '../store/mail';
 import { MailList, MailListItem } from '../components/MailList';
 import { NavTitle } from '../components/NavTitle';

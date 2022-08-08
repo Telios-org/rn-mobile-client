@@ -1,20 +1,18 @@
 import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Alert, ScrollView, Text, View } from 'react-native';
-
 import { RootStackParams } from '../../Navigator';
 import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
-
 // @ts-ignore
 import envApi from '../../../env_api.json';
 import { Icon } from '../../components/Icon';
 import { randomLetters, randomWords } from '../../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { registerNamespace } from '../../store/aliases';
 import styles from './styles';
+import { registerNamespace } from '../../store/thunks/namespaces';
 
 export type NewAliasNamespaceScreenProps = NativeStackScreenProps<
   RootStackParams,

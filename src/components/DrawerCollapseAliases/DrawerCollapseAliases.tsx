@@ -1,9 +1,9 @@
-import { Alias } from '../../store/aliases';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Route, View } from 'react-native';
 import { DrawerCell } from '../DrawerCell/DrawerCell';
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import styles from './styles';
+import { Alias } from '../../store/types';
 
 interface DrawerCollapseItemProps {
   navigation: DrawerNavigationHelpers;

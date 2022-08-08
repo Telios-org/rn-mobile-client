@@ -217,7 +217,7 @@ function CoreScreen() {
               name="aliasInfo"
               component={AliasInfoScreen}
               options={({ navigation, route }) => ({
-                title: `# ${route.params.aliasName}`,
+                title: `@ ${route.params.aliasName}`,
                 headerLeft: () => (
                   <NavIconButton
                     icon={{ name: 'chevron-back', size: 28 }}

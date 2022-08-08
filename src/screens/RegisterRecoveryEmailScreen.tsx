@@ -10,7 +10,7 @@ import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { validateEmail } from '../util/regexHelpers';
 import { useAppDispatch } from '../hooks';
-import { registerFlow } from '../store/account';
+import {registerFlow} from "../store/thunks/account";
 
 export type RegisterRecoveryEmailScreenProps = NativeStackScreenProps<
   RegisterStackParams,

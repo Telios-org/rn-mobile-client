@@ -1,21 +1,10 @@
 import React from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Animated, Text, View } from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { fonts, textStyles } from '../util/fonts';
-import { colors } from '../util/colors';
-import { spacing } from '../util/spacing';
-import { Icon } from '../components/Icon';
-import { EmailCell } from '../components/EmailCell';
 import { useSelector } from 'react-redux';
-import {
-  draftsMailListSelector,
-  FolderName,
-  getFolderIdByName,
-} from '../store/mailSelectors';
-import { getMailByFolder, LocalEmail } from '../store/mail';
+import { draftsMailListSelector } from '../store/selectors/mail';
 import { MailList, MailListItem } from '../components/MailList';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';

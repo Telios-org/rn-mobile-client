@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { DrawerCell } from '../DrawerCell/DrawerCell';
-import { aliasesComputedSelector } from '../../store/aliasesSelectors';
+import { aliasesSelector } from '../../store/selectors/aliases';
 import { Text, View } from 'react-native';
 import { fonts } from '../../util/fonts';
 import { IconButton } from '../IconButton';
@@ -18,7 +18,7 @@ interface DrawerAliasesProps {
 }
 
 export default ({ navigation, selectedRoute }: DrawerAliasesProps) => {
-  const aliases = useSelector(aliasesComputedSelector);
+  const aliases = useSelector(aliasesSelector);
   const { namespaceNames: aliasNamespacesName } = useRandomAliases();
 
   const onManageAliases = () => {

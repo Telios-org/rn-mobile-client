@@ -13,10 +13,10 @@ import { colors } from '../../util/colors';
 import { PasswordStrengthBars } from '../../components/PasswordStrengthBars';
 import styles from './styles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { recoveryPassFlow } from '../../store/account';
 import { CompositeScreenProps } from '@react-navigation/native';
 import ScrollableContainer from '../../components/ScrollableContainer';
 import NextButton from '../../components/NextButton';
+import { recoveryPassFlow } from '../../store/thunks/account';
 
 const zxcvbn = require('zxcvbn');
 
