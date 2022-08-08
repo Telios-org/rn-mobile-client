@@ -3,9 +3,10 @@ import { Switch, Text, View } from 'react-native';
 import { fonts } from '../../../util/fonts';
 import { colors } from '../../../util/colors';
 import React, { useEffect, useRef, useState } from 'react';
-import { Alias, updateAliasFlow } from '../../../store/aliases';
 import { useAppDispatch } from '../../../hooks';
 import { SectionPropsType } from './SectionPropsType';
+import { updateAliasFlow } from '../../../store/thunks/aliases';
+import { Alias } from '../../../store/types';
 
 interface CurrentStateSectionProps extends SectionPropsType {
   aliasDisabled: Alias['disabled'];
@@ -24,7 +25,7 @@ export default ({
     if (fireUpdate.current) {
       dispatch(
         updateAliasFlow({
-          aliasId: aliasId,
+          aliasId,
           domain,
           disabled: isAliasActive || false,
         }),

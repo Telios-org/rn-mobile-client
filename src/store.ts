@@ -6,11 +6,13 @@ import { aliasesReducer } from './store/aliases';
 import { contactsReducer } from './store/contacts';
 import { mailReducer } from './store/mail';
 import { systemReducer } from './store/system';
+import { namespacesReducer } from './store/namespaces';
 
 export const store = configureStore({
   reducer: {
     account: accountReducer,
     aliases: aliasesReducer,
+    namespaces: namespacesReducer,
     contacts: contactsReducer,
     mail: mailReducer,
     system: systemReducer,

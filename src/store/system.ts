@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { accountLogout } from './account';
+import { createSlice } from '@reduxjs/toolkit';
+import { accountLogout } from './thunks/accountLogout';
 
 interface SystemState {}
 
@@ -12,8 +12,7 @@ export const systemSlice = createSlice({
   extraReducers: builder => {
     // clear state on logout
     builder.addCase(accountLogout.fulfilled, () => {
-      const newState = { ...initialState };
-      return newState;
+      return { ...initialState };
     });
   },
 });

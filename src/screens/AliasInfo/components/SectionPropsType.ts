@@ -1,4 +1,4 @@
-import { Alias } from '../../../store/aliases';
+import { Alias } from '../../../store/types';
 
 export interface SectionPropsType {
   aliasId: Alias['aliasId'];

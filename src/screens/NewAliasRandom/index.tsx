@@ -10,7 +10,7 @@ import { Button } from '../../components/Button';
 import { randomLetters, randomWords } from '../../util/randomNames';
 import { NewAliasScreenProps } from '../NewAlias/NewAliasScreen';
 import uuid from 'react-native-uuid';
-import { registerAlias } from '../../store/aliases';
+import { registerAlias } from '../../store/thunks/aliases';
 
 export default ({ navigation }: NewAliasScreenProps) => {
   const dispatch = useAppDispatch();

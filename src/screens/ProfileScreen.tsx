@@ -2,13 +2,13 @@ import React from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch } from '../hooks';
 import { colors } from '../util/colors';
 import { TableCell } from '../components/TableCell';
 import { spacing } from '../util/spacing';
-import { accountLogout } from '../store/account';
+import { accountLogout } from '../store/thunks/accountLogout';
 
 export type ProfileScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'profile'>,

@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
 import { SingleSelectInput } from '../components/SingleSelectInput';
-import { loginFlow } from '../store/account';
+import { loginFlow } from '../store/thunks/account';
 
 const SYNC_EXISTING = 'sync_existing';
 

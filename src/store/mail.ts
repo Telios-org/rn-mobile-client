@@ -4,12 +4,12 @@ import { registerOneTimeListener } from '../eventListenerMiddleware';
 import { FileFetchedPayload } from '../fileFetchedMiddleware';
 import { RootState } from '../store';
 import { createNodeCalloutAsyncThunk } from '../util/nodeActions';
-import { accountLogout } from './account';
 import {
   folderIdByNameSelector,
   FolderName,
   getFolderIdByName,
-} from './mailSelectors';
+} from './selectors/mail';
+import { accountLogout } from './thunks/accountLogout';
 
 export type ToFrom = { address: string; name?: string };
 

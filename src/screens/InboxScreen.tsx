@@ -5,17 +5,18 @@ import { View } from 'react-native';
 
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { DefaultRootState, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   filteredInboxMailListSelector,
   FolderName,
   getFolderIdByName,
-} from '../store/mailSelectors';
+} from '../store/selectors/mail';
 import { getMailByFolder, getNewMailFlow } from '../store/mail';
 import { FilterOption, MailList, MailListItem } from '../components/MailList';
 import { ComposeNewEmailButton } from '../components/ComposeNewEmailButton';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';
+import { RootState } from '../store';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -28,7 +29,7 @@ export const InboxScreen = (props: InboxScreenProps) => {
   const [selectedFilterOption, setSelectedFilterOption] =
     useState<FilterOption>(FilterOption.All);
 
-  const inboxMailList = useSelector((state: DefaultRootState) =>
+  const inboxMailList = useSelector((state: RootState) =>
     filteredInboxMailListSelector(state, selectedFilterOption),
   );
 

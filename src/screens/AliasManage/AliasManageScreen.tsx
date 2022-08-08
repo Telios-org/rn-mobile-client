@@ -9,14 +9,15 @@ import { spacing } from '../../util/spacing';
 import { fonts } from '../../util/fonts';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useSelector } from 'react-redux';
-import { filterAliasesByNamespaceSelector } from '../../store/aliasesSelectors';
+import { filterAliasesByNamespaceSelector } from '../../store/selectors/aliases';
 import { RootState } from '../../store';
-import { AliasNamespace } from '../../store/aliases';
 import { SingleSelectInput } from '../../components/SingleSelectInput';
 import styles from './styles';
 import useRandomAliases from '../../hooks/useRandomAliases';
+import { updateLatestNamespace } from '../../store/namespaces';
+import { AliasNamespace } from '../../store/types';
 
 export type AliasManageScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasManage'>,
@@ -24,8 +25,9 @@ export type AliasManageScreenProps = CompositeScreenProps<
 >;
 
 export const AliasManageScreen = (props: AliasManageScreenProps) => {
+  const dispatch = useAppDispatch();
   const latestNamespace = useAppSelector(
-    state => state.aliases.latestNamespace,
+    state => state.namespaces.latestNamespace,
   );
   const { namespaceNames, originalNamespaceNames } = useRandomAliases();
   const hasNamespaces = originalNamespaceNames.length > 0;
@@ -50,6 +52,7 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
   };
   const onAddRandomAlias = () => {
     setSelectedNamespace('random');
+    dispatch(updateLatestNamespace({ name: 'random' } as AliasNamespace));
     props.navigation.navigate('newAliasRandom');
   };
 
@@ -128,7 +131,7 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
               return (
                 <TableCell
                   key={`managealias-cell-${alias.aliasId}`}
-                  label={`#${alias.name}`}
+                  label={`@ ${alias.name}`}
                   caption={alias.aliasId}
                   iconRight={
                     alias.fwdAddresses && alias.fwdAddresses.length > 0
@@ -138,7 +141,7 @@ export const AliasManageScreen = (props: AliasManageScreenProps) => {
                         }
                       : undefined
                   }
-                  onPress={() => onAlias(alias.aliasId, alias.name)}
+                  onPress={() => onAlias(alias._id, alias.name)}
                 />
               );
             })}

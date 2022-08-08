@@ -3,11 +3,12 @@ import { Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useAppDispatch } from '../../../hooks';
 import { spacing } from '../../../util/spacing';
-import { Alias, updateAliasFlow } from '../../../store/aliases';
 import { Input } from '../../../components/Input';
 import { colors } from '../../../util/colors';
 import { fonts } from '../../../util/fonts';
 import { SectionPropsType } from './SectionPropsType';
+import { updateAliasFlow } from '../../../store/thunks/aliases';
+import { Alias } from '../../../store/types';
 
 const styles = StyleSheet.create({
   descriptionContainer: {

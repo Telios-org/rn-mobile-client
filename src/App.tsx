@@ -11,8 +11,8 @@ import { store } from './store';
 import { Provider } from 'react-redux';
 import { ListenerContainer } from './ListenerContainer';
 import { Navigator } from './Navigator';
-import { getStoredUsernames } from './store/account';
 import { StatusBar } from 'react-native';
+import { getStoredUsernames } from './store/thunks/account';
 
 setTimeout(() => {
   console.log('starting nodejs bundle...');

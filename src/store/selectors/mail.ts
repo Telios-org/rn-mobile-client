@@ -1,8 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { DefaultRootState } from 'react-redux';
-import { FilterOption } from '../components/MailList';
-import { RootState } from '../store';
-import { MailState } from '../store/mail';
+import { FilterOption } from '../../components/MailList';
+import { RootState } from '../../store';
+import { MailState } from '../mail';
 
 export enum FolderName {
   inbox = 'inbox',

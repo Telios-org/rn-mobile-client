@@ -7,7 +7,7 @@ import {
   FolderName,
   getFolderIdByName,
   inboxMailListSelector,
-} from '../../store/mailSelectors';
+} from '../../store/selectors/mail';
 import { getMailByFolder, getNewMailFlow } from '../../store/mail';
 import { MailList, MailListItem } from '../../components/MailList';
 import { MailListHeader } from '../../components/MailListHeader';
