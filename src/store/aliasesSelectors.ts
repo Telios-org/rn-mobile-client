@@ -7,6 +7,12 @@ export const aliasesComputedSelector = createSelector(
   aliases => aliases.slice().sort((a, b) => a.aliasId.localeCompare(b.aliasId)), // copy the array before sorting it, because the array is frozen in strict mode
 );
 
+export const aliasSelectorById = createSelector(
+  aliasesSelector,
+  (state: RootState, id: string) => id,
+  (aliases, id) => aliases.find(a => a.aliasId === id),
+);
+
 export const aliasesForwardAddressesSelector = createSelector(
   aliasesSelector,
   aliases => {
@@ -23,19 +29,31 @@ export const aliasesForwardAddressesSelector = createSelector(
 );
 
 export const namespaceSelector = (state: RootState) =>
-  state.aliases.aliasNamespace;
+  state.aliases.aliasNamespaces;
 
-export const namespaceComputedSelector = createSelector(
+export const namespaceNameSelector = createSelector(
   namespaceSelector,
-  aliasNamespace =>
-    aliasNamespace.slice().sort((a, b) => a.name.localeCompare(b.name)),
+  namespaces =>
+    namespaces
+      .map(namespace => namespace.name)
+      .sort((a, b) => a.localeCompare(b)),
 );
 
 export const filterAliasesByNamespaceSelector = createSelector(
   [
     aliasesComputedSelector,
-    (state: RootState, namespaceKey: string) => namespaceKey,
+    (state: RootState, namespaceKey: string) => {
+      if (namespaceKey === 'random') {
+        return undefined;
+      }
+      return namespaceKey;
+    },
   ],
   (aliases, namespaceKey) =>
     aliases.filter(alias => alias.namespaceKey === namespaceKey),
+);
+
+export const hasRandomAliasSelector = createSelector(
+  aliasesComputedSelector,
+  aliases => aliases.some(alias => alias.namespaceKey === undefined),
 );

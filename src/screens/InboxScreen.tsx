@@ -10,12 +10,12 @@ import {
   filteredInboxMailListSelector,
   FolderName,
   getFolderIdByName,
-} from '../store/mailSelectors';
-import { getMailByFolder, getNewMailFlow } from '../store/mail';
-import { FilterOption, MailList, MailListItem } from '../components/MailList';
-import { ComposeNewEmailButton } from '../components/ComposeNewEmailButton';
-import { NavTitle } from '../components/NavTitle';
-import { MailListHeader } from '../components/MailListHeader';
+} from 'src/store/mailSelectors';
+import { getMailByFolder, getNewMailFlow } from 'src/store/mail';
+import { FilterOption, MailList, MailListItem } from 'src/components/MailList';
+import { ComposeNewEmailButton } from 'src/components/ComposeNewEmailButton';
+import { NavTitle } from 'src/components/NavTitle';
+import { MailListHeader } from 'src/components/MailListHeader';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,

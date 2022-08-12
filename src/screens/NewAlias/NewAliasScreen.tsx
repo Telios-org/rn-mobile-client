@@ -1,36 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
-
+import { Alert, ScrollView, Text, View } from 'react-native';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-
 import { Modalize } from 'react-native-modalize';
-import { Portal } from 'react-native-portalize';
-
-import { RootStackParams } from '../Navigator';
-import { colors } from '../util/colors';
-import { borderRadius, spacing } from '../util/spacing';
-import { fonts } from '../util/fonts';
-import { Input } from '../components/Input';
-import { Button } from '../components/Button';
-
-import envApi from '../../env_api.json';
-import { Icon } from '../components/Icon';
-import { randomLetters, randomWords } from '../util/randomNames';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { MultiSelectInput } from '../components/MultiSelectInput';
-import { InputModal } from '../components/InputModal';
-import { validateEmail } from '../util/regexHelpers';
+import { RootStackParams } from '../../Navigator';
+import { colors } from '../../util/colors';
+import { fonts } from '../../util/fonts';
+import { Input } from '../../components/Input';
+import { Button } from '../../components/Button';
+// @ts-ignore
+import envApi from '../../../env_api.json';
+import { Icon } from '../../components/Icon';
+import { randomLetters, randomWords } from '../../util/randomNames';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { MultiSelectInput } from '../../components/MultiSelectInput';
+import { InputModal } from '../../components/InputModal';
+import { validateEmail } from '../../util/regexHelpers';
 import { useSelector } from 'react-redux';
-import { aliasesForwardAddressesSelector } from '../store/aliasesSelectors';
-import { registerAlias } from '../store/aliases';
+import { aliasesForwardAddressesSelector } from '../../store/aliasesSelectors';
+import { registerAlias } from '../../store/aliases';
+import styles from './styles';
 
 type NewAliasFormValues = {
   alias: string;
@@ -49,11 +39,10 @@ export type NewAliasScreenProps = NativeStackScreenProps<
   'newAlias'
 >;
 
-export const NewAliasScreen = (props: NewAliasScreenProps) => {
+export const NewAliasScreen = ({ navigation, route }: NewAliasScreenProps) => {
+  const namespace = route.params.namespace;
   const dispatch = useAppDispatch();
-  const aliases = useAppSelector(state => state.aliases);
   const mail = useAppSelector(state => state.mail);
-  const namespace = aliases.aliasNamespace;
   const existingForwardingAddresses = useSelector(
     aliasesForwardAddressesSelector,
   );
@@ -61,11 +50,11 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
   // TODO: dev vs prod switch
   const emailPostfix = envApi.devMail;
 
-  const inputModalRef = React.useRef<Modalize>();
+  const inputModalRef = useRef<Modalize>(null);
 
-  const [forwardingAddresses, setForwardingAddresses] = React.useState<
-    string[]
-  >(existingForwardingAddresses);
+  const [forwardingAddresses, setForwardingAddresses] = useState<string[]>(
+    existingForwardingAddresses,
+  );
 
   const onMoreInfo = () => {
     Alert.alert('Not implemented');
@@ -75,7 +64,7 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
     values: NewAliasFormValues,
     actions: FormikHelpers<NewAliasFormValues>,
   ) => {
-    const mailboxId = mail.mailbox._id;
+    const mailboxId = mail.mailbox?._id;
     if (!mailboxId) {
       return;
     }
@@ -83,12 +72,12 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
     try {
       actions.setSubmitting(true);
 
-      const fullAddress = `${namespace.name}#${values.alias}@${emailPostfix}`;
+      const fullAddress = `${namespace}#${values.alias}@${emailPostfix}`;
       console.log('registering ', fullAddress);
 
       const response = await dispatch(
         registerAlias({
-          namespaceName: namespace.name,
+          namespaceName: namespace,
           domain: emailPostfix,
           address: values.alias,
           description: values.description,
@@ -100,7 +89,7 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
       if (response.type === registerAlias.rejected.type) {
         Alert.alert('Error', 'Unable to create alias');
       } else {
-        props.navigation.goBack();
+        navigation.goBack();
       }
     } catch (error) {
       console.log('onSubmit error caught', error);
@@ -111,11 +100,7 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
 
   return (
     <>
-      <ScrollView
-        style={{
-          flex: 1,
-          backgroundColor: colors.white,
-        }}>
+      <ScrollView style={styles.scrollView}>
         <Formik
           initialValues={{
             alias: '',
@@ -132,58 +117,37 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
             isSubmitting,
             setFieldValue,
           }) => (
-            <View style={{ margin: spacing.lg }}>
+            <View style={styles.formikContent}>
               <Input
                 value={values.alias}
-                error={touched.alias && errors.alias}
+                error={touched.alias ? errors.alias : undefined}
                 label="Alias"
                 onChangeText={handleChange('alias')}
                 autoCapitalize="none"
                 autoCorrect={false}
                 disabled={isSubmitting}
               />
-              <View
-                style={{
-                  backgroundColor: colors.skyLighter,
-                  borderRadius: borderRadius,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingHorizontal: spacing.md,
-                  paddingVertical: spacing.sm,
-                  marginTop: spacing.sm,
-                }}>
+              <View style={styles.aliasLongName}>
                 <Text
                   style={[fonts.small.medium, { color: colors.inkLighter }]}>
-                  {namespace.name}
+                  {namespace}
                   <Text style={{ color: colors.primaryBase }}>
                     {values.alias ? '#' + values.alias : '#'}
                   </Text>
                   {`@${emailPostfix}`}
                 </Text>
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginTop: spacing.sm,
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={styles.shuffleButtons}>
+                <View style={styles.shuffleBtn}>
                   <Icon
                     name="shuffle-outline"
                     size={20}
                     color={colors.inkLighter}
                   />
-                  <Text
-                    style={[
-                      fonts.small.medium,
-                      { color: colors.inkLighter, marginLeft: spacing.sm },
-                    ]}>
-                    {'Shuffle'}
-                  </Text>
+                  <Text style={styles.shuffleBtnTitle}>Shuffle</Text>
                 </View>
 
-                <View style={{ flexDirection: 'row' }}>
+                <View style={styles.wordsAndLettersContainer}>
                   <Button
                     type="outline"
                     size="small"
@@ -195,18 +159,19 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
                     size="small"
                     title="Words"
                     onPress={() => setFieldValue('alias', randomWords())}
-                    style={{ marginLeft: spacing.sm }}
+                    style={styles.shuffleWordsBtn}
                   />
                 </View>
               </View>
               <Input
                 value={values.description}
-                error={touched.description && errors.description}
+                error={touched.description ? errors.description : undefined}
                 label="Description"
                 placeholder="(optional)"
                 onChangeText={handleChange('description')}
                 disabled={isSubmitting}
-                style={{ marginTop: spacing.md }}
+                autoFocus
+                style={styles.description}
               />
               <MultiSelectInput
                 label="Forward Addresses"
@@ -230,16 +195,13 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
                     },
                   },
                 ]}
-                onChange={values => setFieldValue('forwardAddresses', values)}
+                onChange={addresses =>
+                  setFieldValue('forwardAddresses', addresses)
+                }
                 disabled={isSubmitting}
-                style={{ marginTop: spacing.md }}
+                style={styles.multiSelectInput}
               />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                  marginTop: spacing.lg,
-                }}>
+              <View style={styles.moreInfoBtnContainer}>
                 <Button
                   size="small"
                   type="text"
@@ -252,7 +214,7 @@ export const NewAliasScreen = (props: NewAliasScreenProps) => {
                 title="Create"
                 onPress={handleSubmit}
                 loading={isSubmitting}
-                style={{ marginTop: spacing.lg }}
+                style={styles.createBtn}
               />
             </View>
           )}
