@@ -1,20 +1,20 @@
 import { Formik, FormikHelpers } from 'formik';
 import React from 'react';
 import { View, Text, ScrollView, Image, Alert } from 'react-native';
-import { Button } from '../components/Button';
-import { Input } from '../components/Input';
+import { Button } from 'src/components/Button';
+import { Input } from 'src/components/Input';
 import * as Yup from 'yup';
 
-import { spacing } from '../util/spacing';
+import { spacing } from 'src/util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHeaderHeight } from '@react-navigation/elements';
 
-import { RootStackParams } from '../Navigator';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { colors } from '../util/colors';
-import { fonts } from '../util/fonts';
-import { SingleSelectInput } from '../components/SingleSelectInput';
-import { loginFlow } from '../store/thunks/account';
+import { RootStackParams } from 'src/Navigator';
+import { useAppDispatch, useAppSelector } from 'src/hooks';
+import { colors } from 'src/util/colors';
+import { fonts } from 'src/util/fonts';
+import { SingleSelectInput } from 'src/components/SingleSelectInput';
+import { loginFlow } from 'src/store/thunks/account';
 
 const SYNC_EXISTING = 'sync_existing';
 

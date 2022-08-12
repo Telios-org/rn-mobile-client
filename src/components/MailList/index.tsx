@@ -2,12 +2,12 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Text, View, Animated } from 'react-native';
 
-import { Button } from '../../components/Button';
-import { colors } from '../../util/colors';
-import { fonts } from '../../util/fonts';
-import { Icon } from '../../components/Icon';
-import { EmailCell } from '../../components/EmailCell';
-import { LocalEmail } from '../../store/mail';
+import { Button } from 'src/components/Button';
+import { colors } from 'src/util/colors';
+import { fonts } from 'src/util/fonts';
+import { Icon } from 'src/components/Icon';
+import { EmailCell } from 'src/components/EmailCell';
+import { LocalEmail } from 'src/store/mail';
 
 import styles from './styles';
 

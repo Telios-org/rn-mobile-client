@@ -3,20 +3,20 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 
-import { MainStackParams, RootStackParams } from '../Navigator';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { MainStackParams, RootStackParams } from 'src/Navigator';
+import { useAppDispatch, useAppSelector } from 'src/hooks';
 import { useSelector } from 'react-redux';
 import {
   filteredInboxMailListSelector,
   FolderName,
   getFolderIdByName,
-} from '../store/selectors/mail';
-import { getMailByFolder, getNewMailFlow } from '../store/mail';
-import { FilterOption, MailList, MailListItem } from '../components/MailList';
-import { ComposeNewEmailButton } from '../components/ComposeNewEmailButton';
-import { NavTitle } from '../components/NavTitle';
-import { MailListHeader } from '../components/MailListHeader';
-import { RootState } from '../store';
+} from 'src/store/selectors/mail';
+import { getMailByFolder, getNewMailFlow } from 'src/store/mail';
+import { FilterOption, MailList, MailListItem } from 'src/components/MailList';
+import { ComposeNewEmailButton } from 'src/components/ComposeNewEmailButton';
+import { NavTitle } from 'src/components/NavTitle';
+import { MailListHeader } from 'src/components/MailListHeader';
+import { RootState } from 'src/store';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
