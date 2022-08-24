@@ -1,5 +1,4 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Text, View, Animated } from 'react-native';
 
 import { Button } from '../../components/Button';
@@ -7,18 +6,18 @@ import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
 import { Icon } from '../../components/Icon';
 import { EmailCell } from '../../components/EmailCell';
-import { LocalEmail } from '../../store/mail';
 
 import styles from './styles';
+import { Email } from '../../store/types';
+import { useNavigation } from '@react-navigation/native';
 
 export type MailListItem = {
   id: string;
   onSelect?: () => void;
-  mail?: LocalEmail;
+  mail?: Email;
 };
 
 export type MailListProps = {
-  navigation: NativeStackNavigationProp<any>;
   renderNavigationTitle: () => React.ReactNode;
   headerComponent: React.ComponentType<any> | React.ReactElement;
   items: Array<MailListItem>;
@@ -38,7 +37,6 @@ export enum FilterOption {
 
 export const MailList = ({
   items,
-  navigation,
   onRefresh,
   refreshEnabled,
   headerComponent,
@@ -48,6 +46,7 @@ export const MailList = ({
   setFilterOption,
   selectedFilterOption,
 }: MailListProps) => {
+  const navigation = useNavigation();
   const headerTitleAnimation = useRef(new Animated.Value(0)).current;
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -71,10 +70,9 @@ export const MailList = ({
   const onListRefresh = async () => {
     setIsRefreshing(true);
     try {
-      await onRefresh();
-    } catch (e) {
-      setIsRefreshing(false);
-    }
+      await onRefresh?.();
+    } catch (e) {}
+    setIsRefreshing(false);
   };
 
   const listData = [...items];

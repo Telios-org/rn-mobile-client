@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useSelector } from 'react-redux';
 import {
-  FolderName,
-  getFolderIdByName,
-  inboxMailListSelector,
-} from '../../store/selectors/mail';
-import { getMailByFolder, getNewMailFlow } from '../../store/mail';
-import { MailList, MailListItem } from '../../components/MailList';
+  filteredInboxMailListSelector,
+  selectMailsLoading,
+} from '../../store/selectors/email';
+import {
+  FilterOption,
+  MailList,
+  MailListItem,
+} from '../../components/MailList';
 import { MailListHeader } from '../../components/MailListHeader';
 import { NavTitle } from '../../components/NavTitle';
 import { ComposeNewEmailButton } from '../../components/ComposeNewEmailButton';
 import { MainStackParams, RootStackParams } from '../../Navigator';
 import { CompositeScreenProps } from '@react-navigation/native';
+import { getMailByFolder, getNewMailFlow } from '../../store/thunks/email';
+import { FoldersId } from '../../store/types/enums/Folders';
 
 export type AliasInboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasInbox'>,
@@ -27,17 +30,28 @@ export const AliasInboxScreen = ({
   route,
 }: AliasInboxScreenProps) => {
   const aliasId = route.params.aliasId;
-  const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const inboxMailList = useSelector(inboxMailListSelector);
 
-  React.useLayoutEffect(() => {
-    const inboxFolderId = getFolderIdByName(mail, FolderName.inbox);
-    if (!inboxFolderId) {
-      return;
-    }
-    dispatch(getMailByFolder({ id: inboxFolderId }));
-  }, [mail.folders]);
+  const [selectedFilterOption, setSelectedFilterOption] =
+    useState<FilterOption>(FilterOption.All);
+
+  const inboxMailList = useAppSelector(state => {
+    return filteredInboxMailListSelector(
+      state,
+      FoldersId.aliases,
+      selectedFilterOption,
+    );
+  });
+
+  const isLoading = useAppSelector(selectMailsLoading);
+
+  const getMails = async () => {
+    await dispatch(getMailByFolder({ id: FoldersId.aliases }));
+  };
+
+  useLayoutEffect(() => {
+    getMails();
+  }, []);
 
   const onRefresh = async () => {
     await dispatch(getNewMailFlow());
@@ -47,20 +61,22 @@ export const AliasInboxScreen = ({
     navigation.navigate('compose');
   };
 
+  const setFilterOption = (filterItem: FilterOption) => {
+    setSelectedFilterOption(filterItem);
+  };
+
   const onSelectEmail = (emailId: string) => {
     navigation.navigate('inbox', {
       screen: 'emailDetail',
-      params: { emailId: emailId },
+      params: { emailId: emailId, folderId: FoldersId.aliases },
     });
   };
 
-  const listData: MailListItem[] = inboxMailList.map(
-    (item: { emailId: string }) => ({
-      id: item.emailId,
-      mail: item,
-      onSelect: () => onSelectEmail(item.emailId),
-    }),
-  );
+  const listData: MailListItem[] = inboxMailList.map(item => ({
+    id: item.emailId,
+    mail: item,
+    onSelect: () => onSelectEmail(item.emailId),
+  }));
 
   const renderHeader = () => (
     <MailListHeader title="Inbox" subtitle={aliasId} />
@@ -69,12 +85,13 @@ export const AliasInboxScreen = ({
   return (
     <View style={{ flex: 1 }}>
       <MailList
-        navigation={navigation}
         renderNavigationTitle={() => <NavTitle>{'Inbox'}</NavTitle>}
         headerComponent={renderHeader}
-        loading={mail.loadingGetMailMeta}
+        loading={isLoading}
         onRefresh={onRefresh}
         items={listData}
+        setFilterOption={setFilterOption}
+        selectedFilterOption={selectedFilterOption}
       />
       <ComposeNewEmailButton onPress={onNewEmail} />
     </View>

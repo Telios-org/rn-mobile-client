@@ -5,7 +5,7 @@ import {
 } from './thunks/namespaces';
 import { AliasNamespace } from './types';
 import { namespaceAdapter } from './adapters/namespaces';
-import {accountLogout} from "./thunks/accountLogout";
+import { accountLogout } from './thunks/accountLogout';
 
 export const namespacesSlice = createSlice({
   name: 'namespaces',

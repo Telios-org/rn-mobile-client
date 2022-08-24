@@ -1,12 +1,12 @@
 import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { getAliases } from './aliases';
+import { AliasNamespace } from '../types';
 import {
   getMailboxFolders,
   GetMailboxFoldersResponse,
   getMailByFolder,
-} from '../mail';
-import { getAliases } from './aliases';
-import { AliasNamespace } from '../types';
+} from './email';
 
 type GetNamespacesForMailboxRequest = { id: string };
 export type GetNamespacesForMailboxResponse = Array<AliasNamespace>;
