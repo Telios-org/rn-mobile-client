@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useSelector } from 'react-redux';
 import {
-  FolderName,
-  getFolderIdByName,
-  trashMailListSelector,
-} from '../store/selectors/mail';
-import { getMailByFolder } from '../store/mail';
+  selectMailsByFolder,
+  selectMailsLoading,
+} from '../store/selectors/email';
 import { MailList, MailListItem } from '../components/MailList';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';
+import { getMailByFolder } from '../store/thunks/email';
+import { FoldersId } from '../store/types/enums/Folders';
 
 export type TrashScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'trash'>,
@@ -20,15 +19,15 @@ export type TrashScreenProps = CompositeScreenProps<
 >;
 
 export const TrashScreen = (props: TrashScreenProps) => {
-  const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const trashMailList = useSelector(trashMailListSelector);
+  const trashMailList = useAppSelector(state =>
+    selectMailsByFolder(state, FoldersId.trash),
+  );
+  const isLoading = useAppSelector(selectMailsLoading);
 
-  React.useLayoutEffect(() => {
-    dispatch(
-      getMailByFolder({ id: getFolderIdByName(mail, FolderName.trash) }),
-    );
-  }, [mail.folders]);
+  useEffect(() => {
+    dispatch(getMailByFolder({ id: FoldersId.trash }));
+  }, []);
 
   const onSelectEmail = (emailId: string) => {
     // todo: navigate
@@ -44,10 +43,9 @@ export const TrashScreen = (props: TrashScreenProps) => {
 
   return (
     <MailList
-      navigation={props.navigation}
       renderNavigationTitle={() => <NavTitle>{'Trash'}</NavTitle>}
       headerComponent={renderHeader}
-      loading={mail.loadingGetMailMeta}
+      loading={isLoading}
       items={listData}
       disableUnreadFilters={true}
     />

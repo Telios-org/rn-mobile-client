@@ -1,6 +1,16 @@
 import { Middleware, MiddlewareAPI } from 'redux';
 import { AppDispatch } from './store';
-import { Email, getMessage, mailSlice, saveMailToDB } from './store/mail';
+import { getMessage, saveMailToDB } from './store/thunks/email';
+import { EmailContent } from './store/types';
+
+type Email = {
+  content: EmailContent;
+  header: string;
+  key: string;
+  savedToDB?: boolean;
+  markedAsSynced?: boolean;
+  _id?: string;
+};
 
 export type FileFetchedPayload = {
   _id: string;
@@ -20,18 +30,16 @@ export const fileFetchedMiddleware: Middleware<{}, {}> =
 
       const email = transformEmail(data);
       // api.dispatch(mailSlice.actions.fileFetched(email));
-      api.dispatch(
-        saveMailToDB({ messageType: 'Incoming', messages: [email] }),
-      );
+      api.dispatch(saveMailToDB({ type: 'Incoming', messages: [email] }));
     } else if (action.type === 'node/account:newMessage') {
       const data = action.data as NewMessagePayload;
-      // api.dispatch(getMessage(data));
+      api.dispatch(getMessage(data));
     }
 
     return next(action);
   };
 
-function transformEmail(data) {
+function transformEmail(data: any) {
   const email = data?.email?.content;
 
   return {

@@ -1,11 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import { aliasSelectors } from '../adapters/aliases';
+import { createDeepEqualSelector } from './utils';
 
 export const aliasesSelector = (state: RootState) =>
   aliasSelectors.selectAll(state.aliases);
 
-export const aliasesForwardAddressesSelector = createSelector(
+export const aliasesForwardAddressesSelector = createDeepEqualSelector(
   aliasesSelector,
   aliases => {
     const addresses: { [address: string]: string } = {};
@@ -20,7 +21,7 @@ export const aliasesForwardAddressesSelector = createSelector(
   },
 );
 
-export const filterAliasesByNamespaceSelector = createSelector(
+export const filterAliasesByNamespaceSelector = createDeepEqualSelector(
   [
     aliasesSelector,
     (state: RootState, namespaceKey: string) => {

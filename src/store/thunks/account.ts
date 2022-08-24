@@ -5,6 +5,9 @@ import {
   storeAsyncStorageLastUsername,
   storeAsyncStorageSavedUsername,
 } from '../../util/asyncStorage';
+import { getFoldersNamespacesAliasesFlow } from './namespaces';
+import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
+import { LoginAccount, SignupAccount } from '../account';
 import {
   getMailboxes,
   GetMailboxesResponse,
@@ -12,10 +15,7 @@ import {
   registerMailbox,
   saveMailbox,
   SaveMailboxResponse,
-} from '../mail';
-import { getFoldersNamespacesAliasesFlow } from './namespaces';
-import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
-import { LoginAccount, SignupAccount } from '../account';
+} from './email';
 
 export const getStoredUsernames = createAsyncThunk(
   'system/getStoredUsernames',

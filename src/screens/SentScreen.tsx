@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useSelector } from 'react-redux';
 import {
-  FolderName,
-  getFolderIdByName,
-  sentMailListSelector,
-} from '../store/selectors/mail';
-import { getMailByFolder } from '../store/mail';
+  selectMailsByFolder,
+  selectMailsLoading,
+} from '../store/selectors/email';
 import { MailList, MailListItem } from '../components/MailList';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';
+import { getMailByFolder } from '../store/thunks/email';
+import { FoldersId } from '../store/types/enums/Folders';
 
 export type SentScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'sent'>,
@@ -20,13 +19,15 @@ export type SentScreenProps = CompositeScreenProps<
 >;
 
 export const SentScreen = (props: SentScreenProps) => {
-  const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const sentMailList = useSelector(sentMailListSelector);
+  const sentMailList = useAppSelector(state =>
+    selectMailsByFolder(state, FoldersId.sent),
+  );
+  const isLoading = useAppSelector(selectMailsLoading);
 
-  React.useLayoutEffect(() => {
-    dispatch(getMailByFolder({ id: getFolderIdByName(mail, FolderName.sent) }));
-  }, [mail.folders]);
+  useEffect(() => {
+    dispatch(getMailByFolder({ id: FoldersId.sent }));
+  }, []);
 
   const onSelectEmail = (emailId: string) => {
     // todo: navigate
@@ -42,10 +43,9 @@ export const SentScreen = (props: SentScreenProps) => {
 
   return (
     <MailList
-      navigation={props.navigation}
       renderNavigationTitle={() => <NavTitle>{'Sent'}</NavTitle>}
       headerComponent={renderHeader}
-      loading={mail.loadingGetMailMeta}
+      loading={isLoading}
       items={listData}
       disableUnreadFilters={true}
     />

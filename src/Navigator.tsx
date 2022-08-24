@@ -86,7 +86,7 @@ export type MainStackParams = {
 
 export type InboxStackParams = {
   inboxMain: undefined;
-  emailDetail: { emailId: string };
+  emailDetail: { emailId: string; folderId: number };
 };
 
 const CoreStack = createNativeStackNavigator<CoreStackProps>();

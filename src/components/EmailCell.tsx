@@ -2,13 +2,13 @@ import { format, isToday } from 'date-fns';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { LocalEmail } from '../store/mail';
+import { Email } from '../store/types';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 
 export type EmailCellProps = {
-  email: LocalEmail;
+  email: Email;
   onPress?: () => void;
 };
 export const EmailCell = (props: EmailCellProps) => {
@@ -46,7 +46,7 @@ export const EmailCell = (props: EmailCellProps) => {
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1 }}>
             <Text style={isUnread ? fonts.regular.bold : fonts.regular.regular}>
-              {fromName}
+              {fromName || fromEmail}
             </Text>
           </View>
           <Text

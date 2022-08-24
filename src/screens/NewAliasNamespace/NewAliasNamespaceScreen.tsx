@@ -23,16 +23,12 @@ export const NewAliasNamespaceScreen = (
   props: NewAliasNamespaceScreenProps,
 ) => {
   const dispatch = useAppDispatch();
-  const { mail } = useAppSelector(state => ({
-    mail: state.mail,
-    aliases: state.aliases,
-  }));
+  const mailboxId = useAppSelector(state => state.mail.mailbox?._id);
 
   const [namespace, setNamespace] = React.useState(randomLetters());
   const [loadingCreate, setLoadingCreate] = React.useState(false);
 
   const onCreate = async () => {
-    const mailboxId = mail.mailbox?._id;
     if (!mailboxId) {
       return;
     }

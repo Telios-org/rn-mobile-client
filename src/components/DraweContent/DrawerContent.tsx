@@ -13,9 +13,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { DrawerCell } from '../DrawerCell/DrawerCell';
 import DrawerAliasesSection from '../DrawerAliasesSection/DrawerAliasesSection';
 import styles from './styles';
+import { selectMailBoxAddress } from '../../store/selectors/email';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
-  const mail = useAppSelector(state => state.mail);
+  const mailboxAddress = useAppSelector(selectMailBoxAddress);
   const selectedRoute = props.state.routes[props.state.index];
 
   const onRefresh = () => {
@@ -50,7 +51,7 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
             },
           ]}>
           <View style={styles.profileAddress}>
-            <Text style={fonts.small.regular}>{mail.mailbox?.address}</Text>
+            <Text style={fonts.small.regular}>{mailboxAddress}</Text>
           </View>
           <Avatar touchable={true} />
         </View>

@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useSelector } from 'react-redux';
-import { draftsMailListSelector } from '../store/selectors/mail';
 import { MailList, MailListItem } from '../components/MailList';
 import { NavTitle } from '../components/NavTitle';
 import { MailListHeader } from '../components/MailListHeader';
+import { getMailByFolder } from '../store/thunks/email';
+import { FoldersId } from '../store/types/enums/Folders';
+import {
+  selectMailsByFolder,
+  selectMailsLoading,
+} from '../store/selectors/email';
 
 export type DraftsScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'drafts'>,
@@ -15,15 +19,15 @@ export type DraftsScreenProps = CompositeScreenProps<
 >;
 
 export const DraftsScreen = (props: DraftsScreenProps) => {
-  const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const draftsMailList = useSelector(draftsMailListSelector);
+  const draftsMailList = useAppSelector(state =>
+    selectMailsByFolder(state, FoldersId.drafts),
+  );
+  const isLoading = useAppSelector(selectMailsLoading);
 
-  // React.useLayoutEffect(() => {
-  //   dispatch(
-  //     getMailByFolder({ id: getFolderIdByName(mail, FolderName.drafts) }),
-  //   );
-  // }, [mail.folders]);
+  useEffect(() => {
+    dispatch(getMailByFolder({ id: FoldersId.drafts }));
+  }, []);
 
   const onSelectEmail = (emailId: string) => {
     // todo: navigate
@@ -39,10 +43,9 @@ export const DraftsScreen = (props: DraftsScreenProps) => {
 
   return (
     <MailList
-      navigation={props.navigation}
       renderNavigationTitle={() => <NavTitle>{'Drafts'}</NavTitle>}
       headerComponent={renderHeader}
-      loading={mail.loadingGetMailMeta}
+      loading={isLoading}
       items={listData}
       disableUnreadFilters={true}
     />

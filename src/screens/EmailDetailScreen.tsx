@@ -8,8 +8,10 @@ import { colors } from '../util/colors';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { fonts } from '../util/fonts';
 import { NavIconButton } from '../components/NavIconButton';
-import { deleteMail, getMessageById, ToFrom } from '../store/mail';
-import { FolderName, getFolderIdByName } from '../store/selectors/mail';
+import { selectMailByFolder } from '../store/selectors/email';
+import { deleteMail, getMessageById } from '../store/thunks/email';
+import { ToFrom } from '../store/types';
+import { FoldersId } from '../store/types/enums/Folders';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
   InboxStackParams,
@@ -17,16 +19,19 @@ export type EmailDetailScreenProps = NativeStackScreenProps<
 >;
 
 export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
-  const mailState = useAppSelector(state => state.mail);
-  const dispatch = useAppDispatch();
-  const userEmailAddress = mailState.mailbox?.address;
+  const { emailId, folderId } = props.route.params;
+  const email = useAppSelector(state =>
+    selectMailByFolder(state, folderId, emailId),
+  );
+  const isTrash = useAppSelector(state =>
+    selectMailByFolder(state, FoldersId.trash, emailId),
+  );
 
-  const { emailId } = props.route.params;
-  const email = mailState.mail[emailId];
+  const dispatch = useAppDispatch();
 
   // TODO: this might be slow at scale, if trash is huge.
-  const trashFolderId = getFolderIdByName(mailState, FolderName.trash);
-  const isTrash = mailState.mailIdsForFolder[trashFolderId]?.includes(emailId);
+  // const trashFolderId = getFolderIdByName(mailState, FolderName.trash);
+  // const isTrash = mailState.mailIdsForFolder[trashFolderId]?.includes(emailId);
 
   const onDelete = async () => {
     try {
