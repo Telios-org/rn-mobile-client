@@ -38,6 +38,7 @@ import EnterNewPassword from './screens/EnterNewPassword';
 import { AliasInboxScreen } from './screens/AliasInbox';
 import { AliasInfoScreen } from './screens/AliasInfo';
 import NewAliasRandom from './screens/NewAliasRandom';
+import useSyncMetaFiles from './hooks/useSyncMetaFiles';
 
 export type CoreStackProps = {
   register: undefined;
@@ -138,6 +139,9 @@ function CoreScreen() {
   const localUsernames = useAppSelector(state => state.account.localUsernames);
   const hasLocalAccount = localUsernames.length > 0;
   const isAuthenticated = useIsAuthenticated();
+
+  useSyncMetaFiles(isAuthenticated);
+
   return (
     <Stack.Navigator initialRouteName={hasLocalAccount ? 'login' : 'intro'}>
       {isAuthenticated ? (
