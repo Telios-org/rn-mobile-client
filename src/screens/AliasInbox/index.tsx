@@ -2,43 +2,49 @@ import React, { useLayoutEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+// @ts-ignore
+import envApi from '../../../env_api.json';
 import {
-  filteredInboxMailListSelector,
-  selectMailsLoading,
-} from '../../store/selectors/email';
-import {
-  FilterOption,
   MailList,
   MailListItem,
+  FilterOption,
 } from '../../components/MailList';
 import { MailListHeader } from '../../components/MailListHeader';
-import { NavTitle } from '../../components/NavTitle';
 import { ComposeNewEmailButton } from '../../components/ComposeNewEmailButton';
 import { MainStackParams, RootStackParams } from '../../Navigator';
 import { CompositeScreenProps } from '@react-navigation/native';
-import { getMailByFolder, getNewMailFlow } from '../../store/thunks/email';
+import { getMailByFolder } from '../../store/thunks/email';
 import { FoldersId } from '../../store/types/enums/Folders';
+import { aliasSelectors } from '../../store/adapters/aliases';
+import { RootState } from '../../store';
+import { getMessagesByAliasId } from '../../store/thunks/aliases';
+import {
+  filteredInboxMailByAliasSelector,
+  selectMailsLoading,
+} from '../../store/selectors/email';
+import MailListHeaderTitle from '../../components/MailListHeaderTitle';
+import { fonts, textStyles } from '../../util/fonts';
 
 export type AliasInboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasInbox'>,
   NativeStackScreenProps<RootStackParams>
 >;
 
-// TODO screen is duplicated, it's a sample
 export const AliasInboxScreen = ({
   navigation,
   route,
 }: AliasInboxScreenProps) => {
   const aliasId = route.params.aliasId;
   const dispatch = useAppDispatch();
-
+  const alias = useAppSelector((state: RootState) =>
+    aliasSelectors.selectById(state.aliases, aliasId),
+  );
   const [selectedFilterOption, setSelectedFilterOption] =
     useState<FilterOption>(FilterOption.All);
-
   const inboxMailList = useAppSelector(state => {
-    return filteredInboxMailListSelector(
+    return filteredInboxMailByAliasSelector(
       state,
-      FoldersId.aliases,
+      alias?.aliasId,
       selectedFilterOption,
     );
   });
@@ -54,7 +60,9 @@ export const AliasInboxScreen = ({
   }, []);
 
   const onRefresh = async () => {
-    await dispatch(getNewMailFlow());
+    if (alias?.aliasId) {
+      await dispatch(getMessagesByAliasId({ id: alias.aliasId }));
+    }
   };
 
   const onNewEmail = () => {
@@ -78,14 +86,32 @@ export const AliasInboxScreen = ({
     onSelect: () => onSelectEmail(item.emailId),
   }));
 
+  if (!alias) {
+    return null;
+  }
+
   const renderHeader = () => (
-    <MailListHeader title="Inbox" subtitle={aliasId} />
+    <MailListHeader
+      title={`# ${alias.name}`}
+      subtitle={`${alias.aliasId}@${envApi.postfix}`}
+      showCurrentStatus
+      canCopySubtitle
+      isActive={!alias.disabled}
+    />
   );
 
   return (
     <View style={{ flex: 1 }}>
       <MailList
-        renderNavigationTitle={() => <NavTitle>{'Inbox'}</NavTitle>}
+        renderNavigationTitle={() => (
+          <MailListHeaderTitle
+            title={`# ${alias.name}`}
+            showCurrentStatus
+            isActive={!alias.disabled}
+            titleStyle={[fonts.large.bold, { color: textStyles.titleColor }]}
+          />
+        )}
+        renderTitleDeps={[alias.disabled]}
         headerComponent={renderHeader}
         loading={isLoading}
         onRefresh={onRefresh}

@@ -146,6 +146,7 @@ export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
         disabled={!isAvailable}
         onSubmit={onSubmit}
         style={styles.nextBtn}
+        useKeyboardAvoidingView={false}
       />
       <Modalize ref={modalizeRef} adjustToContentHeight={true}>
         <View style={styles.modalContent}>
@@ -168,7 +169,6 @@ const getEmailAvailability = async (
   email: string,
 ): Promise<Result<{ isAvailable: boolean }>> => {
   try {
-    console.log('verifying email');
     const response = await fetch(`${envApi.dev}/mailbox/addresses/${email}`, {
       method: 'GET',
       headers: {

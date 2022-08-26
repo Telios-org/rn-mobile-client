@@ -1,15 +1,48 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
+import MailListHeaderTitle from './MailListHeaderTitle';
+import { Icon } from './Icon';
+import * as Clipboard from 'expo-clipboard';
+import Toast from 'react-native-toast-message';
 
 export type MailListHeaderProps = {
   title: string;
   subtitle?: string;
+  canCopySubtitle?: boolean;
+  showCurrentStatus?: boolean;
+  isActive?: boolean;
 };
 
-export const MailListHeader = (props: MailListHeaderProps) => {
+const styles = StyleSheet.create({
+  subtitleContainer: {
+    flexDirection: 'row',
+  },
+});
+
+export const MailListHeader = ({
+  title,
+  subtitle,
+  showCurrentStatus,
+  isActive,
+  canCopySubtitle,
+}: MailListHeaderProps) => {
+  const copySubtitleBtn = canCopySubtitle && (
+    <Pressable
+      onPress={() => {
+        if (subtitle) {
+          Clipboard.setString(subtitle);
+          Toast.show({
+            type: 'info',
+            text1: 'Text copied',
+          });
+        }
+      }}>
+      <Icon name="copy-outline" size={14} color={colors.inkLighter} />
+    </Pressable>
+  );
   return (
     <View
       style={{
@@ -17,11 +50,22 @@ export const MailListHeader = (props: MailListHeaderProps) => {
         paddingBottom: spacing.lg,
         paddingHorizontal: spacing.md,
       }}>
-      <Text style={fonts.title2}>{props.title}</Text>
-      {!!props.subtitle && (
-        <Text style={[fonts.regular.regular, { color: colors.inkLighter }]}>
-          {props.subtitle}
-        </Text>
+      <MailListHeaderTitle
+        title={title}
+        isActive={isActive}
+        showCurrentStatus={showCurrentStatus}
+      />
+      {!!subtitle && (
+        <View style={styles.subtitleContainer}>
+          <Text
+            style={[
+              fonts.small.regular,
+              { color: colors.inkLighter, marginRight: 11 },
+            ]}>
+            {subtitle}
+          </Text>
+          {copySubtitleBtn}
+        </View>
       )}
     </View>
   );

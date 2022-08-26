@@ -1,11 +1,11 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import { Text, View, Animated } from 'react-native';
 
-import { Button } from '../../components/Button';
+import { Button } from '../Button';
 import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
-import { Icon } from '../../components/Icon';
-import { EmailCell } from '../../components/EmailCell';
+import { Icon } from '../Icon';
+import { EmailCell } from '../EmailCell';
 
 import styles from './styles';
 import { Email } from '../../store/types';
@@ -19,6 +19,7 @@ export type MailListItem = {
 
 export type MailListProps = {
   renderNavigationTitle: () => React.ReactNode;
+  renderTitleDeps?: any[];
   headerComponent: React.ComponentType<any> | React.ReactElement;
   items: Array<MailListItem>;
   loading?: boolean;
@@ -38,9 +39,9 @@ export enum FilterOption {
 export const MailList = ({
   items,
   onRefresh,
-  refreshEnabled,
   headerComponent,
   renderNavigationTitle,
+  renderTitleDeps = [],
   loading,
   disableUnreadFilters,
   setFilterOption,
@@ -48,6 +49,7 @@ export const MailList = ({
 }: MailListProps) => {
   const navigation = useNavigation();
   const headerTitleAnimation = useRef(new Animated.Value(0)).current;
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShadowVisible: false,
@@ -63,7 +65,7 @@ export const MailList = ({
         </Animated.View>
       ),
     });
-  }, [navigation]); // TODO: is this going to cause performance issues?
+  }, renderTitleDeps); // TODO: is this going to cause performance issues?
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -91,11 +93,12 @@ export const MailList = ({
     if (item.id === 'MAIL_EMPTY') {
       return <EmptyComponent />;
     } else {
-      return <EmailCell email={item.mail} onPress={item.onSelect} />;
+      return item?.mail ? (
+        <EmailCell email={item.mail} onPress={item.onSelect} />
+      ) : null;
     }
   };
 
-  // TODO: hook these up
   const renderFilterHeader = () => {
     if (disableUnreadFilters) {
       return <View style={styles.disableFilterOptions} />;
@@ -103,7 +106,10 @@ export const MailList = ({
     return (
       <View style={styles.filterOptionsContainer}>
         {Object.keys(FilterOption)?.map(key =>
-          filterOptionsItem(FilterOption[key], true),
+          filterOptionsItem(
+            FilterOption[key as keyof typeof FilterOption],
+            true,
+          ),
         )}
       </View>
     );
@@ -134,6 +140,7 @@ export const MailList = ({
     />
   );
 
+  // @ts-ignore
   const renderSectionHeader = ({ section: { id, data } }) => {
     if (id === 'MAIL') {
       return renderFilterHeader();

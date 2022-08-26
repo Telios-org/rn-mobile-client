@@ -1,7 +1,7 @@
 import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '../../store';
-import { Alias } from '../types';
+import { Alias, Email } from '../types';
 import { aliasSelectors } from '../adapters/aliases';
 
 type GetAliasesRequest = { namespaceKeys: string[] };
@@ -106,3 +106,10 @@ export const removeAliasFlow = createAsyncThunk<
     rejectWithValue(e);
   }
 });
+
+export type GetMessagesByAliasIdRequest = { id: Alias['aliasId'] };
+export type GetMessagesByAliasIdResponse = Array<Email>;
+export const getMessagesByAliasId = createNodeCalloutAsyncThunk<
+  GetMessagesByAliasIdRequest,
+  GetMessagesByAliasIdResponse
+>('email:getMessagesByAliasId');
