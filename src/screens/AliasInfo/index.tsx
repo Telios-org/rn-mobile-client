@@ -6,13 +6,11 @@ import { RootStackParams } from '../../Navigator';
 import envApi from '../../../env_api.json';
 import styles from './styles';
 import { fonts } from '../../util/fonts';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
 import { colors } from '../../util/colors';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import * as Clipboard from 'expo-clipboard';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import DescriptionSection from './components/DescriptionSection';
 import ForwardAddressesSection from './components/ForwardAddressesSection';
 import CurrentStateSection from './components/CurrentStateSection';
@@ -34,7 +32,7 @@ export const AliasInfoScreen = ({
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const dispatch = useAppDispatch();
   const aliasId = route.params.aliasId;
-  const alias = useSelector((state: RootState) =>
+  const alias = useAppSelector(state =>
     aliasSelectors.selectById(state.aliases, aliasId),
   );
 
@@ -52,6 +50,7 @@ export const AliasInfoScreen = ({
             namespaceName: alias.namespaceKey,
           }),
         );
+        // TODO remove messages under this alias, they aren't deleted automatically
       } catch (e) {
         Alert.alert('Error', 'Failed to delete alias');
       }

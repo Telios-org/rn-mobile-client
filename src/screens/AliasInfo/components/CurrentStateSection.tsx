@@ -19,20 +19,20 @@ export default ({
 }: CurrentStateSectionProps) => {
   const dispatch = useAppDispatch();
   const fireUpdate = useRef(false);
-  const [isAliasActive, setIsAliasActive] = useState(aliasDisabled);
+  const [isAliasDisabled, setIsAliasDisabled] = useState(aliasDisabled);
 
   useEffect(() => {
-    if (fireUpdate.current) {
+    if (fireUpdate.current && isAliasDisabled !== undefined) {
       dispatch(
         updateAliasFlow({
           aliasId,
           domain,
-          disabled: isAliasActive || false,
+          disabled: isAliasDisabled,
         }),
       );
     }
     fireUpdate.current = true;
-  }, [isAliasActive]);
+  }, [isAliasDisabled]);
 
   return (
     <View style={styles.statusContainer}>
@@ -44,19 +44,21 @@ export default ({
             style={[
               styles.statusIndicator,
               {
-                backgroundColor: isAliasActive ? colors.success : colors.error,
+                backgroundColor: isAliasDisabled
+                  ? colors.error
+                  : colors.success,
               },
             ]}
           />
         </View>
       </View>
       <Switch
-        value={isAliasActive}
+        value={!isAliasDisabled}
         trackColor={{
           false: colors.inkLighter,
           true: colors.primaryBase,
         }}
-        onValueChange={() => setIsAliasActive(!isAliasActive)}
+        onValueChange={() => setIsAliasDisabled(!isAliasDisabled)}
       />
     </View>
   );
