@@ -4,7 +4,7 @@ import { searchSelectors } from '../adapters/search';
 import { filter, groupBy } from 'lodash';
 import { aliasesSelector } from './aliases';
 import { foldersSelector } from './folders';
-
+import { DefaultRootState } from 'react-redux';
 import { Folder } from '../types/index';
 
 const FolderIcons = {
@@ -102,8 +102,10 @@ export const groupedSearchedElementsSelector = createSelector(
 export const searchedElementsByGroupId = createSelector(
   [
     searchSelector,
-    (_state: RootState, searchId: { folderId?: string; aliasId?: string }) =>
-      searchId,
+    (
+      _state: DefaultRootState,
+      searchId: { folderId?: string; aliasId?: string },
+    ) => searchId,
   ],
   (searchedElements, id) => {
     if (searchedElements.length === 0 && !(id.folderId || id.aliasId)) {
