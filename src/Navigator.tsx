@@ -19,7 +19,8 @@ import { RegisterUsernameScreen } from './screens/RegisterUsername/RegisterUsern
 import { RegisterPasswordScreen } from './screens/RegisterPasswordScreen';
 import { RegisterRecoveryEmailScreen } from './screens/RegisterRecoveryEmailScreen';
 import { RegisterSuccessScreen } from './screens/RegisterSuccessScreen';
-import { SearchScreen } from './screens/SearchScreen';
+import { SearchScreen } from './screens/Search/SearchScreen';
+import { SearchSectionScreen } from './screens/SearchSection/SearchSectionScreen';
 import { NavIconButton } from './components/NavIconButton';
 import { DraftsScreen } from './screens/DraftsScreen';
 import { SentScreen } from './screens/SentScreen';
@@ -38,6 +39,7 @@ import EnterNewPassword from './screens/EnterNewPassword';
 import { AliasInboxScreen } from './screens/AliasInbox';
 import { AliasInfoScreen } from './screens/AliasInfo';
 import NewAliasRandom from './screens/NewAliasRandom';
+import useSyncMetaFiles from './hooks/useSyncMetaFiles';
 
 export type CoreStackProps = {
   register: undefined;
@@ -52,6 +54,12 @@ export type RootStackParams = {
   register: NavigatorScreenParams<RegisterStackParams> | undefined;
   compose: undefined;
   search: undefined;
+  searchSection: {
+    folderId: string;
+    aliasId?: string;
+    title?: string;
+    searchKey?: string;
+  };
   newAliasNamespace: undefined;
   newAlias: { namespace: string };
   newAliasRandom: undefined;
@@ -86,7 +94,7 @@ export type MainStackParams = {
 
 export type InboxStackParams = {
   inboxMain: undefined;
-  emailDetail: { emailId: string };
+  emailDetail: { emailId: string; folderId: number };
 };
 
 const CoreStack = createNativeStackNavigator<CoreStackProps>();
@@ -138,6 +146,9 @@ function CoreScreen() {
   const localUsernames = useAppSelector(state => state.account.localUsernames);
   const hasLocalAccount = localUsernames.length > 0;
   const isAuthenticated = useIsAuthenticated();
+
+  useSyncMetaFiles(isAuthenticated);
+
   return (
     <Stack.Navigator initialRouteName={hasLocalAccount ? 'login' : 'intro'}>
       {isAuthenticated ? (
@@ -163,11 +174,18 @@ function CoreScreen() {
             <Stack.Screen
               name="search"
               component={SearchScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="searchSection"
+              component={SearchSectionScreen}
               options={({ navigation }) => ({
-                title: 'Search',
+                headerTintColor: colors.inkDarker,
                 headerLeft: () => (
                   <NavIconButton
-                    icon={{ name: 'close-outline', size: 28 }}
+                    icon={{ name: 'chevron-back' }}
                     onPress={() => navigation.goBack()}
                   />
                 ),

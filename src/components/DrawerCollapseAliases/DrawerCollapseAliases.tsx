@@ -72,13 +72,13 @@ export const DrawerCollapseNamespace = (
                 key={`aliasitem-${item.name}`}
                 focused={
                   selectedRoute.name === 'aliasInbox' &&
-                  item.aliasId === selectedRoute.params.aliasId
+                  item._id === selectedRoute.params.aliasId
                 }
                 leftIcon={{ name: 'at', size: 14 }}
                 leftIconStyle={styles.iconWidth}
                 rightText={item.count > 0 ? `${item.count}` : undefined}
                 label={item.name}
-                onPress={() => onPressAlias(item.aliasId)}
+                onPress={() => onPressAlias(item._id)}
                 titleStyle={styles.aliasTitle}
               />
             );

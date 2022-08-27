@@ -7,4 +7,13 @@ export const spacing = {
   xxl: 54,
 };
 
+export const radius = {
+  xs: 4,
+  s: 8,
+  sm: 12,
+  m: 16,
+  l: 24,
+  xl: 32,
+};
+
 export const borderRadius = 12;

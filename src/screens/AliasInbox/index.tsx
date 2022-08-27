@@ -1,80 +1,123 @@
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useSelector } from 'react-redux';
+// @ts-ignore
+import envApi from '../../../env_api.json';
 import {
-  FolderName,
-  getFolderIdByName,
-  inboxMailListSelector,
-} from '../../store/selectors/mail';
-import { getMailByFolder, getNewMailFlow } from '../../store/mail';
-import { MailList, MailListItem } from '../../components/MailList';
+  MailList,
+  MailListItem,
+  FilterOption,
+} from '../../components/MailList';
 import { MailListHeader } from '../../components/MailListHeader';
-import { NavTitle } from '../../components/NavTitle';
 import { ComposeNewEmailButton } from '../../components/ComposeNewEmailButton';
 import { MainStackParams, RootStackParams } from '../../Navigator';
 import { CompositeScreenProps } from '@react-navigation/native';
+import { getMailByFolder } from '../../store/thunks/email';
+import { FoldersId } from '../../store/types/enums/Folders';
+import { aliasSelectors } from '../../store/adapters/aliases';
+import { RootState } from '../../store';
+import { getMessagesByAliasId } from '../../store/thunks/aliases';
+import {
+  filteredInboxMailByAliasSelector,
+  selectMailsLoading,
+} from '../../store/selectors/email';
+import MailListHeaderTitle from '../../components/MailListHeaderTitle';
+import { fonts, textStyles } from '../../util/fonts';
 
 export type AliasInboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasInbox'>,
   NativeStackScreenProps<RootStackParams>
 >;
 
-// TODO screen is duplicated, it's a sample
 export const AliasInboxScreen = ({
   navigation,
   route,
 }: AliasInboxScreenProps) => {
   const aliasId = route.params.aliasId;
-  const mail = useAppSelector(state => state.mail);
   const dispatch = useAppDispatch();
-  const inboxMailList = useSelector(inboxMailListSelector);
+  const alias = useAppSelector((state: RootState) =>
+    aliasSelectors.selectById(state.aliases, aliasId),
+  );
+  const [selectedFilterOption, setSelectedFilterOption] =
+    useState<FilterOption>(FilterOption.All);
+  const inboxMailList = useAppSelector(state => {
+    return filteredInboxMailByAliasSelector(
+      state,
+      alias?.aliasId,
+      selectedFilterOption,
+    );
+  });
 
-  React.useLayoutEffect(() => {
-    const inboxFolderId = getFolderIdByName(mail, FolderName.inbox);
-    if (!inboxFolderId) {
-      return;
-    }
-    dispatch(getMailByFolder({ id: inboxFolderId }));
-  }, [mail.folders]);
+  const isLoading = useAppSelector(selectMailsLoading);
+
+  const getMails = async () => {
+    await dispatch(getMailByFolder({ id: FoldersId.aliases }));
+  };
+
+  useLayoutEffect(() => {
+    getMails();
+  }, []);
 
   const onRefresh = async () => {
-    await dispatch(getNewMailFlow());
+    if (alias?.aliasId) {
+      await dispatch(getMessagesByAliasId({ id: alias.aliasId }));
+    }
   };
 
   const onNewEmail = () => {
     navigation.navigate('compose');
   };
 
+  const setFilterOption = (filterItem: FilterOption) => {
+    setSelectedFilterOption(filterItem);
+  };
+
   const onSelectEmail = (emailId: string) => {
     navigation.navigate('inbox', {
       screen: 'emailDetail',
-      params: { emailId: emailId },
+      params: { emailId: emailId, folderId: FoldersId.aliases },
     });
   };
 
-  const listData: MailListItem[] = inboxMailList.map(
-    (item: { emailId: string }) => ({
-      id: item.emailId,
-      mail: item,
-      onSelect: () => onSelectEmail(item.emailId),
-    }),
-  );
+  const listData: MailListItem[] = inboxMailList.map(item => ({
+    id: item.emailId,
+    mail: item,
+    onSelect: () => onSelectEmail(item.emailId),
+  }));
+
+  if (!alias) {
+    return null;
+  }
 
   const renderHeader = () => (
-    <MailListHeader title="Inbox" subtitle={aliasId} />
+    <MailListHeader
+      title={`# ${alias.name}`}
+      subtitle={`${alias.aliasId}@${envApi.postfix}`}
+      showCurrentStatus
+      canCopySubtitle
+      isActive={!alias.disabled}
+    />
   );
 
   return (
     <View style={{ flex: 1 }}>
       <MailList
-        navigation={navigation}
-        renderNavigationTitle={() => <NavTitle>{'Inbox'}</NavTitle>}
+        renderNavigationTitle={() => (
+          <MailListHeaderTitle
+            title={`# ${alias.name}`}
+            showCurrentStatus
+            isActive={!alias.disabled}
+            titleStyle={[fonts.large.bold, { color: textStyles.titleColor }]}
+          />
+        )}
+        renderTitleDeps={[alias.disabled]}
         headerComponent={renderHeader}
-        loading={mail.loadingGetMailMeta}
+        loading={isLoading}
         onRefresh={onRefresh}
         items={listData}
+        setFilterOption={setFilterOption}
+        selectedFilterOption={selectedFilterOption}
       />
       <ComposeNewEmailButton onPress={onNewEmail} />
     </View>

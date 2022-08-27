@@ -4,9 +4,11 @@ import { fileFetchedMiddleware } from './fileFetchedMiddleware';
 import { accountReducer } from './store/account';
 import { aliasesReducer } from './store/aliases';
 import { contactsReducer } from './store/contacts';
-import { mailReducer } from './store/mail';
 import { systemReducer } from './store/system';
 import { namespacesReducer } from './store/namespaces';
+import { emailReducer } from './store/emails';
+import { foldersReducer } from './store/folders';
+import { searchReducer } from './store/search';
 
 export const store = configureStore({
   reducer: {
@@ -14,8 +16,10 @@ export const store = configureStore({
     aliases: aliasesReducer,
     namespaces: namespacesReducer,
     contacts: contactsReducer,
-    mail: mailReducer,
+    mail: emailReducer,
+    folders: foldersReducer,
     system: systemReducer,
+    search: searchReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()

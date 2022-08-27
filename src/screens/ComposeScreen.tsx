@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { format, formatISO, isToday } from 'date-fns';
+import { formatISO } from 'date-fns';
 import Toast from 'react-native-toast-message';
 
-import { Alert, FlatList, ScrollView, Text, View } from 'react-native';
-import { MainStackParams, RootStackParams } from '../Navigator';
+import { Alert, Text, View } from 'react-native';
+import { RootStackParams } from '../Navigator';
 import { TextInput } from 'react-native-gesture-handler';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { Button } from '../components/Button';
 import { fonts, textStyles } from '../util/fonts';
 import { NavIconButton } from '../components/NavIconButton';
-import { OutgoingEmail, saveDraft, sendEmail } from '../store/mail';
+import { saveDraft, sendEmail } from '../store/thunks/email';
+import { EmailContent } from '../store/types';
 
 export type ComposeScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -24,8 +24,8 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   const dispatch = useAppDispatch();
   const userEmailAddress = mailState.mailbox?.address;
 
-  const subjectInputRef = React.useRef<TextInput>();
-  const bodyInputRef = React.useRef<TextInput>();
+  const subjectInputRef = React.useRef<TextInput>(null);
+  const bodyInputRef = React.useRef<TextInput>(null);
 
   const [isSending, setIsSending] = React.useState(false);
 
@@ -41,7 +41,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
           to: [{ address: to }],
           subject: subject,
           date: formatISO(Date.now()),
-          text_body: body,
+          bodyAsText: body,
         }),
       );
 
@@ -92,7 +92,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
 
     setIsSending(true);
 
-    const email: OutgoingEmail = {
+    const email: EmailContent = {
       from: [{ address: mailState.mailbox.address }],
       to: [{ address: to }],
       subject: subject,

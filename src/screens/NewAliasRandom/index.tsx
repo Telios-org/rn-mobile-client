@@ -25,7 +25,7 @@ export default ({ navigation }: NewAliasScreenProps) => {
           domain: emailPostfix,
           address: newRandomAlias,
           fwdAddresses: [],
-          disabled: true,
+          disabled: false,
         }),
       ).unwrap();
       setIsLoading(false);

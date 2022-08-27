@@ -43,4 +43,5 @@ export const colors = {
 
   error: '#D3180C',
   success: '#23C16B',
+  active: '#4CD571',
 };

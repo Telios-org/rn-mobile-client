@@ -1,26 +1,27 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Text, View, Animated } from 'react-native';
 
-import { Button } from '../../components/Button';
+import { Button } from '../Button';
 import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
-import { Icon } from '../../components/Icon';
-import { EmailCell } from '../../components/EmailCell';
-import { LocalEmail } from '../../store/mail';
+import { Icon } from '../Icon';
+import { EmailCell } from '../EmailCell/EmailCell';
 
 import styles from './styles';
+import { Email } from '../../store/types';
+import { useNavigation } from '@react-navigation/native';
 
 export type MailListItem = {
   id: string;
   onSelect?: () => void;
-  mail?: LocalEmail;
+  mail?: Email;
 };
 
 export type MailListProps = {
-  navigation: NativeStackNavigationProp<any>;
-  renderNavigationTitle: () => React.ReactNode;
-  headerComponent: React.ComponentType<any> | React.ReactElement;
+  renderNavigationTitle?: () => React.ReactNode;
+  renderTitleDeps?: any[];
+  sectionHeader?: () => React.ReactElement;
+  headerComponent?: React.ComponentType<any> | React.ReactElement;
   items: Array<MailListItem>;
   loading?: boolean;
   refreshEnabled?: boolean;
@@ -38,40 +39,44 @@ export enum FilterOption {
 
 export const MailList = ({
   items,
-  navigation,
   onRefresh,
-  refreshEnabled,
   headerComponent,
   renderNavigationTitle,
+  renderTitleDeps = [],
   loading,
   disableUnreadFilters,
   setFilterOption,
   selectedFilterOption,
+  sectionHeader,
 }: MailListProps) => {
+  const navigation = useNavigation();
   const headerTitleAnimation = useRef(new Animated.Value(0)).current;
+
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShadowVisible: false,
-      headerTitle: () => (
-        <Animated.View
-          style={{
-            opacity: headerTitleAnimation.interpolate({
-              inputRange: [0, 80, 120],
-              outputRange: [0, 0, 1],
-            }),
-          }}>
-          {renderNavigationTitle()}
-        </Animated.View>
-      ),
-    });
-  }, [navigation]); // TODO: is this going to cause performance issues?
+    if (renderNavigationTitle) {
+      navigation.setOptions({
+        headerShadowVisible: false,
+        headerTitle: () => (
+          <Animated.View
+            style={{
+              opacity: headerTitleAnimation.interpolate({
+                inputRange: [0, 80, 120],
+                outputRange: [0, 0, 1],
+              }),
+            }}>
+            {renderNavigationTitle()}
+          </Animated.View>
+        ),
+      });
+    }
+  }, [renderTitleDeps]); // TODO: is this going to cause performance issues?
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const onListRefresh = async () => {
     setIsRefreshing(true);
     try {
-      await onRefresh();
+      await onRefresh?.();
     } catch (e) {
       setIsRefreshing(false);
     }
@@ -93,11 +98,12 @@ export const MailList = ({
     if (item.id === 'MAIL_EMPTY') {
       return <EmptyComponent />;
     } else {
-      return <EmailCell email={item.mail} onPress={item.onSelect} />;
+      return item?.mail ? (
+        <EmailCell email={item.mail} onPress={item.onSelect} />
+      ) : null;
     }
   };
 
-  // TODO: hook these up
   const renderFilterHeader = () => {
     if (disableUnreadFilters) {
       return <View style={styles.disableFilterOptions} />;
@@ -105,7 +111,10 @@ export const MailList = ({
     return (
       <View style={styles.filterOptionsContainer}>
         {Object.keys(FilterOption)?.map(key =>
-          filterOptionsItem(FilterOption[key], true),
+          filterOptionsItem(
+            FilterOption[key as keyof typeof FilterOption],
+            true,
+          ),
         )}
       </View>
     );
@@ -136,8 +145,11 @@ export const MailList = ({
     />
   );
 
+  // @ts-ignore
   const renderSectionHeader = ({ section: { id, data } }) => {
-    if (id === 'MAIL') {
+    if (sectionHeader) {
+      return sectionHeader();
+    } else if (id === 'MAIL') {
       return renderFilterHeader();
     }
     return null;
@@ -148,18 +160,22 @@ export const MailList = ({
       style={styles.sectionContainer}
       sections={sectionListData}
       stickySectionHeadersEnabled={true}
-      onScroll={Animated.event(
-        [
-          {
-            nativeEvent: {
-              contentOffset: {
-                y: headerTitleAnimation,
-              },
-            },
-          },
-        ],
-        { useNativeDriver: true },
-      )}
+      onScroll={
+        renderNavigationTitle
+          ? Animated.event(
+              [
+                {
+                  nativeEvent: {
+                    contentOffset: {
+                      y: headerTitleAnimation,
+                    },
+                  },
+                },
+              ],
+              { useNativeDriver: true },
+            )
+          : undefined
+      }
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}
       keyExtractor={(item, index) => item.id + index}
