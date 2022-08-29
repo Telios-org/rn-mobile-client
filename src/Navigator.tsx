@@ -19,7 +19,8 @@ import { RegisterUsernameScreen } from './screens/RegisterUsername/RegisterUsern
 import { RegisterPasswordScreen } from './screens/RegisterPasswordScreen';
 import { RegisterRecoveryEmailScreen } from './screens/RegisterRecoveryEmailScreen';
 import { RegisterSuccessScreen } from './screens/RegisterSuccessScreen';
-import { SearchScreen } from './screens/SearchScreen';
+import { SearchScreen } from './screens/Search/SearchScreen';
+import { SearchSectionScreen } from './screens/SearchSection/SearchSectionScreen';
 import { NavIconButton } from './components/NavIconButton';
 import { DraftsScreen } from './screens/DraftsScreen';
 import { SentScreen } from './screens/SentScreen';
@@ -53,6 +54,12 @@ export type RootStackParams = {
   register: NavigatorScreenParams<RegisterStackParams> | undefined;
   compose: undefined;
   search: undefined;
+  searchSection: {
+    folderId: string;
+    aliasId?: string;
+    title?: string;
+    searchKey?: string;
+  };
   newAliasNamespace: undefined;
   newAlias: { namespace: string };
   newAliasRandom: undefined;
@@ -167,11 +174,18 @@ function CoreScreen() {
             <Stack.Screen
               name="search"
               component={SearchScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="searchSection"
+              component={SearchSectionScreen}
               options={({ navigation }) => ({
-                title: 'Search',
+                headerTintColor: colors.inkDarker,
                 headerLeft: () => (
                   <NavIconButton
-                    icon={{ name: 'close-outline', size: 28 }}
+                    icon={{ name: 'chevron-back' }}
                     onPress={() => navigation.goBack()}
                   />
                 ),
