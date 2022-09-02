@@ -5,7 +5,7 @@ import { Button } from '../Button';
 import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
 import { Icon } from '../Icon';
-import { EmailCell } from '../EmailCell';
+import { EmailCell } from '../EmailCell/EmailCell';
 
 import styles from './styles';
 import { Email } from '../../store/types';
@@ -18,9 +18,10 @@ export type MailListItem = {
 };
 
 export type MailListProps = {
-  renderNavigationTitle: () => React.ReactNode;
+  renderNavigationTitle?: () => React.ReactNode;
   renderTitleDeps?: any[];
-  headerComponent: React.ComponentType<any> | React.ReactElement;
+  sectionHeader?: () => React.ReactElement;
+  headerComponent?: React.ComponentType<any> | React.ReactElement;
   items: Array<MailListItem>;
   loading?: boolean;
   refreshEnabled?: boolean;
@@ -46,26 +47,29 @@ export const MailList = ({
   disableUnreadFilters,
   setFilterOption,
   selectedFilterOption,
+  sectionHeader,
 }: MailListProps) => {
   const navigation = useNavigation();
   const headerTitleAnimation = useRef(new Animated.Value(0)).current;
 
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShadowVisible: false,
-      headerTitle: () => (
-        <Animated.View
-          style={{
-            opacity: headerTitleAnimation.interpolate({
-              inputRange: [0, 80, 120],
-              outputRange: [0, 0, 1],
-            }),
-          }}>
-          {renderNavigationTitle()}
-        </Animated.View>
-      ),
-    });
-  }, renderTitleDeps); // TODO: is this going to cause performance issues?
+    if (renderNavigationTitle) {
+      navigation.setOptions({
+        headerShadowVisible: false,
+        headerTitle: () => (
+          <Animated.View
+            style={{
+              opacity: headerTitleAnimation.interpolate({
+                inputRange: [0, 80, 120],
+                outputRange: [0, 0, 1],
+              }),
+            }}>
+            {renderNavigationTitle()}
+          </Animated.View>
+        ),
+      });
+    }
+  }, [renderTitleDeps]); // TODO: is this going to cause performance issues?
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -73,8 +77,9 @@ export const MailList = ({
     setIsRefreshing(true);
     try {
       await onRefresh?.();
-    } catch (e) {}
-    setIsRefreshing(false);
+    } catch (e) {
+      setIsRefreshing(false);
+    }
   };
 
   const listData = [...items];
@@ -142,7 +147,9 @@ export const MailList = ({
 
   // @ts-ignore
   const renderSectionHeader = ({ section: { id, data } }) => {
-    if (id === 'MAIL') {
+    if (sectionHeader) {
+      return sectionHeader();
+    } else if (id === 'MAIL') {
       return renderFilterHeader();
     }
     return null;
@@ -153,18 +160,22 @@ export const MailList = ({
       style={styles.sectionContainer}
       sections={sectionListData}
       stickySectionHeadersEnabled={true}
-      onScroll={Animated.event(
-        [
-          {
-            nativeEvent: {
-              contentOffset: {
-                y: headerTitleAnimation,
-              },
-            },
-          },
-        ],
-        { useNativeDriver: true },
-      )}
+      onScroll={
+        renderNavigationTitle
+          ? Animated.event(
+              [
+                {
+                  nativeEvent: {
+                    contentOffset: {
+                      y: headerTitleAnimation,
+                    },
+                  },
+                },
+              ],
+              { useNativeDriver: true },
+            )
+          : undefined
+      }
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}
       keyExtractor={(item, index) => item.id + index}
