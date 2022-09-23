@@ -8,7 +8,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import { IntroScreen } from './screens/IntroScreen';
 import { LoginScreen } from './screens/LoginScreen';
-import { InboxScreen } from './screens/InboxScreen';
+import { InboxScreen } from './screens/Inbox/InboxScreen';
 import { useAppSelector, useIsAuthenticated } from './hooks';
 import { DrawerContent } from './components/DraweContent/DrawerContent';
 import { ComposeScreen } from './screens/ComposeScreen';
@@ -288,17 +288,17 @@ function Main() {
       <Drawer.Screen
         name={'drafts'}
         component={DraftsScreen}
-        options={{ title: 'Drafts' }}
+        options={{ title: '' }}
       />
       <Drawer.Screen
         name={'sent'}
         component={SentScreen}
-        options={{ title: 'Sent' }}
+        options={{ title: '' }}
       />
       <Drawer.Screen
         name={'trash'}
         component={TrashScreen}
-        options={{ title: 'Trash' }}
+        options={{ title: '' }}
       />
       <Drawer.Screen
         name={'profile'}
@@ -312,7 +312,7 @@ function Main() {
         name={'aliasInbox'}
         component={AliasInboxScreen}
         options={{
-          title: 'Manage Aliases',
+          title: '',
         }}
       />
       <Drawer.Screen

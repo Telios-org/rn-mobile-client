@@ -3,7 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import nodejs from 'nodejs-mobile-react-native';
 import { registerOneTimeListener } from '../../eventListenerMiddleware';
-import { Email, EmailContent, Folder, Mailbox } from '../types';
+import { Alias, Email, EmailContent, Folder, Mailbox } from '../types';
 
 export const getNewMailFlow = createAsyncThunk(
   'flow/getNewMail',
@@ -218,12 +218,55 @@ export const getMailboxFolders = createNodeCalloutAsyncThunk<
   GetMailboxFoldersRequest,
   GetMailboxFoldersResponse
 >('folder:getMailboxFolders');
-export type GetMailByFolderRequest = { id: string | number };
+export type GetMailByFolderRequest = {
+  id: string | number;
+  offset: number;
+  limit: number;
+  unread?: boolean;
+};
 export type GetMailByFolderResponse = Array<Email>;
 export const getMailByFolder = createNodeCalloutAsyncThunk<
   GetMailByFolderRequest,
   GetMailByFolderResponse
 >('email:getMessagesByFolderId');
+
+export const getReadMessagesByFolderId = createNodeCalloutAsyncThunk<
+  GetMailByFolderRequest,
+  GetMailByFolderResponse
+>('email:getReadMessagesByFolderId');
+
+export const getUnreadMessagesByFolderId = createNodeCalloutAsyncThunk<
+  GetMailByFolderRequest,
+  GetMailByFolderResponse
+>('email:getUnreadMessagesByFolderId');
+
+// this is needed to write in redux in "all" slice
+export const getAllMailByFolder = createAsyncThunk<
+  GetMailByFolderResponse,
+  GetMailByFolderRequest
+>('flow/getAllMailByFolder', async (arg, thunkAPI) => {
+  return await thunkAPI.dispatch(getMailByFolder({ ...arg })).unwrap();
+});
+
+// this is needed to write in redux in read slice
+export const getMailByFolderRead = createAsyncThunk<
+  GetMailByFolderResponse,
+  GetMailByFolderRequest
+>('flow/getMailsByFolderRead', async (arg, thunkAPI) => {
+  return await thunkAPI
+    .dispatch(getReadMessagesByFolderId({ ...arg }))
+    .unwrap();
+});
+
+// this is needed to write in redux in unread slice
+export const getMailByFolderUnread = createAsyncThunk<
+  GetMailByFolderResponse,
+  GetMailByFolderRequest
+>('flow/getMailsByFolderUnread', async (arg, thunkAPI) => {
+  return await thunkAPI
+    .dispatch(getUnreadMessagesByFolderId({ ...arg }))
+    .unwrap();
+});
 export type MarkAsUnreadRequest = { id: string | number };
 export type MarkAsUnreadResponse = Array<Email>;
 export const markAsUnread = createNodeCalloutAsyncThunk<
@@ -242,3 +285,26 @@ export const sendEmail = createNodeCalloutAsyncThunk<
   SendEmailRequest,
   SendEmailResponse
 >('email:sendEmail');
+
+export type GetMessagesByAliasIdRequest = {
+  id: Alias['aliasId'];
+  offset: number;
+  limit: number;
+  unread?: boolean;
+};
+
+export type GetMessagesByAliasIdResponse = Array<Email>;
+export const getMessagesByAliasId = createNodeCalloutAsyncThunk<
+  GetMessagesByAliasIdRequest,
+  GetMessagesByAliasIdResponse
+>('email:getMessagesByAliasId');
+
+export const getReadMessagesByAliasId = createNodeCalloutAsyncThunk<
+  GetMessagesByAliasIdRequest,
+  GetMessagesByAliasIdResponse
+>('email:getReadMessagesByAliasId');
+
+export const getUnreadMessagesByAliasId = createNodeCalloutAsyncThunk<
+  GetMessagesByAliasIdRequest,
+  GetMessagesByAliasIdResponse
+>('email:getUnreadMessagesByAliasId');
