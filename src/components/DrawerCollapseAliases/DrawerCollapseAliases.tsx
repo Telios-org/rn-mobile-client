@@ -4,6 +4,7 @@ import { DrawerCell } from '../DrawerCell/DrawerCell';
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import styles from './styles';
 import { Alias } from '../../store/types';
+import { CommonActions } from '@react-navigation/native';
 
 interface DrawerCollapseItemProps {
   navigation: DrawerNavigationHelpers;
@@ -25,6 +26,17 @@ export const DrawerCollapseNamespace = (
   };
 
   const onPressAlias = (aliasId: string) => {
+    navigation.dispatch(state => {
+      const routes = state.routes.filter(r => r.name !== 'aliasInbox');
+      return CommonActions.reset({
+        ...state,
+        routes: [
+          ...routes,
+          { name: 'aliasInbox', params: { aliasId, namespaceKey } },
+        ],
+        index: routes.length - 1,
+      });
+    });
     navigation.navigate('aliasInbox', { aliasId, namespaceKey });
   };
 

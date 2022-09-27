@@ -1,17 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import {
-  selectMailsByFolder,
-  selectMailsLoading,
-} from '../store/selectors/email';
-import { MailList, MailListItem } from '../components/MailList';
-import { NavTitle } from '../components/NavTitle';
-import { MailListHeader } from '../components/MailListHeader';
-import { getMailByFolder } from '../store/thunks/email';
+import { selectAllMailsByFolder } from '../store/selectors/email';
+import { getAllMailByFolder } from '../store/thunks/email';
 import { FoldersId } from '../store/types/enums/Folders';
+import MailContainer from '../components/MailContainer';
 
 export type SentScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'sent'>,
@@ -21,33 +16,26 @@ export type SentScreenProps = CompositeScreenProps<
 export const SentScreen = (props: SentScreenProps) => {
   const dispatch = useAppDispatch();
   const sentMailList = useAppSelector(state =>
-    selectMailsByFolder(state, FoldersId.sent),
+    selectAllMailsByFolder(state, FoldersId.sent),
   );
-  const isLoading = useAppSelector(selectMailsLoading);
 
-  useEffect(() => {
-    dispatch(getMailByFolder({ id: FoldersId.sent }));
-  }, []);
+  // TODO add logic to update redux with send mail, now you can see new sent mails on manual refresh or on first open Sent screen
 
   const onSelectEmail = (emailId: string) => {
     // todo: navigate
   };
 
-  const renderHeader = () => <MailListHeader title="Sent" />;
-
-  const listData: MailListItem[] = sentMailList.map(item => ({
-    id: item.emailId,
-    mail: item,
-    onSelect: () => onSelectEmail(item.emailId),
-  }));
-
   return (
-    <MailList
-      renderNavigationTitle={() => <NavTitle>{'Sent'}</NavTitle>}
-      headerComponent={renderHeader}
-      loading={isLoading}
-      items={listData}
-      disableUnreadFilters={true}
+    <MailContainer
+      title="Sent"
+      showBottomSeparator
+      mails={sentMailList}
+      getMoreData={async (offset, perPage) => {
+        return await dispatch(
+          getAllMailByFolder({ id: FoldersId.sent, offset, limit: perPage }),
+        ).unwrap();
+      }}
+      onPressItem={onSelectEmail}
     />
   );
 };
