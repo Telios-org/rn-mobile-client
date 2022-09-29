@@ -9,6 +9,7 @@ export type AliasNamespace = {
   updatedAt?: string;
   _id: string;
 };
+
 export type Alias = {
   aliasId: string;
   name: string;
