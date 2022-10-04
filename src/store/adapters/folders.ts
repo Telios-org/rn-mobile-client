@@ -5,4 +5,4 @@ export const folderAdapter = createEntityAdapter<Folder>({
   selectId: folder => folder.folderId,
 });
 
-export const folderSelector = folderAdapter.getSelectors();
+export const folderSelectors = folderAdapter.getSelectors();

@@ -8,6 +8,7 @@ import { systemReducer } from './store/system';
 import { namespacesReducer } from './store/namespaces';
 import { emailReducer } from './store/emails';
 import { foldersReducer } from './store/folders';
+import { searchReducer } from './store/search';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     mail: emailReducer,
     folders: foldersReducer,
     system: systemReducer,
+    search: searchReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()

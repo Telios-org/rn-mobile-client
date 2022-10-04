@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { format } from 'date-fns';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, Text, View } from 'react-native';
 import { InboxStackParams } from '../Navigator';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
@@ -10,7 +10,7 @@ import { fonts } from '../util/fonts';
 import { NavIconButton } from '../components/NavIconButton';
 import { selectMailByFolder } from '../store/selectors/email';
 import { deleteMail, getMessageById } from '../store/thunks/email';
-import { ToFrom } from '../store/types';
+import { Email, ToFrom } from '../store/types';
 import { FoldersId } from '../store/types/enums/Folders';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
@@ -19,10 +19,12 @@ export type EmailDetailScreenProps = NativeStackScreenProps<
 >;
 
 export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
-  const { emailId, folderId } = props.route.params;
-  const email = useAppSelector(state =>
-    selectMailByFolder(state, folderId, emailId),
-  );
+  const { emailId } = props.route.params;
+  const [email, setEmail] = useState<Email>();
+  const [loading, setLoading] = useState(false);
+  // const email = useAppSelector(state =>
+  //   selectMailByFolder(state, folderId, emailId),
+  // );
   const isTrash = useAppSelector(state =>
     selectMailByFolder(state, FoldersId.trash, emailId),
   );
@@ -86,10 +88,27 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
   }, [props.navigation]);
 
   useEffect(() => {
-    dispatch(getMessageById({ id: emailId }));
+    const fetchMail = async () => {
+      setLoading(true);
+      try {
+        const resp = await dispatch(getMessageById({ id: emailId })).unwrap();
+        setEmail(resp);
+      } catch (e) {
+        // ignore
+      }
+      setLoading(false);
+    };
+    fetchMail();
   }, []);
 
   if (!email) {
+    if (loading) {
+      return (
+        <View style={{ margin: spacing.lg }}>
+          <ActivityIndicator color={colors.primaryBase} />
+        </View>
+      );
+    }
     return (
       <View>
         <Text>Message doesn't exist</Text>
@@ -97,7 +116,8 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
     );
   }
 
-  const fromArray = JSON.parse(email.fromJSON) as Array<ToFrom>;
+  const fromArray =
+    email?.fromJSON && (JSON.parse(email.fromJSON) as Array<ToFrom>);
   const from = fromArray?.[0];
 
   const dayFormatted = format(new Date(email.date), 'dd MMM yyyy');
@@ -113,7 +133,7 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
       <View style={{ margin: spacing.lg }}>
         <Text style={fonts.title3}>{email.subject}</Text>
         <View style={{ marginTop: spacing.lg }}>
-          <Text>{from.name || from.address}</Text>
+          <Text>{from?.name || from?.address}</Text>
           <Text>{fullDateText}</Text>
         </View>
         <View style={{ marginTop: spacing.lg }}>

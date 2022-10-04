@@ -14,12 +14,8 @@ export const ComposeNewEmailButton = (props: ComposeNewEmailButtonProps) => {
     <View
       style={{
         position: 'absolute',
-        bottom: 0,
-        right: 0,
-        left: 0,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        padding: spacing.lg,
+        bottom: spacing.lg,
+        right: spacing.lg,
       }}>
       <TouchableOpacity
         onPress={props.onPress}

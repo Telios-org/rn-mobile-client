@@ -8,7 +8,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import { IntroScreen } from './screens/IntroScreen';
 import { LoginScreen } from './screens/LoginScreen';
-import { InboxScreen } from './screens/InboxScreen';
+import { InboxScreen } from './screens/Inbox/InboxScreen';
 import { useAppSelector, useIsAuthenticated } from './hooks';
 import { DrawerContent } from './components/DraweContent/DrawerContent';
 import { ComposeScreen } from './screens/ComposeScreen';
@@ -19,12 +19,17 @@ import { RegisterUsernameScreen } from './screens/RegisterUsername/RegisterUsern
 import { RegisterPasswordScreen } from './screens/RegisterPasswordScreen';
 import { RegisterRecoveryEmailScreen } from './screens/RegisterRecoveryEmailScreen';
 import { RegisterSuccessScreen } from './screens/RegisterSuccessScreen';
-import { SearchScreen } from './screens/SearchScreen';
+import { SearchScreen } from './screens/Search/SearchScreen';
+import { SearchSectionScreen } from './screens/SearchSection/SearchSectionScreen';
 import { NavIconButton } from './components/NavIconButton';
 import { DraftsScreen } from './screens/DraftsScreen';
 import { SentScreen } from './screens/SentScreen';
 import { TrashScreen } from './screens/TrashScreen';
-import { ProfileScreen } from './screens/ProfileScreen';
+import { ProfileScreen } from './screens/Profile/ProfileScreen';
+import { ContactsScreen } from './screens/Profile/ContactsScreen';
+import { NotificationsScreen } from './screens/Profile/NotificationsScreen';
+import { StatisticsScreen } from './screens/Profile/StatisticsScreen';
+import { SyncNewDeviceScreen } from './screens/Profile/SyncNewDeviceScreen';
 import { AliasManageScreen } from './screens/AliasManage/AliasManageScreen';
 import { NewAliasNamespaceScreen } from './screens/NewAliasNamespace/NewAliasNamespaceScreen';
 import { NewAliasScreen } from './screens/NewAlias/NewAliasScreen';
@@ -53,6 +58,12 @@ export type RootStackParams = {
   register: NavigatorScreenParams<RegisterStackParams> | undefined;
   compose: undefined;
   search: undefined;
+  searchSection: {
+    folderId: string;
+    aliasId?: string;
+    title?: string;
+    searchKey?: string;
+  };
   newAliasNamespace: undefined;
   newAlias: { namespace: string };
   newAliasRandom: undefined;
@@ -80,9 +91,17 @@ export type MainStackParams = {
   drafts: undefined;
   sent: undefined;
   trash: undefined;
-  profile: undefined;
+  profile: NavigatorScreenParams<ProfileStackParams>;
   aliasManage: undefined;
   aliasInbox: { aliasId: string; namespaceKey: string }; // namespaceKey is required for drawer navigator
+};
+
+export type ProfileStackParams = {
+  profileMain: undefined;
+  contacts: undefined;
+  notifications: undefined;
+  statistics: undefined;
+  syncNewDevice: undefined;
 };
 
 export type InboxStackParams = {
@@ -135,6 +154,40 @@ const InboxRoot = () => (
   </InboxStack.Navigator>
 );
 
+const ProfileStack = createNativeStackNavigator<ProfileStackParams>();
+const ProfileRoot = () => (
+  <ProfileStack.Navigator initialRouteName={'profileMain'}>
+    <ProfileStack.Screen
+      name="profileMain"
+      component={ProfileScreen}
+      options={{
+        title: '',
+        headerTransparent: true,
+      }}
+    />
+    <ProfileStack.Screen
+      name={'contacts'}
+      component={ContactsScreen}
+      options={{ title: 'ContactsScreen' }}
+    />
+    <ProfileStack.Screen
+      name={'notifications'}
+      component={NotificationsScreen}
+      options={{ title: 'NotificationsScreen' }}
+    />
+    <ProfileStack.Screen
+      name={'statistics'}
+      component={StatisticsScreen}
+      options={{ title: 'StatisticsScreen' }}
+    />
+    <ProfileStack.Screen
+      name={'syncNewDevice'}
+      component={SyncNewDeviceScreen}
+      options={{ title: 'SyncNewDeviceScreen' }}
+    />
+  </ProfileStack.Navigator>
+);
+
 function CoreScreen() {
   const localUsernames = useAppSelector(state => state.account.localUsernames);
   const hasLocalAccount = localUsernames.length > 0;
@@ -167,11 +220,18 @@ function CoreScreen() {
             <Stack.Screen
               name="search"
               component={SearchScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="searchSection"
+              component={SearchSectionScreen}
               options={({ navigation }) => ({
-                title: 'Search',
+                headerTintColor: colors.inkDarker,
                 headerLeft: () => (
                   <NavIconButton
-                    icon={{ name: 'close-outline', size: 28 }}
+                    icon={{ name: 'chevron-back' }}
                     onPress={() => navigation.goBack()}
                   />
                 ),
@@ -274,31 +334,31 @@ function Main() {
       <Drawer.Screen
         name={'drafts'}
         component={DraftsScreen}
-        options={{ title: 'Drafts' }}
+        options={{ title: '' }}
       />
       <Drawer.Screen
         name={'sent'}
         component={SentScreen}
-        options={{ title: 'Sent' }}
+        options={{ title: '' }}
       />
       <Drawer.Screen
         name={'trash'}
         component={TrashScreen}
-        options={{ title: 'Trash' }}
+        options={{ title: '' }}
       />
       <Drawer.Screen
         name={'profile'}
-        component={ProfileScreen}
+        component={ProfileRoot}
         options={{
           headerTransparent: true,
-          title: '',
+          headerShown: false,
         }}
       />
       <Drawer.Screen
         name={'aliasInbox'}
         component={AliasInboxScreen}
         options={{
-          title: 'Manage Aliases',
+          title: '',
         }}
       />
       <Drawer.Screen

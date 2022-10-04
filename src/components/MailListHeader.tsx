@@ -13,12 +13,23 @@ export type MailListHeaderProps = {
   subtitle?: string;
   canCopySubtitle?: boolean;
   showCurrentStatus?: boolean;
+  showBottomSeparator?: boolean;
   isActive?: boolean;
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingTop: spacing.md,
+    paddingBottom: spacing.lg,
+    paddingHorizontal: spacing.md,
+    backgroundColor: 'white',
+  },
   subtitleContainer: {
     flexDirection: 'row',
+  },
+  bottomSeparator: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.skyLighter,
   },
 });
 
@@ -26,6 +37,7 @@ export const MailListHeader = ({
   title,
   subtitle,
   showCurrentStatus,
+  showBottomSeparator,
   isActive,
   canCopySubtitle,
 }: MailListHeaderProps) => {
@@ -45,11 +57,7 @@ export const MailListHeader = ({
   );
   return (
     <View
-      style={{
-        paddingTop: spacing.md,
-        paddingBottom: spacing.lg,
-        paddingHorizontal: spacing.md,
-      }}>
+      style={[styles.container, showBottomSeparator && styles.bottomSeparator]}>
       <MailListHeaderTitle
         title={title}
         isActive={isActive}

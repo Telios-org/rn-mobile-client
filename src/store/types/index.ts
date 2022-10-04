@@ -84,3 +84,19 @@ export type EmailContent = {
   bodyAsText?: string;
   bodyAsHTML?: string;
 };
+
+export type Stats = {
+  _id?: string;
+  aliasesUsed: number;
+  dailyEmailResetDate: any;
+  dailyEmailUsed: number;
+  lastUpdated: string;
+  maxAliasAddresses: number;
+  maxAliasNames: number;
+  maxGBBandwidth: number;
+  maxGBCloudStorage: number;
+  maxOutgoingEmails: number;
+  namespaceUsed: number;
+  plan: string;
+  storageSpaceUsed: number;
+};

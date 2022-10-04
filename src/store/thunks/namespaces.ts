@@ -2,11 +2,7 @@ import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getAliases } from './aliases';
 import { AliasNamespace } from '../types';
-import {
-  getMailboxFolders,
-  GetMailboxFoldersResponse,
-  getMailByFolder,
-} from './email';
+import { getMailboxFolders, GetMailboxFoldersResponse } from './email';
 
 type GetNamespacesForMailboxRequest = { id: string };
 export type GetNamespacesForMailboxResponse = Array<AliasNamespace>;
@@ -37,7 +33,7 @@ export const getFoldersNamespacesAliasesFlow = createAsyncThunk(
       if (!inbox) {
         throw new Error('inbox folder not found');
       }
-      thunkAPI.dispatch(getMailByFolder({ id: inbox.folderId }));
+      // thunkAPI.dispatch(getMailByFolder({ id: inbox.folderId }));
     }
 
     const namespacesResponse = await thunkAPI.dispatch(
