@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   accountLogin,
+  accountRetrieveStats,
+  accountUpdate,
   getStoredUsernames,
   registerNewAccount,
 } from './thunks/account';
 import { accountLogout } from './thunks/accountLogout';
+import { Stats } from './types';
 
 export type SignupAccount = {
   deviceId: string;
@@ -32,10 +35,12 @@ export type SignupAccount = {
 
 export type LoginAccount = {
   accountId: string;
+  avatar?: any;
   createdAt: string;
   deviceId: string;
   deviceSigningPrivKey: string;
   deviceSigningPubKey: string;
+  displayName?: string;
   driveEncryptionKey: string;
   secretBoxPrivKey: string;
   secretBoxPubKey: string;
@@ -48,9 +53,10 @@ export type LoginAccount = {
 interface AccountState {
   localUsernames: string[];
   lastUsername?: string;
-
   signupAccount?: SignupAccount;
   loginAccount?: LoginAccount;
+  isProfileUpdating?: boolean;
+  stats: Stats;
 }
 
 const initialState: AccountState = {
@@ -78,6 +84,24 @@ export const accountSlice = createSlice({
       newState.localUsernames = state.localUsernames;
       newState.lastUsername = state.lastUsername;
       return newState;
+    });
+
+    builder.addCase(accountUpdate.pending, state => {
+      state.isProfileUpdating = true;
+    });
+    builder.addCase(accountUpdate.fulfilled, (state, action) => {
+      state.loginAccount = {
+        ...state.loginAccount,
+        avatar: action?.meta?.arg?.avatar,
+        displayName: action?.meta?.arg?.displayName,
+      };
+      state.isProfileUpdating = false;
+    });
+    builder.addCase(accountUpdate.rejected, (state, action) => {
+      state.isProfileUpdating = false;
+    });
+    builder.addCase(accountRetrieveStats.fulfilled, (state, action) => {
+      state.stats = action.payload;
     });
   },
 });

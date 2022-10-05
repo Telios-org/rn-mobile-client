@@ -116,7 +116,8 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
     );
   }
 
-  const fromArray = JSON.parse(email.fromJSON) as Array<ToFrom>;
+  const fromArray =
+    email?.fromJSON && (JSON.parse(email.fromJSON) as Array<ToFrom>);
   const from = fromArray?.[0];
 
   const dayFormatted = format(new Date(email.date), 'dd MMM yyyy');
@@ -132,7 +133,7 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
       <View style={{ margin: spacing.lg }}>
         <Text style={fonts.title3}>{email.subject}</Text>
         <View style={{ marginTop: spacing.lg }}>
-          <Text>{from.name || from.address}</Text>
+          <Text>{from?.name || from?.address}</Text>
           <Text>{fullDateText}</Text>
         </View>
         <View style={{ marginTop: spacing.lg }}>

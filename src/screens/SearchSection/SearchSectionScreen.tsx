@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import { MainStackParams, RootStackParams } from '../../Navigator';
 import { useSelector } from 'react-redux';
-import { MailList, MailListItem } from '../../components/MailList';
 import { RootState } from '../../store';
 import { MailSectionHeader } from '../../components/MailSectionHeader/MailSectionHeader';
 import { searchedElementsByGroupId } from '../../store/selectors/search';
+import { Email } from '../../store/types';
+import { EmailCell } from '../../components/EmailCell/EmailCell';
+import styles from './styles';
 
 export type SearchSectionScreenProps = CompositeScreenProps<
   NativeStackScreenProps<RootStackParams, 'searchSection'>,
@@ -41,13 +43,6 @@ export const SearchSectionScreen = ({
     });
   };
 
-  type MailListItems = MailListItem & {};
-  const listData: MailListItems[] = searchedElements.map(item => ({
-    id: item.emailId,
-    mail: item,
-    onSelect: () => onSelectEmail(item.emailId),
-  }));
-
   const sectionHeader = () => (
     <MailSectionHeader
       title={`"${searchKey || 'Search'}"`}
@@ -57,13 +52,17 @@ export const SearchSectionScreen = ({
     />
   );
 
+  const renderItem = ({ item }: { item: Email }) => (
+    <EmailCell email={item} onPress={() => onSelectEmail?.(item.emailId)} />
+  );
+
   return (
-    <View style={{ flex: 1 }}>
-      <MailList
-        navigation={navigation}
-        loading={false}
-        items={listData}
-        sectionHeader={sectionHeader}
+    <View style={styles.container}>
+      <FlatList
+        style={styles.content}
+        data={searchedElements}
+        renderItem={renderItem}
+        ListHeaderComponent={sectionHeader}
       />
     </View>
   );
