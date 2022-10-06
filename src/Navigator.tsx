@@ -25,7 +25,11 @@ import { NavIconButton } from './components/NavIconButton';
 import { DraftsScreen } from './screens/DraftsScreen';
 import { SentScreen } from './screens/SentScreen';
 import { TrashScreen } from './screens/TrashScreen';
-import { ProfileScreen } from './screens/ProfileScreen';
+import { ProfileScreen } from './screens/Profile/ProfileScreen';
+import { ContactsScreen } from './screens/Profile/ContactsScreen';
+import { NotificationsScreen } from './screens/Profile/NotificationsScreen';
+import { StatisticsScreen } from './screens/Profile/StatisticsScreen';
+import { SyncNewDeviceScreen } from './screens/Profile/SyncNewDeviceScreen';
 import { AliasManageScreen } from './screens/AliasManage/AliasManageScreen';
 import { NewAliasNamespaceScreen } from './screens/NewAliasNamespace/NewAliasNamespaceScreen';
 import { NewAliasScreen } from './screens/NewAlias/NewAliasScreen';
@@ -87,9 +91,17 @@ export type MainStackParams = {
   drafts: undefined;
   sent: undefined;
   trash: undefined;
-  profile: undefined;
+  profile: NavigatorScreenParams<ProfileStackParams>;
   aliasManage: undefined;
   aliasInbox: { aliasId: string; namespaceKey: string }; // namespaceKey is required for drawer navigator
+};
+
+export type ProfileStackParams = {
+  profileMain: undefined;
+  contacts: undefined;
+  notifications: undefined;
+  statistics: undefined;
+  syncNewDevice: undefined;
 };
 
 export type InboxStackParams = {
@@ -140,6 +152,40 @@ const InboxRoot = () => (
       options={{ title: '' }}
     />
   </InboxStack.Navigator>
+);
+
+const ProfileStack = createNativeStackNavigator<ProfileStackParams>();
+const ProfileRoot = () => (
+  <ProfileStack.Navigator initialRouteName={'profileMain'}>
+    <ProfileStack.Screen
+      name="profileMain"
+      component={ProfileScreen}
+      options={{
+        title: '',
+        headerTransparent: true,
+      }}
+    />
+    <ProfileStack.Screen
+      name={'contacts'}
+      component={ContactsScreen}
+      options={{ title: 'ContactsScreen' }}
+    />
+    <ProfileStack.Screen
+      name={'notifications'}
+      component={NotificationsScreen}
+      options={{ title: 'NotificationsScreen' }}
+    />
+    <ProfileStack.Screen
+      name={'statistics'}
+      component={StatisticsScreen}
+      options={{ title: 'StatisticsScreen' }}
+    />
+    <ProfileStack.Screen
+      name={'syncNewDevice'}
+      component={SyncNewDeviceScreen}
+      options={{ title: 'SyncNewDeviceScreen' }}
+    />
+  </ProfileStack.Navigator>
 );
 
 function CoreScreen() {
@@ -302,10 +348,10 @@ function Main() {
       />
       <Drawer.Screen
         name={'profile'}
-        component={ProfileScreen}
+        component={ProfileRoot}
         options={{
           headerTransparent: true,
-          title: '',
+          headerShown: false,
         }}
       />
       <Drawer.Screen

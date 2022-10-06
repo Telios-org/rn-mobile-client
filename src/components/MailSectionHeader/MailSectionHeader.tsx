@@ -8,7 +8,7 @@ export type MailSectionHeaderProps = {
   title: string;
   count: number;
   icon?: string;
-  iconSize: number;
+  iconSize?: number;
   onPress?: () => void;
 };
 

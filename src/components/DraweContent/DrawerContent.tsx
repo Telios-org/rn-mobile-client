@@ -7,16 +7,22 @@ import { useAppSelector } from '../../hooks';
 import { Image, Text, View } from 'react-native';
 import { IconButton } from '../IconButton';
 import { colors } from '../../util/colors';
-import { fonts } from '../../util/fonts';
-import { Avatar } from '../Avatar';
+import Avatar from '../Avatar/Avatar';
+import DrawerAliasesSection from '../DrawerAliasesSection/DrawerAliasesSection';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { DrawerCell } from '../DrawerCell/DrawerCell';
-import DrawerAliasesSection from '../DrawerAliasesSection/DrawerAliasesSection';
-import styles from './styles';
 import { selectMailBoxAddress } from '../../store/selectors/email';
+import {
+  selectAccountAvatar,
+  selectAccountDisplayName,
+} from '../../store/selectors/account';
+
+import styles from './styles';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
   const mailboxAddress = useAppSelector(selectMailBoxAddress);
+  const displayName = useAppSelector(selectAccountDisplayName);
+  const avatar = useAppSelector(selectAccountAvatar);
   const selectedRoute = props.state.routes[props.state.index];
 
   const onRefresh = () => {
@@ -51,9 +57,14 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
             },
           ]}>
           <View style={styles.profileAddress}>
-            <Text style={fonts.small.regular}>{mailboxAddress}</Text>
+            <Text style={styles.displayName}>{displayName}</Text>
+            <Text style={styles.mailbox}>{mailboxAddress}</Text>
           </View>
-          <Avatar touchable={true} />
+          <Avatar
+            email={mailboxAddress}
+            displayName={displayName}
+            image={avatar}
+          />
         </View>
       </TouchableOpacity>
       <View style={styles.drawerContainer}>

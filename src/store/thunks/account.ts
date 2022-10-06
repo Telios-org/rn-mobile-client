@@ -16,6 +16,7 @@ import {
   saveMailbox,
   SaveMailboxResponse,
 } from './email';
+import { Stats } from '../types';
 
 export const getStoredUsernames = createAsyncThunk(
   'system/getStoredUsernames',
@@ -105,6 +106,9 @@ export const loginFlow = createAsyncThunk(
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
 
+    // accountRetrieveStats is non-blocking
+    thunkAPI.dispatch(accountRetrieveStats());
+
     // load mailboxes, then folders immediately after login.
     // these are needed in order to fetch mail.
     const getMailboxesResponse = await thunkAPI.dispatch(getMailboxes());
@@ -144,3 +148,20 @@ export const accountLogin = createNodeCalloutAsyncThunk<
   AccountLoginRequest,
   AccountLoginResponse
 >('account:login');
+
+export type AccountUpdateRequest = {
+  accountId: string;
+  displayName: string;
+  avatar: string;
+};
+export type AccountUpdateResponse = {};
+export const accountUpdate = createNodeCalloutAsyncThunk<
+  AccountUpdateRequest,
+  AccountUpdateResponse
+>('account:update');
+
+export type AccountRetrieveStatsResponse = Stats;
+export const accountRetrieveStats = createNodeCalloutAsyncThunk<
+  void,
+  AccountRetrieveStatsResponse
+>('account:retrieveStats');
