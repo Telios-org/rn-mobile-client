@@ -46,10 +46,10 @@ export const SearchScreen = ({ navigation }: SearchProps) => {
     };
   }, [searchText]);
 
-  const onSelectEmail = (emailId: string, folderId: string) => {
-    navigation.navigate('inbox', {
-      screen: 'emailDetail',
-      params: { emailId: emailId, folderId: parseInt(folderId, 10) },
+  const onSelectEmail = (emailId: string, isUnread: boolean) => {
+    navigation.navigate('emailDetail', {
+      emailId: emailId,
+      isUnread,
     });
   };
 
@@ -74,10 +74,11 @@ export const SearchScreen = ({ navigation }: SearchProps) => {
 
   const handleClose = () => Keyboard.dismiss();
 
+  // @ts-ignore
   const renderItem = ({ item, section }) => (
     <EmailCell.Search
       email={item}
-      onPress={() => onSelectEmail(item.emailId, section.id.folderId)}
+      onPress={() => onSelectEmail(item.emailId, section.id.unread)}
     />
   );
 
@@ -114,6 +115,7 @@ export const SearchScreen = ({ navigation }: SearchProps) => {
     </View>
   );
 
+  // @ts-ignore
   const sectionHeader = ({ section: { title, count, icon, id } }) => (
     <MailSectionHeader
       title={title}

@@ -3,7 +3,7 @@ import {
   DrawerContentScrollView,
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Image, Text, View } from 'react-native';
 import { IconButton } from '../IconButton';
 import { colors } from '../../util/colors';
@@ -11,22 +11,45 @@ import Avatar from '../Avatar/Avatar';
 import DrawerAliasesSection from '../DrawerAliasesSection/DrawerAliasesSection';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { DrawerCell } from '../DrawerCell/DrawerCell';
-import { selectMailBoxAddress } from '../../store/selectors/email';
+import {
+  selectMailBoxAddress,
+  selectMailBoxId,
+} from '../../store/selectors/email';
+import { folderSelectors } from '../../store/adapters/folders';
+import { FoldersId } from '../../store/types/enums/Folders';
+import { getMailboxFolders } from '../../store/thunks/email';
+import styles from './styles';
 import {
   selectAccountAvatar,
   selectAccountDisplayName,
 } from '../../store/selectors/account';
 
-import styles from './styles';
-
 export const DrawerContent = (props: DrawerContentComponentProps) => {
+  const dispatch = useAppDispatch();
   const mailboxAddress = useAppSelector(selectMailBoxAddress);
   const displayName = useAppSelector(selectAccountDisplayName);
   const avatar = useAppSelector(selectAccountAvatar);
+  const mailboxId = useAppSelector(selectMailBoxId);
   const selectedRoute = props.state.routes[props.state.index];
+  const folders = useAppSelector(state =>
+    folderSelectors.selectEntities(state.folders),
+  );
 
-  const onRefresh = () => {
-    //todo
+  const getFolderUnreadCount = (folderId: number): string | undefined => {
+    if (folders) {
+      const folder = folders[folderId];
+      if (folder && folder.count > 0) {
+        return folder.count.toString();
+      }
+    }
+    return undefined;
+  };
+
+  const onRefresh = async () => {
+    // await dispatch(getNewMailFlow());
+    if (mailboxId) {
+      await dispatch(getMailboxFolders({ id: mailboxId }));
+    }
   };
 
   return (
@@ -72,6 +95,7 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
           label="Inbox"
           focused={selectedRoute.name === 'inbox'}
           leftIcon={{ name: 'mail-outline' }}
+          rightText={getFolderUnreadCount(FoldersId.inbox)}
           onPress={() => props.navigation.navigate('inbox')}
         />
 

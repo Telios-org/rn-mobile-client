@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from '../../store';
 import { Alias } from '../types';
 import { aliasSelectors } from '../adapters/aliases';
 
-type GetAliasesRequest = { namespaceKeys: string[] };
+type GetAliasesRequest = { namespaceKeys: string[] | null };
 type GetAliasesResponse = Array<Alias>;
 export const getAliases = createNodeCalloutAsyncThunk<
   GetAliasesRequest,
@@ -82,6 +82,24 @@ export const updateAliasFlow = createAsyncThunk<
       getAliases({ namespaceKeys: namespace ? [namespace] : [] }),
     );
   }
+});
+
+type UpdateAliasCountRequest = {
+  id: string;
+  amount: number;
+};
+
+export const updateAliasCount = createNodeCalloutAsyncThunk<
+  UpdateAliasCountRequest,
+  void
+>('alias:updateAliasCount');
+
+export const updateAliasCountFlow = createAsyncThunk<
+  UpdateAliasCountRequest,
+  UpdateAliasCountRequest
+>('flow/updateAliasCount', async (arg, thunkAPI) => {
+  await thunkAPI.dispatch(updateAliasCount(arg));
+  return arg;
 });
 
 type RemoveAliasRequest = {

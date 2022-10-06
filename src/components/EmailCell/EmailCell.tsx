@@ -22,16 +22,14 @@ type EmailCellPropsWithType = EmailCellProps & { type: ComponentTypes };
 const DefaultEmailCell = (props: EmailCellProps) =>
   EmailCellRender({ ...props, type: ComponentTypes.DEFAULT });
 
-const SearhEmailCell = (props: EmailCellProps) =>
+const SearchEmailCell = (props: EmailCellProps) =>
   EmailCellRender({ ...props, type: ComponentTypes.SEARCH });
 
 const EmailCellRender = ({ email, onPress, type }: EmailCellPropsWithType) => {
   let fromName;
-  let fromEmail;
   if (email?.fromJSON) {
     const from = JSON.parse(email?.fromJSON);
     fromName = from[0].name;
-    fromEmail = from[0].address;
   }
   const isUnread = !!email.unread;
 
@@ -75,5 +73,5 @@ const EmailCellRender = ({ email, onPress, type }: EmailCellPropsWithType) => {
 };
 
 export const EmailCell = Object.assign(DefaultEmailCell, {
-  Search: memo(SearhEmailCell),
+  Search: memo(SearchEmailCell),
 });

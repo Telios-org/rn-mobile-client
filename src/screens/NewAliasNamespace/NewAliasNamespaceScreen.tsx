@@ -13,6 +13,7 @@ import { randomLetters, randomWords } from '../../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styles from './styles';
 import { registerNamespace } from '../../store/thunks/namespaces';
+import { selectMailBoxId } from '../../store/selectors/email';
 
 export type NewAliasNamespaceScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -23,7 +24,7 @@ export const NewAliasNamespaceScreen = (
   props: NewAliasNamespaceScreenProps,
 ) => {
   const dispatch = useAppDispatch();
-  const mailboxId = useAppSelector(state => state.mail.mailbox?._id);
+  const mailboxId = useAppSelector(selectMailBoxId);
 
   const [namespace, setNamespace] = React.useState(randomLetters());
   const [loadingCreate, setLoadingCreate] = React.useState(false);

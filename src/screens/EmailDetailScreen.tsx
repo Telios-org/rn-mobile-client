@@ -1,32 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { format } from 'date-fns';
 import { ActivityIndicator, Alert, ScrollView, Text, View } from 'react-native';
-import { InboxStackParams } from '../Navigator';
+import { RootStackParams } from '../Navigator';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { fonts } from '../util/fonts';
 import { NavIconButton } from '../components/NavIconButton';
 import { selectMailByFolder } from '../store/selectors/email';
-import { deleteMail, getMessageById } from '../store/thunks/email';
+import {
+  deleteMail,
+  getMessageById,
+  markAsUnreadFlow,
+} from '../store/thunks/email';
 import { Email, ToFrom } from '../store/types';
 import { FoldersId } from '../store/types/enums/Folders';
+import { updateFolderCountFlow } from '../store/thunks/folders';
+import { updateAliasCountFlow } from '../store/thunks/aliases';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
-  InboxStackParams,
+  RootStackParams,
   'emailDetail'
 >;
 
 export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
-  const { emailId } = props.route.params;
+  const { emailId, isUnread } = props.route.params; // we need stored email to check if it was unread, getMessageById automatically marks it as read on backend;
   const [email, setEmail] = useState<Email>();
   const [loading, setLoading] = useState(false);
-  // const email = useAppSelector(state =>
-  //   selectMailByFolder(state, folderId, emailId),
-  // );
   const isTrash = useAppSelector(state =>
-    selectMailByFolder(state, FoldersId.trash, emailId),
+    selectMailByFolder(state, FoldersId.trash, 'all', emailId),
   );
 
   const dispatch = useAppDispatch();
@@ -61,10 +64,27 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
   };
 
   const onToggleUnread = () => {
-    Alert.alert('Not implemented');
+    if (email) {
+      dispatch(markAsUnreadFlow({ email: email }));
+      props.navigation.goBack();
+    }
   };
 
-  React.useLayoutEffect(() => {
+  useEffect(() => {
+    const fetchMail = async () => {
+      setLoading(true);
+      try {
+        const resp = await dispatch(getMessageById({ id: emailId })).unwrap();
+        setEmail(resp);
+      } catch (e) {
+        // ignore
+      }
+      setLoading(false);
+    };
+    fetchMail();
+  }, []);
+
+  useLayoutEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
         <View style={{ flexDirection: 'row' }}>
@@ -85,21 +105,26 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
         </View>
       ),
     });
-  }, [props.navigation]);
+  }, [props.navigation, email?.emailId]);
 
   useEffect(() => {
-    const fetchMail = async () => {
-      setLoading(true);
-      try {
-        const resp = await dispatch(getMessageById({ id: emailId })).unwrap();
-        setEmail(resp);
-      } catch (e) {
-        // ignore
+    if (isUnread) {
+      if (email?.folderId === FoldersId.aliases) {
+        if (email.aliasId) {
+          dispatch(updateAliasCountFlow({ id: email.aliasId, amount: -1 }));
+        }
+      } else {
+        if (email?.folderId) {
+          dispatch(
+            updateFolderCountFlow({
+              id: email.folderId.toString(),
+              amount: -1,
+            }),
+          );
+        }
       }
-      setLoading(false);
-    };
-    fetchMail();
-  }, []);
+    }
+  }, [email?.unread]);
 
   if (!email) {
     if (loading) {
@@ -116,8 +141,9 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
     );
   }
 
-  const fromArray =
-    email?.fromJSON && (JSON.parse(email.fromJSON) as Array<ToFrom>);
+  const fromArray = email?.fromJSON
+    ? (JSON.parse(email.fromJSON) as Array<ToFrom>)
+    : undefined;
   const from = fromArray?.[0];
 
   const dayFormatted = format(new Date(email.date), 'dd MMM yyyy');

@@ -36,10 +36,10 @@ export const SearchSectionScreen = ({
     });
   }, [route]);
 
-  const onSelectEmail = (emailId: string) => {
-    navigation.navigate('inbox', {
-      screen: 'emailDetail',
-      params: { emailId: emailId, folderId: parseInt(folderId, 10) },
+  const onSelectEmail = (emailId: string, isUnread: boolean) => {
+    navigation.navigate('emailDetail', {
+      emailId: emailId,
+      isUnread,
     });
   };
 
@@ -53,7 +53,10 @@ export const SearchSectionScreen = ({
   );
 
   const renderItem = ({ item }: { item: Email }) => (
-    <EmailCell email={item} onPress={() => onSelectEmail?.(item.emailId)} />
+    <EmailCell
+      email={item}
+      onPress={() => onSelectEmail?.(item.emailId, item.unread)}
+    />
   );
 
   return (
