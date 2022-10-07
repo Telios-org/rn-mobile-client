@@ -1,7 +1,10 @@
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { FoldersId } from '../../store/types/enums/Folders';
 import React, { useLayoutEffect, useState } from 'react';
-import MailFilters, { FilterOption, FilterType } from '../MailList/components/MailFilters';
+import MailFilters, {
+  FilterOption,
+  FilterType,
+} from '../MailList/components/MailFilters';
 import { resetMailsByFolder } from '../../store/emails';
 import { View } from 'react-native';
 import styles from './styles';
@@ -59,11 +62,8 @@ export default ({
     });
   }, []);
 
-  const onSelectEmail = (emailId: string) => {
-    navigation.navigate('inbox', {
-      screen: 'emailDetail',
-      params: { emailId: emailId },
-    });
+  const onSelectEmail = (emailId: string, isUnread: boolean) => {
+    navigation.navigate('emailDetail', { emailId: emailId, isUnread });
   };
 
   const resetData = (filter: FilterType) => () =>

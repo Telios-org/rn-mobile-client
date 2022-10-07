@@ -6,6 +6,7 @@ import {
   getMailByFolderRead,
   getMailByFolderUnread,
   getMessageById,
+  markAsUnreadFlow,
   getMessagesByAliasId,
   getReadMessagesByAliasId,
   getUnreadMessagesByAliasId,
@@ -30,19 +31,23 @@ interface EmailState {
   mailbox: Mailbox | undefined;
 }
 
-const updateMailInState = (state: EmailState, mail: Email) => {
-  if (mail.unread) {
-    emailAdapter.setOne(state.byFolderId[mail.folderId].unread, mail);
-    // emailAdapter.removeOne(state.byFolderId[mail.folderId].read, mail.emailId);
-  }
-  if (!mail.unread) {
-    emailAdapter.setOne(state.byFolderId[mail.folderId].read, mail);
-    // emailAdapter.removeOne(
-    //   state.byFolderId[mail.folderId].unread,
-    //   mail.emailId,
-    // );
-  }
+const updateReadMailInState = (state: EmailState, mail: Email) => {
+  // getMessageById marks mails as read on backend
   emailAdapter.setOne(state.byFolderId[mail.folderId].all, mail);
+  emailAdapter.setOne(state.byFolderId[mail.folderId].read, mail);
+  emailAdapter.removeOne(state.byFolderId[mail.folderId].unread, mail.emailId);
+};
+
+const updateUnreadMailInState = (state: EmailState, mail: Email) => {
+  emailAdapter.setOne(state.byFolderId[mail.folderId].all, {
+    ...mail,
+    unread: true,
+  });
+  emailAdapter.setOne(state.byFolderId[mail.folderId].unread, {
+    ...mail,
+    unread: true,
+  });
+  emailAdapter.removeOne(state.byFolderId[mail.folderId].read, mail.emailId);
 };
 
 const emailInitialState = {
@@ -71,11 +76,14 @@ export const emailSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(saveMailToDB.fulfilled, (state, action) => {
-      action.payload.msgArr.map(msg => updateMailInState(state, msg));
+      action.payload.msgArr.map(msg => {
+        emailAdapter.setOne(state.byFolderId[msg.folderId].unread, msg);
+        emailAdapter.setOne(state.byFolderId[msg.folderId].all, msg);
+      });
     });
-    // builder.addCase(markAsUnread.fulfilled, (state, action) =>
-    //   emailAdapter.setMany(state, action.payload),
-    // );
+    builder.addCase(markAsUnreadFlow.fulfilled, (state, action) => {
+      updateUnreadMailInState(state, action.payload.email);
+    });
     builder.addCase(getMailboxFolders.fulfilled, (state, action) => {
       const storedFolders = Object.keys(state.byFolderId);
       action.payload.map(folder => {
@@ -85,9 +93,9 @@ export const emailSlice = createSlice({
       });
     });
 
-    builder.addCase(getMessageById.fulfilled, (state, action) =>
-      updateMailInState(state, action.payload),
-    );
+    builder.addCase(getMessageById.fulfilled, (state, action) => {
+      updateReadMailInState(state, action.payload);
+    });
     builder.addCase(getAllMailByFolder.fulfilled, (state, action) => {
       const folderIdToUpdate = action.payload[0]?.folderId;
       if (folderIdToUpdate) {

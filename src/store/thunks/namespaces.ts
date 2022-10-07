@@ -36,17 +36,7 @@ export const getFoldersNamespacesAliasesFlow = createAsyncThunk(
       // thunkAPI.dispatch(getMailByFolder({ id: inbox.folderId }));
     }
 
-    const namespacesResponse = await thunkAPI.dispatch(
-      getNamespacesForMailbox({ id: mailboxId }),
-    );
-    if (namespacesResponse.type === getNamespacesForMailbox.fulfilled.type) {
-      const namespaces =
-        namespacesResponse.payload as GetNamespacesForMailboxResponse;
-      thunkAPI.dispatch(
-        getAliases({
-          namespaceKeys: namespaces?.map(namespace => namespace.name),
-        }),
-      );
-    }
+    await thunkAPI.dispatch(getNamespacesForMailbox({ id: mailboxId }));
+    await thunkAPI.dispatch(getAliases({ namespaceKeys: null }));
   },
 );

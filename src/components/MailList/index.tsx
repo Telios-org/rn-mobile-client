@@ -8,18 +8,12 @@ import { EmptyComponent } from './components/EmptyComponent';
 import { colors } from '../../util/colors';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 
-export type MailListItem = {
-  id: string;
-  onSelect?: () => void;
-  mail?: Email;
-};
-
 export type MailListProps = {
   items: Email[];
   getMoreData: (offset: number, perPage: number) => Promise<Email[]>;
   resetData?: () => void;
   headerComponent?: React.ComponentType<any> | React.ReactElement;
-  onItemPress?: (itemId: string) => void;
+  onItemPress?: (itemId: string, isUnread: boolean) => void;
   headerAnimatedValue?: any;
 };
 
@@ -34,11 +28,14 @@ export const MailList = ({
   const { isLoading, flatListProps } = useInfiniteScroll<Email>({
     getData: getMoreData,
     resetData,
-    perPage: 4,
+    perPage: 10,
   });
 
   const renderItem = ({ item }: { item: Email }) => (
-    <EmailCell email={item} onPress={() => onItemPress?.(item.emailId)} />
+    <EmailCell
+      email={item}
+      onPress={() => onItemPress?.(item.emailId, item.unread)}
+    />
   );
 
   return (

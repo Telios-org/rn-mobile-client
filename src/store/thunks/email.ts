@@ -1,9 +1,12 @@
 import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
+import { AppDispatch, RootState } from '../../store';
 import nodejs from 'nodejs-mobile-react-native';
 import { registerOneTimeListener } from '../../eventListenerMiddleware';
 import { Alias, Email, EmailContent, Folder, Mailbox } from '../types';
+import { updateFolderCountFlow } from './folders';
+import { FoldersId } from '../types/enums/Folders';
+import { updateAliasCountFlow } from './aliases';
 
 export const getNewMailFlow = createAsyncThunk(
   'flow/getNewMail',
@@ -91,6 +94,9 @@ export const saveDraft = createAsyncThunk<
     saveMailToDB({ type: 'Draft', messages: [data] }),
   );
   if (response.type === saveMailToDB.fulfilled.type) {
+    thunkAPI.dispatch(
+      updateFolderCountFlow({ id: FoldersId.drafts.toString(), amount: 1 }),
+    );
     return response.payload as SaveMailToDBResponse;
   } else {
     throw new Error('Unable to save draft');
@@ -167,17 +173,40 @@ export const saveMailToDB = createAsyncThunk<
               return action.data.msgArr?.[0]?.emailId === firstEmailId;
             },
           },
-          event => {
+          async event => {
             if (event.error) {
               reject(event.error);
             } else {
               // TODO: break this part out into a separate flow
               // TODO: batch these up, rather than call for every single item inserted to DB.
-              const emailIds: string[] = event.data.msgArr.map(
-                (item: Email) => item.emailId,
-              );
-              thunkAPI.dispatch(updateMailAsSynced({ msgArray: emailIds }));
-              resolve(event.data);
+
+              try {
+                const emailIds: string[] = event.data.msgArr.map(
+                  (item: Email) => item.emailId,
+                );
+                await thunkAPI.dispatch(
+                  updateMailAsSynced({ msgArray: emailIds }),
+                );
+                event.data.msgArr.forEach((email: Email) => {
+                  thunkAPI.dispatch(
+                    updateFolderCountFlow({
+                      id: email.folderId.toString(),
+                      amount: 1,
+                    }),
+                  );
+                  if (email.aliasId) {
+                    thunkAPI.dispatch(
+                      updateAliasCountFlow({
+                        id: email.aliasId,
+                        amount: 1,
+                      }),
+                    );
+                  }
+                });
+                resolve(event.data);
+              } catch (e) {
+                reject(e);
+              }
             }
           },
         );
@@ -268,17 +297,36 @@ export const getMailByFolderUnread = createAsyncThunk<
     .unwrap();
 });
 export type MarkAsUnreadRequest = { id: string | number };
-export type MarkAsUnreadResponse = Array<Email>;
+export type MarkAsUnreadResponse = void;
 export const markAsUnread = createNodeCalloutAsyncThunk<
   MarkAsUnreadRequest,
   MarkAsUnreadResponse
 >('email:markAsUnread');
+
+export const markAsUnreadFlow = createAsyncThunk<
+  { email: Email; amount: number },
+  { email: Email },
+  { state: RootState; dispatch: AppDispatch }
+>('flow/markAsUnread', async (arg, thunkAPI) => {
+  await thunkAPI.dispatch(markAsUnread({ id: arg.email.emailId }));
+  await thunkAPI.dispatch(
+    updateFolderCountFlow({ id: arg.email.folderId.toString(), amount: 1 }),
+  );
+  if (arg.email.folderId === FoldersId.aliases && arg.email.aliasId) {
+    thunkAPI.dispatch(
+      await updateAliasCountFlow({ id: arg.email.aliasId, amount: 1 }),
+    );
+  }
+  return { ...arg, amount: 1 };
+});
+
 export type GetMessageByIdRequest = { id: string | number };
 export type GetMessageByIdResponse = any; //Array<LocalEmail>;
 export const getMessageById = createNodeCalloutAsyncThunk<
   GetMessageByIdRequest,
   GetMessageByIdResponse
 >('email:getMessageById');
+
 export type SendEmailRequest = { email: EmailContent };
 export type SendEmailResponse = {}; // TODO;
 export const sendEmail = createNodeCalloutAsyncThunk<

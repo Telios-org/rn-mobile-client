@@ -44,7 +44,7 @@ export const AliasInfoScreen = ({
       try {
         await dispatch(
           removeAliasFlow({
-            aliasId: alias._id,
+            aliasId: alias.aliasId,
             address: alias.name,
             domain: emailPostfix,
             namespaceName: alias.namespaceKey,
@@ -89,7 +89,7 @@ export const AliasInfoScreen = ({
         </View>
         {!!alias.namespaceKey && (
           <DescriptionSection
-            aliasId={alias._id}
+            aliasId={alias.aliasId}
             domain={emailPostfix}
             aliasDescription={alias.description}
           />
@@ -103,7 +103,7 @@ export const AliasInfoScreen = ({
       <SeparatorLine />
       <View style={styles.sectionContainer}>
         <CurrentStateSection
-          aliasId={alias._id}
+          aliasId={alias.aliasId}
           domain={emailPostfix}
           aliasDisabled={alias.disabled}
         />
@@ -111,7 +111,7 @@ export const AliasInfoScreen = ({
       <SeparatorLine />
       <ForwardAddressesSection
         domain={emailPostfix}
-        aliasId={alias._id}
+        aliasId={alias.aliasId}
         aliasFwdAddresses={alias.fwdAddresses || []}
       />
       <SeparatorLine />

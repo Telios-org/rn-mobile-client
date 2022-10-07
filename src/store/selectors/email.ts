@@ -3,6 +3,7 @@ import { RootState } from '../../store';
 import { emailSelectors } from '../adapters/emails';
 import { createDeepEqualSelector } from './utils';
 import { FoldersId } from '../types/enums/Folders';
+import { FilterType } from '../../components/MailList/components/MailFilters';
 
 const mailSelectorByFolderId = createDeepEqualSelector(
   (state: RootState) => state.mail.byFolderId,
@@ -34,14 +35,18 @@ export const selectReadMailsByFolder = createSelector(
 export const selectMailByFolder = createSelector(
   (state: RootState, folderId: number) =>
     mailSelectorByFolderId(state, folderId),
-  (state: RootState, folderId: number, id: string) => id,
-  (mailState, id) => {
-    return emailSelectors.selectById(mailState.all, id);
+  (state: RootState, folderId: number, filter: FilterType) => filter,
+  (state: RootState, folderId: number, filter: FilterType, id: string) => id,
+  (mailState, filter, id) => {
+    return emailSelectors.selectById(mailState[filter], id);
   },
 );
 
 export const selectMailBoxAddress = (state: RootState) =>
   state.mail.mailbox?.address;
+
+export const selectMailBoxId = (state: RootState) =>
+  state.mail.mailbox?.mailboxId;
 
 export const selectMailsByAliasId = createSelector(
   (state: RootState) => mailSelectorByFolderId(state, FoldersId.aliases),

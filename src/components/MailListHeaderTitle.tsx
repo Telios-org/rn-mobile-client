@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     width: 10,
     aspectRatio: 1,
     borderRadius: 10,
+    marginLeft: 11,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -31,7 +32,7 @@ export default ({
   return (
     <View style={styles.titleContainer}>
       <Text
-        style={[{ ...fonts.title2, marginRight: 11 }, titleStyle]}
+        style={[{ ...fonts.title2 }, titleStyle]}
         numberOfLines={1}
         ellipsizeMode="tail">
         {title}

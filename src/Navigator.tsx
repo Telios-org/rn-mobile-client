@@ -68,6 +68,7 @@ export type RootStackParams = {
   newAlias: { namespace: string };
   newAliasRandom: undefined;
   aliasInfo: { aliasId: string; aliasName: string };
+  emailDetail: { emailId: string; isUnread: boolean };
 };
 
 export type RegisterStackParams = {
@@ -106,7 +107,6 @@ export type ProfileStackParams = {
 
 export type InboxStackParams = {
   inboxMain: undefined;
-  emailDetail: { emailId: string; folderId: number };
 };
 
 const CoreStack = createNativeStackNavigator<CoreStackProps>();
@@ -145,11 +145,6 @@ const InboxRoot = () => (
           />
         ),
       })}
-    />
-    <InboxStack.Screen
-      name="emailDetail"
-      component={EmailDetailScreen}
-      options={{ title: '' }}
     />
   </InboxStack.Navigator>
 );
@@ -282,6 +277,19 @@ function CoreScreen() {
               component={AliasInfoScreen}
               options={({ navigation, route }) => ({
                 title: `@ ${route.params.aliasName}`,
+                headerLeft: () => (
+                  <NavIconButton
+                    icon={{ name: 'chevron-back', size: 28 }}
+                    onPress={() => navigation.goBack()}
+                  />
+                ),
+              })}
+            />
+            <Stack.Screen
+              name="emailDetail"
+              component={EmailDetailScreen}
+              options={({ navigation, route }) => ({
+                title: '',
                 headerLeft: () => (
                   <NavIconButton
                     icon={{ name: 'chevron-back', size: 28 }}
