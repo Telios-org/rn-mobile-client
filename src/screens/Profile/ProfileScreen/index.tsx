@@ -130,8 +130,8 @@ export const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
   };
 
   const handleCancelAcion = () => {
-    setDisplayName(displayName || '');
-    setAvatar(avatar || '');
+    setDisplayName(accountDisplayName || '');
+    setAvatar(accountAvatar || '');
     setIsEditing(false);
     setIsImagePreparing(false);
   };
