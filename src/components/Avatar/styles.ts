@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   largeImage: {
-    width: 126,
-    height: 126,
+    width: 106,
+    height: 106,
     borderRadius: 63,
   },
   displayName: {

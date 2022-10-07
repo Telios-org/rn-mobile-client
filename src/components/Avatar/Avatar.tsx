@@ -35,10 +35,10 @@ const Avatar = ({
     [email, editable],
   );
 
-  const firstCharactersFromDisplayName = useMemo(
-    () => getFirstCharactersFromGivenName(displayName),
-    [displayName],
-  );
+  const firstCharacters = useMemo(() => {
+    const text = displayName ? displayName : email;
+    return getFirstCharactersFromGivenName(text);
+  }, [displayName, email]);
 
   return (
     <View
@@ -70,7 +70,7 @@ const Avatar = ({
         />
       ) : (
         <Text style={[styles.displayName, styles[`${variant}DisplayName`]]}>
-          {firstCharactersFromDisplayName}
+          {firstCharacters}
         </Text>
       )}
     </View>
