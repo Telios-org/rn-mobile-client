@@ -68,7 +68,7 @@ export type RootStackParams = {
   newAlias: { namespace: string };
   newAliasRandom: undefined;
   aliasInfo: { aliasId: string; aliasName: string };
-  emailDetail: { emailId: string; isUnread: boolean };
+  emailDetail: { emailId: string; isUnread: boolean; isTrash?: boolean };
 };
 
 export type RegisterStackParams = {

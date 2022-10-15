@@ -4,9 +4,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParams, RootStackParams } from '../Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { selectAllMailsByFolder } from '../store/selectors/email';
-import { getAllMailByFolder } from '../store/thunks/email';
+import { deleteMailFromTrash, getAllMailByFolder } from '../store/thunks/email';
 import { FoldersId } from '../store/types/enums/Folders';
 import MailContainer from '../components/MailContainer';
+import { Email } from '../store/types';
+import { Alert } from 'react-native';
 
 export type TrashScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'trash'>,
@@ -20,10 +22,20 @@ export const TrashScreen = (props: TrashScreenProps) => {
   );
 
   const onSelectEmail = (emailId: string) => {
-    // todo: navigate
+    props.navigation.navigate('emailDetail', {
+      emailId: emailId,
+      isUnread: false,
+      isTrash: true,
+    });
   };
 
-  // TODO review Trash flow
+  const onDeleteEmail = async (email: Email) => {
+    try {
+      await dispatch(deleteMailFromTrash({ messageIds: [email.emailId] }));
+    } catch (e: any) {
+      Alert.alert('Error', e.message);
+    }
+  };
 
   return (
     <MailContainer
@@ -36,6 +48,7 @@ export const TrashScreen = (props: TrashScreenProps) => {
         ).unwrap();
       }}
       onPressItem={onSelectEmail}
+      onRightActionPress={onDeleteEmail}
     />
   );
 };

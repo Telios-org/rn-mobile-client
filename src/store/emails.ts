@@ -12,6 +12,8 @@ import {
   getUnreadMessagesByAliasId,
   saveMailbox,
   saveMailToDB,
+  moveMailToTrash,
+  deleteMailFromTrash,
 } from './thunks/email';
 import { accountLogout } from './thunks/accountLogout';
 import { emailAdapter } from './adapters/emails';
@@ -146,10 +148,37 @@ export const emailSlice = createSlice({
     });
     builder.addCase(getMailboxes.fulfilled, (state, action) => {
       const mailboxes = action.payload;
-      state.mailbox = mailboxes[0]; // TODO initial implementation was with one mailbox, need to fix it
+      state.mailbox = mailboxes[0]; // initial implementation was with one mailbox
     });
     builder.addCase(saveMailbox.fulfilled, (state, action) => {
       state.mailbox = action.payload;
+    });
+    builder.addCase(moveMailToTrash.fulfilled, (state, action) => {
+      if (action.payload) {
+        emailAdapter.removeMany(
+          state.byFolderId[action.payload.fromFolderId].all,
+          action.payload.messageIds,
+        );
+        emailAdapter.removeMany(
+          state.byFolderId[action.payload.fromFolderId].unread,
+          action.payload.messageIds,
+        );
+        emailAdapter.removeMany(
+          state.byFolderId[action.payload.fromFolderId].read,
+          action.payload.messageIds,
+        );
+        emailAdapter.setMany(
+          state.byFolderId[FoldersId.trash].all,
+          action.payload.messages,
+        );
+      }
+    });
+
+    builder.addCase(deleteMailFromTrash.fulfilled, (state, action) => {
+      emailAdapter.removeMany(
+        state.byFolderId[FoldersId.trash].all,
+        action.payload.messageIds,
+      );
     });
 
     // clear state on logout

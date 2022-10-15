@@ -79,6 +79,7 @@ export const SearchScreen = ({ navigation }: SearchProps) => {
     <EmailCell.Search
       email={item}
       onPress={() => onSelectEmail(item.emailId, section.id.unread)}
+      isUnread={item.unread}
     />
   );
 

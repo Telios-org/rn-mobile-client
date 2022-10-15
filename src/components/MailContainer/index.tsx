@@ -5,7 +5,8 @@ import { MailList } from '../MailList';
 import ComposeButton from '../ComposeButton/ComposeButton';
 import { Email } from '../../store/types';
 import { MailListHeader } from '../MailListHeader';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { SwipeRowProvider } from '../SwipeRow/SwipeRowProvider';
 
 interface MailContainerProps {
   mails: Email[];
@@ -14,6 +15,8 @@ interface MailContainerProps {
   getMoreData: (offset: number, perPage: number) => Promise<Email[]>;
   resetData?: () => void;
   onPressItem: (id: string) => void;
+  onRightActionPress?: (itemId: Email) => void;
+  rightActionTitle?: string;
   showBottomSeparator?: boolean;
 }
 export default ({
@@ -24,8 +27,11 @@ export default ({
   resetData,
   onPressItem,
   showBottomSeparator,
+  onRightActionPress,
+  rightActionTitle,
 }: MailContainerProps) => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -45,22 +51,27 @@ export default ({
   }, []);
 
   return (
-    <View style={styles.mainContainer}>
-      <MailListHeader
-        title={title}
-        subtitle={subtitle}
-        showBottomSeparator={showBottomSeparator}
-      />
-      <View style={styles.listContainer}>
-        <MailList
-          items={mails}
-          getMoreData={getMoreData}
-          resetData={resetData}
-          // headerAnimatedValue={headerTitleAnimation}
-          onItemPress={onPressItem}
+    <SwipeRowProvider isFocusedScreen={isFocused}>
+      <View style={styles.mainContainer}>
+        <MailListHeader
+          title={title}
+          subtitle={subtitle}
+          showBottomSeparator={showBottomSeparator}
         />
+        <View style={styles.listContainer}>
+          <MailList
+            items={mails}
+            getMoreData={getMoreData}
+            resetData={resetData}
+            // headerAnimatedValue={headerTitleAnimation}
+            onItemPress={onPressItem}
+            onRightActionPress={onRightActionPress}
+            rightActionTitle={rightActionTitle}
+            highlightItem={false}
+          />
+        </View>
+        <ComposeButton />
       </View>
-      <ComposeButton />
-    </View>
+    </SwipeRowProvider>
   );
 };

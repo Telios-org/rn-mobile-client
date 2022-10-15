@@ -4,9 +4,8 @@ import { AppDispatch, RootState } from '../../store';
 import nodejs from 'nodejs-mobile-react-native';
 import { registerOneTimeListener } from '../../eventListenerMiddleware';
 import { Alias, Email, EmailContent, Folder, Mailbox } from '../types';
-import { updateFolderCountFlow } from './folders';
+import { incrementFolderCounter, updateFolderCountFlow } from './folders';
 import { FoldersId } from '../types/enums/Folders';
-import { updateAliasCountFlow } from './aliases';
 
 export const getNewMailFlow = createAsyncThunk(
   'flow/getNewMail',
@@ -103,11 +102,9 @@ export const saveDraft = createAsyncThunk<
   }
 });
 
-export interface MailToMove extends EmailContent {
+export interface MailToMove extends Email {
   folder: {
     toId: number;
-    // fromId?: number;
-    // name?: string;
   };
 }
 
@@ -117,18 +114,62 @@ export type MoveMailToTrashRequest = {
 export type MoveMailToTrashResponse = {
   //todo
 };
-export const moveMailToTrash = createNodeCalloutAsyncThunk<
+export const moveMessages = createNodeCalloutAsyncThunk<
   MoveMailToTrashRequest,
   MoveMailToTrashResponse
 >('email:moveMessages');
 export type DeleteMailRequest = {
   messageIds: string[];
 };
+
+export type MoveMailToFolderRequest = {
+  messages: Email[];
+};
+
+export type MoveMailToFolderResponse = {
+  messageIds: Email['emailId'][];
+  messages: Email[];
+  fromFolderId: number;
+};
+
+export const moveMailToTrash = createAsyncThunk<
+  MoveMailToFolderResponse | undefined,
+  MoveMailToFolderRequest
+>('flow/moveMailToTrash', async (arg, thunkAPI) => {
+  const messageIds: Email['emailId'][] = [];
+  if (arg.messages.length > 0) {
+    const fromFolderId = arg.messages[0]?.folderId; // assume all messages are from same folder
+    const messages = arg.messages.map(msg => {
+      messageIds.push(msg.emailId);
+      return {
+        ...msg,
+        folder: {
+          toId: FoldersId.trash,
+        },
+      };
+    });
+    await thunkAPI.dispatch(moveMessages({ messages }));
+    return {
+      messageIds,
+      messages,
+      fromFolderId,
+    };
+  }
+});
+
 export type DeleteMailResponse = {};
-export const deleteMail = createNodeCalloutAsyncThunk<
+export const removeMessages = createNodeCalloutAsyncThunk<
   DeleteMailRequest,
   DeleteMailResponse
 >('email:removeMessages');
+
+export const deleteMailFromTrash = createAsyncThunk<
+  DeleteMailRequest,
+  DeleteMailRequest
+>('flow/deleteMail', (arg, thunkAPI) => {
+  thunkAPI.dispatch(removeMessages(arg));
+  return arg;
+});
 
 // TODO: prevent duplicate emails from being added to DB
 // no logic to prevent that today, and it could happen
@@ -188,20 +229,7 @@ export const saveMailToDB = createAsyncThunk<
                   updateMailAsSynced({ msgArray: emailIds }),
                 );
                 event.data.msgArr.forEach((email: Email) => {
-                  thunkAPI.dispatch(
-                    updateFolderCountFlow({
-                      id: email.folderId.toString(),
-                      amount: 1,
-                    }),
-                  );
-                  if (email.aliasId) {
-                    thunkAPI.dispatch(
-                      updateAliasCountFlow({
-                        id: email.aliasId,
-                        amount: 1,
-                      }),
-                    );
-                  }
+                  thunkAPI.dispatch(incrementFolderCounter({ email }));
                 });
                 resolve(event.data);
               } catch (e) {
@@ -309,14 +337,7 @@ export const markAsUnreadFlow = createAsyncThunk<
   { state: RootState; dispatch: AppDispatch }
 >('flow/markAsUnread', async (arg, thunkAPI) => {
   await thunkAPI.dispatch(markAsUnread({ id: arg.email.emailId }));
-  await thunkAPI.dispatch(
-    updateFolderCountFlow({ id: arg.email.folderId.toString(), amount: 1 }),
-  );
-  if (arg.email.folderId === FoldersId.aliases && arg.email.aliasId) {
-    thunkAPI.dispatch(
-      await updateAliasCountFlow({ id: arg.email.aliasId, amount: 1 }),
-    );
-  }
+  await thunkAPI.dispatch(incrementFolderCounter({ email: arg.email }));
   return { ...arg, amount: 1 };
 });
 
