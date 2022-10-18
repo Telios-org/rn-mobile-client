@@ -56,6 +56,7 @@ export const SearchSectionScreen = ({
     <EmailCell
       email={item}
       onPress={() => onSelectEmail?.(item.emailId, item.unread)}
+      isUnread={item.unread}
     />
   );
 

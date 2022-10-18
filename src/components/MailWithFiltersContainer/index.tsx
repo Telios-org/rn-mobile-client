@@ -10,9 +10,12 @@ import { View } from 'react-native';
 import styles from './styles';
 import { MailList } from '../MailList';
 import ComposeButton from '../ComposeButton/ComposeButton';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Email } from '../../store/types';
 import { RootState } from '../../store';
+import { moveMailToTrash } from '../../store/thunks/email';
+import { decrementFolderCounter } from '../../store/thunks/folders';
+import { SwipeRowProvider } from '../SwipeRow/SwipeRowProvider';
 
 interface MailWithFiltersContainerProps {
   folderId: FoldersId;
@@ -35,6 +38,7 @@ export default ({
   getUnreadMails,
   getReadMails,
 }: MailWithFiltersContainerProps) => {
+  const isFocused = useIsFocused();
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
   const allMails = useAppSelector(allMailSelector);
@@ -66,6 +70,11 @@ export default ({
     navigation.navigate('emailDetail', { emailId: emailId, isUnread });
   };
 
+  const onDeleteEmail = async (item: Email) => {
+    await dispatch(moveMailToTrash({ messages: [item] }));
+    await dispatch(decrementFolderCounter({ email: item }));
+  };
+
   const resetData = (filter: FilterType) => () =>
     dispatch(
       resetMailsByFolder({
@@ -87,48 +96,55 @@ export default ({
   );
 
   return (
-    <View style={styles.mainContainer}>
-      {renderHeader}
-      <View
-        style={[
-          styles.tabView,
-          selectedFilterOption !== FilterOption.All && styles.tabViewHide,
-        ]}>
-        <MailList
-          items={allMails}
-          getMoreData={getAllMails}
-          resetData={resetData('all')}
-          // headerAnimatedValue={headerTitleAnimation}
-          onItemPress={onSelectEmail}
-        />
+    <SwipeRowProvider
+      isFocusedScreen={isFocused}
+      focusTabDep={selectedFilterOption}>
+      <View style={styles.mainContainer}>
+        {renderHeader}
+        <View
+          style={[
+            styles.tabView,
+            selectedFilterOption !== FilterOption.All && styles.tabViewHide,
+          ]}>
+          <MailList
+            items={allMails}
+            getMoreData={getAllMails}
+            resetData={resetData('all')}
+            // headerAnimatedValue={headerTitleAnimation}
+            onItemPress={onSelectEmail}
+            onRightActionPress={onDeleteEmail}
+          />
+        </View>
+        <View
+          style={[
+            styles.tabView,
+            selectedFilterOption !== FilterOption.Unread && styles.tabViewHide,
+          ]}>
+          <MailList
+            items={unreadMails}
+            getMoreData={getUnreadMails}
+            resetData={resetData('unread')}
+            // headerAnimatedValue={headerTitleAnimation}
+            onItemPress={onSelectEmail}
+            onRightActionPress={onDeleteEmail}
+          />
+        </View>
+        <View
+          style={[
+            styles.tabView,
+            selectedFilterOption !== FilterOption.Read && styles.tabViewHide,
+          ]}>
+          <MailList
+            items={readMails}
+            getMoreData={getReadMails}
+            resetData={resetData('read')}
+            // headerAnimatedValue={headerTitleAnimation}
+            onItemPress={onSelectEmail}
+            onRightActionPress={onDeleteEmail}
+          />
+        </View>
+        <ComposeButton />
       </View>
-      <View
-        style={[
-          styles.tabView,
-          selectedFilterOption !== FilterOption.Unread && styles.tabViewHide,
-        ]}>
-        <MailList
-          items={unreadMails}
-          getMoreData={getUnreadMails}
-          resetData={resetData('unread')}
-          // headerAnimatedValue={headerTitleAnimation}
-          onItemPress={onSelectEmail}
-        />
-      </View>
-      <View
-        style={[
-          styles.tabView,
-          selectedFilterOption !== FilterOption.Read && styles.tabViewHide,
-        ]}>
-        <MailList
-          items={readMails}
-          getMoreData={getReadMails}
-          resetData={resetData('read')}
-          // headerAnimatedValue={headerTitleAnimation}
-          onItemPress={onSelectEmail}
-        />
-      </View>
-      <ComposeButton />
-    </View>
+    </SwipeRowProvider>
   );
 };

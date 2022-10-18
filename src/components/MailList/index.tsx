@@ -14,7 +14,10 @@ export type MailListProps = {
   resetData?: () => void;
   headerComponent?: React.ComponentType<any> | React.ReactElement;
   onItemPress?: (itemId: string, isUnread: boolean) => void;
+  onRightActionPress?: (itemId: Email) => void;
+  rightActionTitle?: string;
   headerAnimatedValue?: any;
+  highlightItem?: boolean;
 };
 
 export const MailList = ({
@@ -24,6 +27,9 @@ export const MailList = ({
   resetData,
   headerAnimatedValue,
   onItemPress,
+  onRightActionPress,
+  rightActionTitle,
+  highlightItem = true,
 }: MailListProps) => {
   const { isLoading, flatListProps } = useInfiniteScroll<Email>({
     getData: getMoreData,
@@ -32,9 +38,18 @@ export const MailList = ({
   });
 
   const renderItem = ({ item }: { item: Email }) => (
-    <EmailCell
+    <EmailCell.Swipeable
       email={item}
       onPress={() => onItemPress?.(item.emailId, item.unread)}
+      rightButtons={[
+        {
+          title: rightActionTitle || 'Delete',
+          onPress: () => onRightActionPress?.(item),
+          width: 64,
+          background: colors.error,
+        },
+      ]}
+      isUnread={item.unread && highlightItem}
     />
   );
 

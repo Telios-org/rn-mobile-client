@@ -11,14 +11,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
-    backgroundColor: colors.skyLight,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
     marginRight: spacing.md,
   },
   flex1: {
     flex: 1,
+    justifyContent: 'center',
   },
   row: {
     flexDirection: 'row',
