@@ -19,6 +19,11 @@ const styles = StyleSheet.create({
   editable: {
     opacity: 0.5,
   },
+  extraSmallImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+  },
   smallImage: {
     width: 50,
     height: 50,
@@ -32,6 +37,9 @@ const styles = StyleSheet.create({
   displayName: {
     ...fonts.title1,
     color: colors.white,
+  },
+  extraSmallDisplayName: {
+    fontSize: 14,
   },
   smallDisplayName: {
     fontSize: 26,
