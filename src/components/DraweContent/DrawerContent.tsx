@@ -17,7 +17,7 @@ import {
 } from '../../store/selectors/email';
 import { folderSelectors } from '../../store/adapters/folders';
 import { FoldersId } from '../../store/types/enums/Folders';
-import { getMailboxFolders } from '../../store/thunks/email';
+import { getMailboxFolders, getNewMailFlow } from '../../store/thunks/email';
 import styles from './styles';
 import {
   selectAccountAvatar,
@@ -46,7 +46,7 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
   };
 
   const onRefresh = async () => {
-    // await dispatch(getNewMailFlow());
+    await dispatch(getNewMailFlow());
     if (mailboxId) {
       await dispatch(getMailboxFolders({ id: mailboxId }));
     }

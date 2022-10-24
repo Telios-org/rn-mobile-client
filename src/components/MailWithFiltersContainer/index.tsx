@@ -13,7 +13,7 @@ import ComposeButton from '../ComposeButton/ComposeButton';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Email } from '../../store/types';
 import { RootState } from '../../store';
-import { moveMailToTrash } from '../../store/thunks/email';
+import { getNewMailFlow, moveMailToTrash } from '../../store/thunks/email';
 import { decrementFolderCounter } from '../../store/thunks/folders';
 import { SwipeRowProvider } from '../SwipeRow/SwipeRowProvider';
 
@@ -75,13 +75,15 @@ export default ({
     await dispatch(decrementFolderCounter({ email: item }));
   };
 
-  const resetData = (filter: FilterType) => () =>
+  const resetData = (filter: FilterType) => () => {
+    dispatch(getNewMailFlow());
     dispatch(
       resetMailsByFolder({
         folderId,
         filter,
       }),
     );
+  };
 
   const renderHeader = (
     <>

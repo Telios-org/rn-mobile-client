@@ -1,6 +1,6 @@
 import { Middleware, MiddlewareAPI } from 'redux';
 import { AppDispatch } from './store';
-import { saveMailToDB } from './store/thunks/email';
+import { getMessage, saveMailToDB } from './store/thunks/email';
 import { EmailContent } from './store/types';
 
 type Email = {
@@ -17,6 +17,12 @@ export type FileFetchedPayload = {
   email: Email;
 };
 
+type NewMessagePayload = {
+  account: any;
+  async: boolean;
+  meta: any;
+};
+
 export const fileFetchedMiddleware: Middleware<{}, {}> =
   (api: MiddlewareAPI<AppDispatch>) => next => action => {
     if (action.type === 'node/messageHandler:fileFetched') {
@@ -25,6 +31,9 @@ export const fileFetchedMiddleware: Middleware<{}, {}> =
       const email = transformEmail(data);
       // api.dispatch(mailSlice.actions.fileFetched(email));
       api.dispatch(saveMailToDB({ type: 'Incoming', messages: [email] }));
+    } else if (action.type === 'node/account:newMessage') {
+      const data = action.data as NewMessagePayload;
+      api.dispatch(getMessage(data));
     }
     return next(action);
   };
