@@ -33,7 +33,7 @@ import { SyncNewDeviceScreen } from './screens/Profile/SyncNewDeviceScreen';
 import { AliasManageScreen } from './screens/AliasManage/AliasManageScreen';
 import { NewAliasNamespaceScreen } from './screens/NewAliasNamespace/NewAliasNamespaceScreen';
 import { NewAliasScreen } from './screens/NewAlias/NewAliasScreen';
-import { EmailDetailScreen } from './screens/EmailDetailScreen';
+import { EmailDetailScreen } from './screens/EmailDetails/EmailDetailScreen';
 import RNBootSplash from 'react-native-bootsplash';
 import { Platform } from 'react-native';
 import ForgotPassword from './screens/ForgotPassword';
@@ -56,7 +56,16 @@ export type RootStackParams = {
   login: undefined;
   main: undefined;
   register: NavigatorScreenParams<RegisterStackParams> | undefined;
-  compose: undefined;
+  compose:
+    | {
+        to?: string[];
+        from?: string;
+        subject?: string;
+        body?: string;
+        cc?: string[];
+        bcc?: string[];
+      }
+    | undefined;
   search: undefined;
   searchSection: {
     folderId: string;

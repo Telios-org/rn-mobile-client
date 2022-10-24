@@ -56,7 +56,7 @@ export const InputModal = React.forwardRef<
       <Portal>
         <Modalize
           ref={ref}
-          adjustToContentHeight={true}
+          adjustToContentHeight
           scrollViewProps={{ keyboardShouldPersistTaps: 'always' }}>
           <KeyboardAvoidingView>
             <View style={styles.inputContainer}>

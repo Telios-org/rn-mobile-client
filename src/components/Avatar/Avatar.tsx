@@ -9,7 +9,7 @@ import { Icon } from '../Icon';
 import styles from './styles';
 
 export type AvatarProps = {
-  variant?: 'small' | 'large';
+  variant?: 'extraSmall' | 'small' | 'large';
   onPress?: () => void;
   style?: object;
   email?: string;

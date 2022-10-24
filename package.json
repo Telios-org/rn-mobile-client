@@ -48,6 +48,7 @@
     "react-native-toast-message": "^2.1.1",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.1.0",
+    "react-native-webview": "^11.23.1",
     "react-redux": "^7.2.6",
     "tsify": "^5.0.4",
     "yarn": "^1.22.17",
