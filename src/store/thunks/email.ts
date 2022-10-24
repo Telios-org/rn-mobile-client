@@ -177,10 +177,12 @@ export const deleteMailFromTrash = createAsyncThunk<
 export type SaveMailToDBRequest = {
   type: 'Incoming' | 'Draft';
   messages: Array<EmailContent>;
+  requestId?: string;
 };
 export type SaveMailToDBResponse = {
   msgArr: Array<Email>;
   newAliases: Array<any>;
+  requestId?: string;
 };
 const SaveMailToDBEventName = 'email:saveMessageToDB';
 export const saveMailToDB = createAsyncThunk<
@@ -191,7 +193,6 @@ export const saveMailToDB = createAsyncThunk<
   `local/${SaveMailToDBEventName}`,
   async (data, thunkAPI): Promise<SaveMailToDBResponse> => {
     return new Promise((resolve, reject) => {
-      const firstEmailId = data.messages[0]?._id;
       // const state: RootState = thunkAPI.getState();
       // const inboxMailIds = state?.mail.byFolderId[FoldersId.inbox]?.ids;
       // if (firstEmailId && inboxMailIds.includes(firstEmailId)) {
@@ -199,10 +200,10 @@ export const saveMailToDB = createAsyncThunk<
       // }
       nodejs.channel.send({
         event: SaveMailToDBEventName,
-        payload: data,
+        payload: { ...data, requestId: thunkAPI.requestId }, // requestId is not visible in debugger
       });
 
-      if (firstEmailId) {
+      if (data.type === 'Incoming') {
         // use a custom predicate for our listener
         // to match up specific request / responses
         // -- this is necessary because often when receiving emails, we get many concurrent running
@@ -210,9 +211,8 @@ export const saveMailToDB = createAsyncThunk<
         registerOneTimeListener(
           {
             eventName: `node/${SaveMailToDBEventName}:callback`,
-            customPredicate: action => {
-              return action.data.msgArr?.[0]?.emailId === firstEmailId;
-            },
+            customPredicate: action =>
+              action.data?.requestId === thunkAPI.requestId,
           },
           async event => {
             if (event.error) {
@@ -222,9 +222,9 @@ export const saveMailToDB = createAsyncThunk<
               // TODO: batch these up, rather than call for every single item inserted to DB.
 
               try {
-                const emailIds: string[] = event.data.msgArr.map(
-                  (item: Email) => item.emailId,
-                );
+                // _id field of incoming emails is different from _id returned
+                // by saveMailToDB:callback, that's why we need to use data.messages here
+                const emailIds: any[] = data.messages.map(item => item._id);
                 await thunkAPI.dispatch(
                   updateMailAsSynced({ msgArray: emailIds }),
                 );
@@ -239,11 +239,12 @@ export const saveMailToDB = createAsyncThunk<
           },
         );
       } else {
-        // if the email we're saving has no _id, we need to assume the next node callback is the match
-        // -- this assumption could break if emails are rolling in concurrently as a user saves a Draft, for instance.
+        // the email we're saving has no _id, as a user saves a Draft, for instance.
         registerOneTimeListener(
           {
             eventName: `node/${SaveMailToDBEventName}:callback`,
+            customPredicate: action =>
+              action.data?.requestId === thunkAPI.requestId,
           },
           event => {
             if (event.error) {
