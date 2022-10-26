@@ -178,56 +178,63 @@ export const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <Pressable onPress={() => isEditing && Keyboard.dismiss()}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.scrollViewContainer}>
+        <Pressable
+          onPress={() => isEditing && Keyboard.dismiss()}
+          style={styles.flex1}>
           <View style={styles.content}>
-            <Avatar
-              variant={'large'}
-              image={avatar}
-              style={styles.avatar}
-              email={mailboxAddress}
-              editable={isEditing}
-              displayName={displayName}
-              isLoading={isImagePreparing}
-              onPress={() => selectImage()}
-            />
-            {isEditing ? (
-              <Input
-                ref={inputRefVerify}
-                value={displayName}
-                onChangeText={text => setDisplayName(text)}
-                autoCapitalize="none"
-                autoCorrect={false}
+            <View>
+              <Avatar
+                variant={'large'}
+                image={avatar}
+                style={styles.avatar}
+                email={mailboxAddress}
+                editable={isEditing}
+                displayName={displayName}
+                isLoading={isImagePreparing}
+                onPress={() => selectImage()}
               />
-            ) : (
-              <Pressable onPress={() => startProfileEdit()}>
-                <Text style={styles.displayName}>{displayName}</Text>
-              </Pressable>
-            )}
-
-            <Text style={styles.mailbox}>{mailboxAddress}</Text>
-
-            {!isEditing && (
-              <View style={styles.userStatus}>
-                <Text style={styles.userStatusText}>{userPlanText}</Text>
-              </View>
-            )}
-
-            {isEditing && (
-              <View style={styles.actionContainer}>
-                <Pressable
-                  onPress={() => handleCancelAcion()}
-                  style={styles.cancelButton}>
-                  <Text style={styles.cancelText}>{'Cancel'}</Text>
+              {isEditing ? (
+                <Input
+                  ref={inputRefVerify}
+                  value={displayName}
+                  onChangeText={text => setDisplayName(text)}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              ) : (
+                <Pressable onPress={() => startProfileEdit()}>
+                  <Text style={styles.displayName}>{displayName}</Text>
                 </Pressable>
-                <Pressable
-                  onPress={() => updateProfile()}
-                  style={styles.saveButton}>
-                  <Text style={styles.saveText}>{'Save'}</Text>
-                </Pressable>
-              </View>
-            )}
-            {menuItems.map(item => optionItemRender(item))}
+              )}
+
+              <Text style={styles.mailbox}>{mailboxAddress}</Text>
+
+              {!isEditing && userPlan && (
+                <View style={styles.userStatus}>
+                  <Text style={styles.userStatusText}>{userPlanText}</Text>
+                </View>
+              )}
+            </View>
+            <View>
+              {isEditing && (
+                <View style={styles.actionContainer}>
+                  <Pressable
+                    onPress={() => handleCancelAcion()}
+                    style={styles.cancelButton}>
+                    <Text style={styles.cancelText}>{'Cancel'}</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => updateProfile()}
+                    style={styles.saveButton}>
+                    <Text style={styles.saveText}>{'Save'}</Text>
+                  </Pressable>
+                </View>
+              )}
+              {menuItems.map(item => optionItemRender(item))}
+            </View>
           </View>
         </Pressable>
       </ScrollView>
