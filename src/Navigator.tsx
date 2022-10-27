@@ -26,7 +26,8 @@ import { DraftsScreen } from './screens/DraftsScreen';
 import { SentScreen } from './screens/SentScreen';
 import { TrashScreen } from './screens/TrashScreen';
 import { ProfileScreen } from './screens/Profile/ProfileScreen';
-import { ContactsScreen } from './screens/Profile/ContactsScreen';
+import { ContactScreen } from './screens/Contacts/Contacts';
+import { ContactDetail } from './screens/ContactDetail/ContactDetail';
 import { NotificationsScreen } from './screens/Profile/NotificationsScreen';
 import { StatisticsScreen } from './screens/Profile/StatisticsScreen';
 import { SyncNewDeviceScreen } from './screens/Profile/SyncNewDeviceScreen';
@@ -43,6 +44,7 @@ import EnterNewPassword from './screens/EnterNewPassword';
 import { AliasInboxScreen } from './screens/AliasInbox';
 import { AliasInfoScreen } from './screens/AliasInfo';
 import NewAliasRandom from './screens/NewAliasRandom';
+import { NewContact } from './screens/NewContact/NewContact';
 
 export type CoreStackProps = {
   register: undefined;
@@ -108,6 +110,8 @@ export type MainStackParams = {
 export type ProfileStackParams = {
   profileMain: undefined;
   contacts: undefined;
+  contactDetail: { contactId: string; editContent?: boolean };
+  newContact: undefined;
   notifications: undefined;
   statistics: undefined;
   syncNewDevice: undefined;
@@ -170,8 +174,25 @@ const ProfileRoot = () => (
     />
     <ProfileStack.Screen
       name={'contacts'}
-      component={ContactsScreen}
-      options={{ title: 'ContactsScreen' }}
+      component={ContactScreen}
+      options={{
+        title: '',
+        headerTransparent: true,
+      }}
+    />
+    <ProfileStack.Screen
+      name={'contactDetail'}
+      component={ContactDetail}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <ProfileStack.Screen
+      name={'newContact'}
+      component={NewContact}
+      options={{
+        headerShown: false,
+      }}
     />
     <ProfileStack.Screen
       name={'notifications'}

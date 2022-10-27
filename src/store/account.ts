@@ -56,7 +56,7 @@ interface AccountState {
   signupAccount?: SignupAccount;
   loginAccount?: LoginAccount;
   isProfileUpdating?: boolean;
-  stats: Stats;
+  stats?: Stats;
 }
 
 const initialState: AccountState = {

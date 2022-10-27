@@ -8249,7 +8249,7 @@ prompts@^2.0.1, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.7.2:
+prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -8445,6 +8445,13 @@ react-native-codegen@^0.0.7:
     flow-parser "^0.121.0"
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
+
+react-native-date-picker@^4.2.5:
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-4.2.5.tgz#d2e3ff6c8616313bdd75c48ac56a84a57d8a27a3"
+  integrity sha512-YjwiMpZEnVVS+ymLvmJDicVZ3pSR+nJHgtAhctMl6fO8f7iRNcYhY427gemlTBf2Ji+XIAK0Agyl255DhaemFw==
+  dependencies:
+    prop-types "^15.8.1"
 
 react-native-gesture-handler@^2.2.0:
   version "2.2.0"
