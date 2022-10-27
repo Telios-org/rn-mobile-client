@@ -8,9 +8,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
+  scrollViewContainer: {
+    flexGrow: 1,
+    paddingBottom: spacing.lg,
+  },
   content: {
+    flex: 1,
     marginHorizontal: spacing.lg,
     marginTop: spacing.xs,
+    justifyContent: 'space-between',
   },
   avatar: {
     marginBottom: spacing.xl,
@@ -71,6 +77,9 @@ const styles = StyleSheet.create({
   saveText: {
     ...fonts.regular.bold,
     color: colors.white,
+  },
+  flex1: {
+    flex: 1,
   },
 });
 
