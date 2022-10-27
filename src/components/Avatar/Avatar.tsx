@@ -1,5 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { Pressable, Text, View, Image, ActivityIndicator } from 'react-native';
+import isEmpty from 'lodash/isEmpty';
+
 import {
   getFirstCharactersFromGivenName,
   stringToHslColor,
@@ -36,7 +38,7 @@ const Avatar = ({
   );
 
   const firstCharacters = useMemo(() => {
-    const text = displayName ? displayName : email;
+    const text = isEmpty(`${displayName}`.trim()) ? email : displayName;
     return getFirstCharactersFromGivenName(text);
   }, [displayName, email]);
 

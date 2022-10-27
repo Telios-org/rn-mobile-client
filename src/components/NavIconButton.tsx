@@ -19,10 +19,13 @@ export const NavIconButton = (props: NavIconButtonProps) => (
     size={props.icon.size || 26}
     color={props.icon.color || colors.inkDarker}
     loading={props.loading}
-    style={{
-      paddingLeft: props.padLeft ? spacing.md : spacing.xs,
-      paddingRight: props.padRight ? spacing.md : spacing.xs,
-      alignSelf: 'stretch',
-    }}
+    style={[
+      {
+        paddingLeft: props.padLeft ? spacing.md : spacing.xs,
+        paddingRight: props.padRight ? spacing.md : spacing.xs,
+        alignSelf: 'stretch',
+      },
+      props.style || {},
+    ]}
   />
 );

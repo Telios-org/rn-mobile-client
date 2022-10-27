@@ -100,3 +100,24 @@ export type Stats = {
   plan: string;
   storageSpaceUsed: number;
 };
+
+export type Organization = { name: string };
+
+export type Contact = {
+  address?: string;
+  author?: string;
+  birthday?: string;
+  contactId: string;
+  email?: string;
+  familyName?: string;
+  givenName?: string;
+  name?: string;
+  nickname?: string;
+  notes?: string;
+  organization?: Array<Organization>;
+  pgpPublicKey?: string;
+  phone?: string;
+  publicKey?: string;
+  website?: string;
+  _id?: string;
+};

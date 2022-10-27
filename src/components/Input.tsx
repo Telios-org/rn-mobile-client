@@ -20,6 +20,7 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   label?: string;
   error?: string;
   style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
   textInputStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
   loading?: boolean;
@@ -28,6 +29,22 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   iconLeft?: { name: string; size?: number; color?: string };
   renderCustomRightView?: () => ReactNode;
 }
+
+export interface LabelProps extends Omit<TextInputProps, 'style'> {
+  label?: string;
+  labelStyle?: StyleProp<TextStyle>;
+}
+
+export const Label = ({ label, labelStyle }: LabelProps) => (
+  <Text
+    style={[
+      fonts.regular.medium,
+      { color: colors.inkDarkest, marginBottom: spacing.sm },
+      labelStyle,
+    ]}>
+    {label}
+  </Text>
+);
 
 export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
   const {
@@ -40,6 +57,7 @@ export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
     loadingPosition = 'right',
     iconRight,
     iconLeft,
+    labelStyle,
     renderCustomRightView,
     ...restOfProps
   } = props;
@@ -62,15 +80,7 @@ export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
 
   return (
     <View style={style}>
-      {label ? (
-        <Text
-          style={[
-            fonts.regular.medium,
-            { color: colors.inkDarkest, marginBottom: spacing.sm },
-          ]}>
-          {label}
-        </Text>
-      ) : null}
+      {label ? <Label label={label} labelStyle={labelStyle} /> : null}
       <View>
         <TextInput
           ref={ref}

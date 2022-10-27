@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
   },
   largeDisplayName: {
-    fontSize: 66,
+    fontSize: 62,
   },
 });
 
