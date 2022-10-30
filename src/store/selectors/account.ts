@@ -2,6 +2,9 @@ import { RootState } from '../../store';
 
 export const accountSelector = (state: RootState) => state.account;
 
+export const loginAccountSelector = (state: RootState) =>
+  state.account.loginAccount;
+
 export const selectAccountStats = (state: RootState) => state.account?.stats;
 
 export const selectUserPlan = (state: RootState) => state.account?.stats?.plan;
