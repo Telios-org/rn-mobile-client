@@ -29,6 +29,12 @@ export const menuItems = [
     icon: 'notifications-outline',
   },
   {
+    label: 'Security',
+    key: 'security',
+    screenName: 'security',
+    icon: 'ios-shield-checkmark-outline',
+  },
+  {
     label: 'Log Out',
     key: 'log-out',
     screenName: 'login',
