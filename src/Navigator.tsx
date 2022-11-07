@@ -46,6 +46,7 @@ import { AliasInfoScreen } from './screens/AliasInfo';
 import NewAliasRandom from './screens/NewAliasRandom';
 import { NewContact } from './screens/NewContact/NewContact';
 import Security from './screens/Security/Security';
+import PlanAndUsage from './screens/PlanAndUsage/PlanAndUsage';
 
 export type CoreStackProps = {
   register: undefined;
@@ -117,6 +118,7 @@ export type ProfileStackParams = {
   statistics: undefined;
   syncNewDevice: undefined;
   security: undefined;
+  planAndUsage: undefined;
 };
 
 export type InboxStackParams = {
@@ -210,6 +212,11 @@ const ProfileRoot = () => (
       name={'security'}
       component={Security}
       options={{ title: 'Security' }}
+    />
+    <ProfileStack.Screen
+      name={'planAndUsage'}
+      component={PlanAndUsage}
+      options={{ title: 'Plan & Usage' }}
     />
     <ProfileStack.Screen
       name={'syncNewDevice'}
