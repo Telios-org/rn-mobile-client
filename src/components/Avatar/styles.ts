@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '../../util/colors';
-import { fonts } from '../../util/fonts';
+import { textStyles } from '../../util/fonts';
 
 const styles = StyleSheet.create({
   container: {
@@ -35,17 +35,17 @@ const styles = StyleSheet.create({
     borderRadius: 63,
   },
   displayName: {
-    ...fonts.title1,
+    fontWeight: textStyles.weights.semiBold,
     color: colors.white,
   },
   extraSmallDisplayName: {
     fontSize: 14,
   },
   smallDisplayName: {
-    fontSize: 26,
+    fontSize: 19,
   },
   largeDisplayName: {
-    fontSize: 62,
+    fontSize: 40,
   },
 });
 
