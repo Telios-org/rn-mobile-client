@@ -1,6 +1,15 @@
+import { StyleProp, ViewStyle } from 'react-native';
 import { spacing } from '../../../util/spacing';
 
-export const menuItems = [
+type MenuItem = {
+  label: string;
+  key: string;
+  screenName: string;
+  icon: string;
+  style?: StyleProp<ViewStyle>;
+};
+
+export const menuItems: MenuItem[] = [
   {
     label: 'Contacts',
     key: 'contacts',
@@ -9,6 +18,12 @@ export const menuItems = [
     style: {
       marginBottom: spacing.xl,
     },
+  },
+  {
+    label: 'Plan & Usage',
+    key: 'plan-usage',
+    screenName: 'planAndUsage',
+    icon: 'ios-wallet-outline',
   },
   {
     label: 'Sync New Device',
@@ -42,7 +57,7 @@ export const menuItems = [
   },
 ];
 
-export const launchImageErrorMessages = {
+export const launchImageErrorMessages: { [key: string]: string } = {
   camera_unavailable: 'Camera not available on device.',
   permission: 'Permission not satisfied.',
   others: 'An error occurred. Please try again later.',
