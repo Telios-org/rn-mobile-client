@@ -1,6 +1,6 @@
 // necessary to import this first: https://reactnavigation.org/docs/drawer-navigator/#installation
 import 'react-native-gesture-handler';
-
+import KeepAwake from '@sayem314/react-native-keep-awake';
 import nodejs from 'nodejs-mobile-react-native';
 import AppLoading from 'expo-app-loading';
 import { Host } from 'react-native-portalize';
@@ -10,7 +10,7 @@ import React from 'react';
 import { store } from './store';
 import { Provider } from 'react-redux';
 import { ListenerContainer } from './ListenerContainer';
-import { Navigator } from './Navigator';
+import { Navigator } from './navigators/Navigator';
 import { StatusBar } from 'react-native';
 import { getStoredUsernames } from './store/thunks/account';
 
@@ -39,6 +39,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <StatusBar barStyle={'dark-content'} />
+      <KeepAwake />
       <ListenerContainer />
       {isReady ? (
         <Host>

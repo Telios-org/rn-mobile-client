@@ -1,7 +1,7 @@
 import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Alert, ScrollView, Text, View } from 'react-native';
-import { RootStackParams } from '../../Navigator';
+import { RootStackParams } from '../../navigators/Navigator';
 import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
 import { Input } from '../../components/Input';
@@ -11,9 +11,9 @@ import envApi from '../../../env_api.json';
 import { Icon } from '../../components/Icon';
 import { randomLetters, randomWords } from '../../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import styles from './styles';
 import { registerNamespace } from '../../store/thunks/namespaces';
 import { selectMailBoxId } from '../../store/selectors/email';
+import styles from './styles';
 
 export type NewAliasNamespaceScreenProps = NativeStackScreenProps<
   RootStackParams,

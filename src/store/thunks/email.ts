@@ -2,8 +2,8 @@ import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '../../store';
 import nodejs from 'nodejs-mobile-react-native';
-import { registerOneTimeListener } from '../../eventListenerMiddleware';
 import { Alias, Email, EmailContent, Folder, Mailbox } from '../types';
+import { registerOneTimeListener } from '../../middlewares/eventListenerMiddleware';
 import { incrementFolderCounter, updateFolderCountFlow } from './folders';
 import { FoldersId } from '../types/enums/Folders';
 
@@ -87,7 +87,7 @@ export type SaveDraftRequest = EmailContent;
 export const saveDraft = createAsyncThunk<
   SaveMailToDBResponse,
   SaveDraftRequest,
-  { state: RootState }
+  { state: RootState; dispatch: AppDispatch }
 >('flow/saveDraft', async (data, thunkAPI) => {
   const response = await thunkAPI.dispatch(
     saveMailToDB({ type: 'Draft', messages: [data] }),
@@ -188,7 +188,7 @@ const SaveMailToDBEventName = 'email:saveMessageToDB';
 export const saveMailToDB = createAsyncThunk<
   SaveMailToDBResponse,
   SaveMailToDBRequest,
-  { state: RootState }
+  { state: RootState; dispatch: AppDispatch }
 >(
   `local/${SaveMailToDBEventName}`,
   async (data, thunkAPI): Promise<SaveMailToDBResponse> => {
@@ -222,12 +222,16 @@ export const saveMailToDB = createAsyncThunk<
               // TODO: batch these up, rather than call for every single item inserted to DB.
 
               try {
+                // newMessage events don't contain _id. There is no need to mark as synced
+                const firstEmailId = data.messages[0]?._id;
                 // _id field of incoming emails is different from _id returned
                 // by saveMailToDB:callback, that's why we need to use data.messages here
-                const emailIds: any[] = data.messages.map(item => item._id);
-                await thunkAPI.dispatch(
-                  updateMailAsSynced({ msgArray: emailIds }),
-                );
+                if (firstEmailId) {
+                  const emailIds: any[] = data.messages.map(item => item._id);
+                  await thunkAPI.dispatch(
+                    updateMailAsSynced({ msgArray: emailIds }),
+                  );
+                }
                 event.data.msgArr.forEach((email: Email) => {
                   thunkAPI.dispatch(incrementFolderCounter({ email }));
                 });
@@ -326,7 +330,7 @@ export const getMailByFolderUnread = createAsyncThunk<
     .unwrap();
 });
 export type MarkAsUnreadRequest = { id: string | number };
-export type MarkAsUnreadResponse = void;
+export type MarkAsUnreadResponse = Array<Email>;
 export const markAsUnread = createNodeCalloutAsyncThunk<
   MarkAsUnreadRequest,
   MarkAsUnreadResponse

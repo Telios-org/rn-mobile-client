@@ -10,10 +10,11 @@ import {
   View,
   TextInput,
   Alert,
+  ViewStyle,
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 
-import { MainStackParams, RootStackParams } from '../../../Navigator';
+import { ProfileStackParams } from '../../../navigators/Navigator';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { accountLogout } from '../../../store/thunks/accountLogout';
 
@@ -35,10 +36,11 @@ import { menuItems, launchImageErrorMessages } from './constants';
 import { spacing } from '../../../util/spacing';
 import { colors } from '../../../util/colors';
 import styles from './styles';
+import { DrawerContentComponentProps } from '@react-navigation/drawer/src/types';
 
 export type ProfileScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<MainStackParams, 'profile'>,
-  NativeStackScreenProps<RootStackParams>
+  NativeStackScreenProps<ProfileStackParams, 'profileMain'>,
+  DrawerContentComponentProps
 >;
 
 export const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
@@ -129,31 +131,40 @@ export const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
     }
   };
 
-  const handleCancelAcion = () => {
+  const handleCancelAction = () => {
     setDisplayName(accountDisplayName || '');
     setAvatar(accountAvatar || '');
     setIsEditing(false);
     setIsImagePreparing(false);
   };
 
-  const goToScreen = screenName => {
-    if (!screenName) return;
+  const goToScreen = (screenName: string) => {
+    if (!screenName) {
+      return;
+    }
     navigation.navigate(screenName);
   };
 
-  const onPressMenuItem = screenName => {
+  const onPressMenuItem = (screenName: string) => {
     if (screenName === 'login') {
       onLogout();
     } else {
       goToScreen(screenName);
     }
   };
+
   const optionItemRender = ({
     icon = '',
     key,
     screenName,
     label,
-    style = {},
+    style,
+  }: {
+    icon: string;
+    key: string;
+    screenName: string;
+    label: string;
+    style?: ViewStyle;
   }) => (
     <TableCell
       label={label}
@@ -222,7 +233,7 @@ export const ProfileScreen = ({ navigation }: ProfileScreenProps) => {
               {isEditing && (
                 <View style={styles.actionContainer}>
                   <Pressable
-                    onPress={() => handleCancelAcion()}
+                    onPress={() => handleCancelAction()}
                     style={styles.cancelButton}>
                     <Text style={styles.cancelText}>{'Cancel'}</Text>
                   </Pressable>

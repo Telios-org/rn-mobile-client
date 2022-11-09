@@ -1,14 +1,18 @@
 import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { ScrollView, StatusBar, Switch, View, Text, Image } from 'react-native';
+import { View, Image } from 'react-native';
 import { Button } from '../components/Button';
-import { RootStackParams } from '../Navigator';
+import { CoreStackProps, RootStackParams } from '../navigators/Navigator';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { CompositeScreenProps } from '@react-navigation/native';
 
-export type IntroScreenProps = NativeStackScreenProps<RootStackParams, 'intro'>;
+export type IntroScreenProps = CompositeScreenProps<
+  NativeStackScreenProps<RootStackParams, 'intro'>,
+  NativeStackScreenProps<CoreStackProps, 'register'>
+>;
 
 export const IntroScreen = (props: IntroScreenProps) => {
   const onRegister = () => {

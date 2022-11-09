@@ -4,13 +4,13 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, ScrollView, Keyboard, Alert } from 'react-native';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
-import { RegisterStackParams } from '../Navigator';
+import { RegisterStackParams } from '../navigators/Navigator';
 import { fonts } from '../util/fonts';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { validateEmail } from '../util/regexHelpers';
 import { useAppDispatch } from '../hooks';
-import {registerFlow} from "../store/thunks/account";
+import { registerFlow } from '../store/thunks/account';
 
 export type RegisterRecoveryEmailScreenProps = NativeStackScreenProps<
   RegisterStackParams,

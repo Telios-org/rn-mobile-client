@@ -6,7 +6,7 @@ import { Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
-import { RegisterStackParams, RootStackParams } from '../../Navigator';
+import { RootStackParams } from '../../navigators/Navigator';
 import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
 import { colors } from '../../util/colors';
@@ -17,6 +17,7 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import ScrollableContainer from '../../components/ScrollableContainer';
 import NextButton from '../../components/NextButton';
 import { recoveryPassFlow } from '../../store/thunks/account';
+import { RecoveryAccountStackParams } from '../../navigators/RecoveryAccount';
 
 const zxcvbn = require('zxcvbn');
 
@@ -46,7 +47,7 @@ const RegisterPasswordFormSchema = Yup.object().shape({
 });
 
 export type RegisterPasswordScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<RegisterStackParams, 'enterNewPassword'>,
+  NativeStackScreenProps<RecoveryAccountStackParams, 'enterNewPassword'>,
   NativeStackScreenProps<RootStackParams>
 >;
 
@@ -206,6 +207,7 @@ export default ({ route, navigation }: RegisterPasswordScreenProps) => {
                 />
               </View>
               <NextButton
+                useKeyboardAvoidingView={false}
                 disabled={!formValid}
                 onSubmit={onSubmit}
                 loading={isSubmitting}

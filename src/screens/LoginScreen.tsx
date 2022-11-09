@@ -9,12 +9,13 @@ import { spacing } from '../util/spacing';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHeaderHeight } from '@react-navigation/elements';
 
-import { RootStackParams } from '../Navigator';
+import { CoreStackProps, RootStackParams } from '../navigators/Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
 import { SingleSelectInput } from '../components/SingleSelectInput';
 import { loginFlow } from '../store/thunks/account';
+import { CompositeScreenProps } from '@react-navigation/native';
 
 const SYNC_EXISTING = 'sync_existing';
 
@@ -28,9 +29,9 @@ const LoginFormSchema = Yup.object().shape({
   password: Yup.string().required('Required'),
 });
 
-export type LoginScreenProps = NativeStackScreenProps<
-  RootStackParams,
-  'register'
+export type LoginScreenProps = CompositeScreenProps<
+  NativeStackScreenProps<RootStackParams, 'login'>,
+  NativeStackScreenProps<CoreStackProps, 'register'>
 >;
 
 export const LoginScreen = (props: LoginScreenProps) => {
@@ -63,14 +64,11 @@ export const LoginScreen = (props: LoginScreenProps) => {
   };
 
   const onSyncExistingAccount = () => {
-    // todo navigate
-    Alert.alert('Not implemented yet');
+    props.navigation.navigate('sync');
   };
 
   const onForgotPassword = () => {
-    props.navigation.navigate('register', {
-      screen: 'forgotPassword',
-    });
+    props.navigation.navigate('recoveryAccount');
   };
 
   const onRegisterNewAccount = () => {

@@ -4,7 +4,6 @@ import { SafeAreaView, SectionList, Text, View } from 'react-native';
 import { CompositeScreenProps, useIsFocused } from '@react-navigation/native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Toast from 'react-native-toast-message';
 import { groupBy } from 'lodash';
 
 import { SwipeRowProvider } from '../../components/SwipeRow/SwipeRowProvider';
@@ -12,7 +11,10 @@ import { SwipeableContactItem } from './components/SwipeableContactItem';
 import { ContactsListHeader } from './components/ContactsListHeader';
 import { Icon } from '../../components/Icon';
 
-import { ProfileStackParams, RootStackParams } from '../../Navigator';
+import {
+  ProfileStackParams,
+  RootStackParams,
+} from '../../navigators/Navigator';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { colors } from '../../util/colors';
 import {
@@ -28,6 +30,7 @@ import { Contact } from '../../store/types';
 import { fonts } from '../../util/fonts';
 import { getFirstCharOfValidParameter } from '../../util/contact';
 import styles from './styles';
+import { showToast } from '../../util/toasts';
 
 export type ContactScreenProps = CompositeScreenProps<
   NativeStackScreenProps<ProfileStackParams, 'contacts'>,
@@ -73,7 +76,7 @@ export const ContactScreen = (props: ContactScreenProps) => {
     try {
       await dispatch(removeContact({ id: id })).unwrap();
       showToast('success', 'Contact deleted successfully');
-    } catch (e) {
+    } catch (e: any) {
       const errorMessage =
         e?.message || 'Failed to delete contact, please try again later';
       showToast('error', errorMessage);
@@ -84,12 +87,6 @@ export const ContactScreen = (props: ContactScreenProps) => {
     props.navigation.navigate('contactDetail', {
       contactId: contactId,
       editContent: true,
-    });
-
-  const showToast = (type, errorMessage) =>
-    Toast.show({
-      type: type,
-      text1: errorMessage,
     });
 
   const handleOnPressContent = (contactId: string) =>

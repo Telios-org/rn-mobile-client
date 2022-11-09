@@ -15,7 +15,7 @@ import {
   View,
   Linking,
 } from 'react-native';
-import { RootStackParams } from '../../Navigator';
+import { RootStackParams } from '../../navigators/Navigator';
 import { colors } from '../../util/colors';
 import { useAppDispatch } from '../../hooks';
 import { fonts } from '../../util/fonts';

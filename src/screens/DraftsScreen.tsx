@@ -1,12 +1,12 @@
 import React from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainStackParams, RootStackParams } from '../Navigator';
+import { MainStackParams, RootStackParams } from '../navigators/Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import MailContainer from '../components/MailContainer';
 import { getAllMailByFolder } from '../store/thunks/email';
 import { FoldersId } from '../store/types/enums/Folders';
 import { selectAllMailsByFolder } from '../store/selectors/email';
-import MailContainer from '../components/MailContainer';
 
 export type DraftsScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'drafts'>,

@@ -4,7 +4,7 @@ import { Alert, ScrollView, Text, View } from 'react-native';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Modalize } from 'react-native-modalize';
-import { RootStackParams } from '../../Navigator';
+import { RootStackParams } from '../../navigators/Navigator';
 import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
 import { Input } from '../../components/Input';

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { View, Text } from 'react-native';
-import { ProfileStackParams } from '../../Navigator';
+import { ProfileStackParams } from '../../navigators/Navigator';
 
 export type ContactsScreenProps = NativeStackScreenProps<
   ProfileStackParams,

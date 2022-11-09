@@ -10,9 +10,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FormikProps } from 'formik';
-import Toast from 'react-native-toast-message';
 
-import { ProfileStackParams, RootStackParams } from '../../Navigator';
+import {
+  ProfileStackParams,
+  RootStackParams,
+} from '../../navigators/Navigator';
 import { ContactHeader } from '../ContactDetail/components/ContactHeader';
 import { ContactForm } from '../../components/ContactForm';
 import { Button } from '../../components/Button';
@@ -23,6 +25,7 @@ import { useAppDispatch } from '../../hooks';
 import { isIOS } from '../../util/platform';
 import { Contact } from '../../store/types';
 import styles from './styles';
+import { showToast } from '../../util/toasts';
 
 export type NewContactProps = CompositeScreenProps<
   NativeStackScreenProps<ProfileStackParams, 'newContact'>,
@@ -34,12 +37,6 @@ export const NewContact = ({ navigation }: NewContactProps) => {
   const headerHeight = useHeaderHeight();
   const formRef = createRef<FormikProps<Contact>>();
 
-  const showToast = (type, errorMessage) =>
-    Toast.show({
-      type: type,
-      text1: errorMessage,
-    });
-
   const handleSaveAction = async (values: Contact) => {
     try {
       await dispatch(
@@ -50,7 +47,7 @@ export const NewContact = ({ navigation }: NewContactProps) => {
       dispatch(getAllContacts());
       showToast('success', 'Contact saved with successful.');
       navigation.goBack();
-    } catch (e) {
+    } catch (e: any) {
       const errorMessage =
         e?.message ||
         "The contact wasn't saved successfully, please try again.";

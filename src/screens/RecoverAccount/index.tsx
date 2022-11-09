@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { Input } from '../../components/Input';
-import { RegisterStackParams, RootStackParams } from '../../Navigator';
 import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
 // @ts-ignore
@@ -10,12 +9,12 @@ import envApi from '../../../env_api.json';
 import ScrollableContainer from '../../components/ScrollableContainer';
 import NextButton from '../../components/NextButton';
 import styles from './styles';
-import { CompositeScreenProps } from '@react-navigation/native';
 import { validateEmail } from '../../util/regexHelpers';
+import { RecoveryAccountStackParams } from '../../navigators/RecoveryAccount';
 
-type RecoverAccountProps = CompositeScreenProps<
-  NativeStackScreenProps<RootStackParams, 'register'>,
-  NativeStackScreenProps<RegisterStackParams, 'recoverAccount'>
+type RecoverAccountProps = NativeStackScreenProps<
+  RecoveryAccountStackParams,
+  'recoverAccount'
 >;
 
 export default ({ navigation }: RecoverAccountProps) => {
@@ -31,10 +30,7 @@ export default ({ navigation }: RecoverAccountProps) => {
   const onSubmit = () => {
     // TODO send email with recovery code
     if (recoveryEmail) {
-      navigation.navigate('register', {
-        screen: 'recoverAccountCode',
-        params: { recoveryEmail },
-      });
+      navigation.navigate('recoverAccountCode', { recoveryEmail });
     }
   };
 

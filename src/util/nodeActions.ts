@@ -1,7 +1,7 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import nodejs from 'nodejs-mobile-react-native';
 
-import { registerOneTimeListener } from '../eventListenerMiddleware';
+import { registerOneTimeListener } from '../middlewares/eventListenerMiddleware';
 
 /*
   createNodeCalloutAsyncThunk

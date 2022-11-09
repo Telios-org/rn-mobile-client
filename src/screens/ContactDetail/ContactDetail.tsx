@@ -9,10 +9,12 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
-import Toast from 'react-native-toast-message';
 import { FormikProps } from 'formik';
 
-import { ProfileStackParams, RootStackParams } from '../../Navigator';
+import {
+  ProfileStackParams,
+  RootStackParams,
+} from '../../navigators/Navigator';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Contact } from '../../store/types';
 import {
@@ -29,6 +31,7 @@ import { Button } from '../../components/Button';
 
 import { isIOS } from '../../util/platform';
 import styles from './styles';
+import { showToast } from '../../util/toasts';
 
 export type ContactDetailProps = CompositeScreenProps<
   NativeStackScreenProps<ProfileStackParams, 'contactDetail'>,
@@ -51,12 +54,6 @@ export const ContactDetail = ({ navigation, route }: ContactDetailProps) => {
     dispatch(getContactById({ id: contactId }));
   }, []);
 
-  const showToast = (type, errorMessage) =>
-    Toast.show({
-      type: type,
-      text1: errorMessage,
-    });
-
   const toggleEditStatus = () => setIsEditing(prev => !prev);
 
   const handleSaveAction = async (values: Contact) => {
@@ -69,7 +66,7 @@ export const ContactDetail = ({ navigation, route }: ContactDetailProps) => {
       dispatch(getAllContacts());
       showToast('success', 'Contact edited successfully');
       toggleEditStatus();
-    } catch (e) {
+    } catch (e: any) {
       const errorMessage =
         e?.message || 'Failed to edit contact, please try again';
       showToast('error', errorMessage);
@@ -88,7 +85,7 @@ export const ContactDetail = ({ navigation, route }: ContactDetailProps) => {
       await dispatch(removeContact({ id: contactId })).unwrap();
       showToast('success', 'Contact deleted successfully');
       navigation.goBack();
-    } catch (e) {
+    } catch (e: any) {
       const errorMessage =
         e?.message || 'Failed to delete contact, please try again later';
       showToast('error', errorMessage);

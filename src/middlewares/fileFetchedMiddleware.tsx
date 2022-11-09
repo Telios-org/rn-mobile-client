@@ -1,7 +1,7 @@
 import { Middleware, MiddlewareAPI } from 'redux';
-import { AppDispatch } from './store';
-import { getMessage, saveMailToDB } from './store/thunks/email';
-import { EmailContent } from './store/types';
+import { AppDispatch } from '../store';
+import { getMessage, saveMailToDB } from '../store/thunks/email';
+import { EmailContent } from '../store/types';
 
 type Email = {
   content: EmailContent;
