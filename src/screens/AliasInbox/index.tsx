@@ -20,6 +20,7 @@ import {
   selectReadMailsByAliasId,
   selectUnreadMailsByAliasId,
 } from '../../store/selectors/email';
+import ComposeButton from '../../components/ComposeButton/ComposeButton';
 
 export type AliasInboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasInbox'>,
@@ -38,45 +39,50 @@ export const AliasInboxScreen = ({ route }: AliasInboxScreenProps) => {
   }
 
   return (
-    <MailWithFiltersContainer
-      folderId={FoldersId.aliases}
-      renderTitle={
-        <MailListHeader
-          title={`# ${alias?.name}`}
-          subtitle={`${alias?.aliasId}@${envApi.postfix}`}
-          showCurrentStatus
-          canCopySubtitle
-          isActive={!alias?.disabled}
-        />
-      }
-      allMailSelector={state => selectMailsByAliasId(state, alias.aliasId)}
-      readMailSelector={state => selectReadMailsByAliasId(state, alias.aliasId)}
-      unreadMailSelector={state =>
-        selectUnreadMailsByAliasId(state, alias.aliasId)
-      }
-      getAllMails={async (offset, perPage) => {
-        return await dispatch(
-          getMessagesByAliasId({ id: alias.aliasId, offset, limit: perPage }),
-        ).unwrap();
-      }}
-      getUnreadMails={async (offset, perPage) => {
-        return await dispatch(
-          getReadMessagesByAliasId({
-            id: alias.aliasId,
-            offset,
-            limit: perPage,
-          }),
-        ).unwrap();
-      }}
-      getReadMails={async (offset, perPage) => {
-        return await dispatch(
-          getUnreadMessagesByAliasId({
-            id: alias.aliasId,
-            offset,
-            limit: perPage,
-          }),
-        ).unwrap();
-      }}
-    />
+    <>
+      <MailWithFiltersContainer
+        folderId={FoldersId.aliases}
+        renderTitle={
+          <MailListHeader
+            title={`# ${alias?.name}`}
+            subtitle={`${alias?.aliasId}@${envApi.postfix}`}
+            showCurrentStatus
+            canCopySubtitle
+            isActive={!alias?.disabled}
+          />
+        }
+        allMailSelector={state => selectMailsByAliasId(state, alias.aliasId)}
+        readMailSelector={state =>
+          selectReadMailsByAliasId(state, alias.aliasId)
+        }
+        unreadMailSelector={state =>
+          selectUnreadMailsByAliasId(state, alias.aliasId)
+        }
+        getAllMails={async (offset, perPage) => {
+          return await dispatch(
+            getMessagesByAliasId({ id: alias.aliasId, offset, limit: perPage }),
+          ).unwrap();
+        }}
+        getUnreadMails={async (offset, perPage) => {
+          return await dispatch(
+            getReadMessagesByAliasId({
+              id: alias.aliasId,
+              offset,
+              limit: perPage,
+            }),
+          ).unwrap();
+        }}
+        getReadMails={async (offset, perPage) => {
+          return await dispatch(
+            getUnreadMessagesByAliasId({
+              id: alias.aliasId,
+              offset,
+              limit: perPage,
+            }),
+          ).unwrap();
+        }}
+      />
+      <ComposeButton from={`${alias.aliasId}@${envApi.postfix}`} />
+    </>
   );
 };

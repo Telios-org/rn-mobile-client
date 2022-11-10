@@ -44,6 +44,10 @@ function transformEmail(data: any) {
   return {
     ...email,
     _id: data._id,
+    fromJSON: JSON.stringify(email.from),
+    toJSON: JSON.stringify(email.to),
+    ccJSON: JSON.stringify(email.cc),
+    bccJSON: JSON.stringify(email.bcc),
     bodyAsText: email?.text_body,
     bodyAsHTML: email?.html_body,
   };

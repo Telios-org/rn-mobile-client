@@ -13,7 +13,6 @@ import {
   Pressable,
   Text,
   View,
-  Linking,
 } from 'react-native';
 import { RootStackParams } from '../../navigators/Navigator';
 import { colors } from '../../util/colors';
@@ -32,27 +31,12 @@ import { decrementFolderCounter } from '../../store/thunks/folders';
 import useInboxActions from '../../hooks/useInboxActions';
 import { Icon } from '../../components/Icon';
 import styles from './styles';
-import WebView from 'react-native-webview';
+import BodyWebView from '../../components/BodyWebView';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
   RootStackParams,
   'emailDetail'
 >;
-
-const injectedJavaScript = `
-    const meta = document.createElement('meta');
-    meta.setAttribute('content', 'width=width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0');
-    meta.setAttribute('name', 'viewport');
-    document.getElementsByTagName('head')[0].appendChild(meta);
-    (function() {
-     let body = document.getElementsByTagName("BODY")[0];
-      body.style.fontFamily = "Arial, sans-serif";
-      body.style.fontSize = "16px";
-      body.style.color = "#575757";
-      body.style.lineHeight = "1.5";
-      document.getElementsByTagName("DIV")[0].style.fontSize = "30px";
-    })();
-  `;
 
 export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
   const { emailId, isUnread, isTrash } = props.route.params; // we need stored email to check if it was unread, getMessageById automatically marks it as read on backend;
@@ -65,9 +49,16 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
   const from = fromArray?.[0];
 
   const { openModal, onReply, actionsModal } = useInboxActions({
-    to: email?.toJSON ? JSON.parse(email.toJSON) : undefined,
-    from: from?.address,
+    to: from?.address ? [from.address] : undefined,
+    from: email?.toJSON ? JSON.parse(email.toJSON)[0].address : undefined,
     subject: email?.subject,
+    cc: email?.ccJSON
+      ? (JSON.parse(email.ccJSON) as Array<ToFrom>).map(cc => cc.address)
+      : undefined,
+    bcc: email?.bccJSON
+      ? (JSON.parse(email.bccJSON) as Array<ToFrom>).map(cc => cc.address)
+      : undefined,
+    bodyAsHTML: email?.bodyAsHtml,
   });
 
   const dispatch = useAppDispatch();
@@ -206,28 +197,7 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
           </View>
         </View>
         {email.bodyAsHtml ? (
-          <WebView
-            originWhitelist={['*']}
-            source={{ html: email.bodyAsHtml }}
-            scalesPageToFit
-            injectedJavaScript={injectedJavaScript}
-            style={[styles.bodyContainer]}
-            showsVerticalScrollIndicator={false}
-            onShouldStartLoadWithRequest={request => {
-              if (request.url !== 'about:blank') {
-                if (request.url.startsWith('mailto:')) {
-                  props.navigation.navigate('compose', {
-                    to: [request.url.replace('mailto:', '')],
-                  });
-                } else {
-                  Linking.openURL(request.url);
-                }
-                return false;
-              } else {
-                return true;
-              }
-            }}
-          />
+          <BodyWebView bodyAsHtml={email.bodyAsHtml} />
         ) : (
           <ScrollView
             style={styles.bodyContainer}

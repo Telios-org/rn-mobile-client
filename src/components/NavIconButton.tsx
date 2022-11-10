@@ -11,9 +11,11 @@ export type NavIconButtonProps = {
   loading?: boolean;
   padLeft?: boolean;
   padRight?: boolean;
+  disabled?: boolean;
 };
 export const NavIconButton = (props: NavIconButtonProps) => (
   <IconButton
+    disabled={props.disabled}
     onPress={props.onPress}
     name={props.icon.name}
     size={props.icon.size || 26}
@@ -25,7 +27,7 @@ export const NavIconButton = (props: NavIconButtonProps) => (
         paddingRight: props.padRight ? spacing.md : spacing.xs,
         alignSelf: 'stretch',
       },
-      props.style || {},
+      props.style,
     ]}
   />
 );

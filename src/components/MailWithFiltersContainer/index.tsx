@@ -9,7 +9,6 @@ import { resetMailsByFolder } from '../../store/emails';
 import { View } from 'react-native';
 import styles from './styles';
 import { MailList } from '../MailList';
-import ComposeButton from '../ComposeButton/ComposeButton';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Email } from '../../store/types';
 import { RootState } from '../../store';
@@ -144,7 +143,6 @@ export default ({
             onRightActionPress={onDeleteEmail}
           />
         </View>
-        <ComposeButton />
       </View>
     </SwipeRowProvider>
   );

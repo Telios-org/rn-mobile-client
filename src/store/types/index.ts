@@ -70,11 +70,18 @@ export type Mailbox = {
   _id: string;
 };
 
-export type ToFrom = { address?: string; name?: string };
+export type ToFrom = { address: string; name?: string };
+
+export type Attachment = {
+  filename: string;
+  content?: string;
+  mimetype?: string;
+  size?: number; // bytes, on Android size can be 0
+};
 
 export type EmailContent = {
   _id?: string;
-  attachments?: Array<any>;
+  attachments?: Array<Attachment>;
   bcc?: Array<any>;
   cc?: Array<any>;
   date: string;
