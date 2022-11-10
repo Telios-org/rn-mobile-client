@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { eventListenerMiddleware } from './eventListenerMiddleware';
-import { fileFetchedMiddleware } from './fileFetchedMiddleware';
+import { eventListenerMiddleware } from './middlewares/eventListenerMiddleware';
+import { fileFetchedMiddleware } from './middlewares/fileFetchedMiddleware';
 import { accountReducer } from './store/account';
 import { aliasesReducer } from './store/aliases';
 import { contactsReducer } from './store/contacts';

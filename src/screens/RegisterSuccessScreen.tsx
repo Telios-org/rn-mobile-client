@@ -5,11 +5,7 @@ import * as Clipboard from 'expo-clipboard';
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { Button } from '../components/Button';
-import {
-  CoreStackProps,
-  RegisterStackParams,
-  RootStackParams,
-} from '../Navigator';
+import { CoreStackProps, RegisterStackParams } from '../navigators/Navigator';
 import { fonts } from '../util/fonts';
 import { borderRadius, spacing } from '../util/spacing';
 import { colors } from '../util/colors';
@@ -27,7 +23,9 @@ export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
   const account = useAppSelector(state => state.account.signupAccount);
 
   const onCopyToClipboard = () => {
-    Clipboard.setString(account.mnemonic);
+    if (account) {
+      Clipboard.setString(account.mnemonic);
+    }
   };
 
   const onDone = () => {

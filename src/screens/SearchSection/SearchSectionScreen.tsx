@@ -3,7 +3,7 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FlatList, View } from 'react-native';
 
-import { MainStackParams, RootStackParams } from '../../Navigator';
+import { MainStackParams, RootStackParams } from '../../navigators/Navigator';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { MailSectionHeader } from '../../components/MailSectionHeader/MailSectionHeader';

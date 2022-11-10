@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 // @ts-ignore
 import envApi from '../../../env_api.json';
 import { MailListHeader } from '../../components/MailListHeader';
-import { MainStackParams, RootStackParams } from '../../Navigator';
+import { MainStackParams, RootStackParams } from '../../navigators/Navigator';
 import { CompositeScreenProps } from '@react-navigation/native';
 import {
   getMessagesByAliasId,

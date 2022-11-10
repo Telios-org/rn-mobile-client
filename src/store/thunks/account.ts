@@ -17,6 +17,12 @@ import {
   SaveMailboxResponse,
 } from './email';
 import { Stats } from '../types';
+import {
+  ACCOUNT_CREATE_SYNC_INFO,
+  ACCOUNT_SYNC_GET_INFO,
+  INIT_MESSAGE_LISTENER,
+} from '../types/events';
+import nodejs from 'nodejs-mobile-react-native';
 
 export const getStoredUsernames = createAsyncThunk(
   'system/getStoredUsernames',
@@ -26,6 +32,13 @@ export const getStoredUsernames = createAsyncThunk(
     return { usernames, lastUsername };
   },
 );
+
+const initMessageListener = () => {
+  nodejs.channel.send({
+    event: INIT_MESSAGE_LISTENER,
+  });
+};
+
 export const registerFlow = createAsyncThunk(
   'flow/registerAccount',
   async (
@@ -101,7 +114,13 @@ export const loginFlow = createAsyncThunk(
       throw new Error(JSON.stringify(loginResponse.payload));
     }
 
+    initMessageListener();
+
+    await storeAsyncStorageSavedUsername(data.email);
     await storeAsyncStorageLastUsername(data.email);
+
+    thunkAPI.dispatch(getStoredUsernames()); // that is needed to update redux latestAccount and localUsernames, needs refactor.
+    // Hint: use redux persistent slice
 
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
@@ -165,3 +184,25 @@ export const accountRetrieveStats = createNodeCalloutAsyncThunk<
   void,
   AccountRetrieveStatsResponse
 >('account:retrieveStats');
+
+type GetAccountSyncRequest = {
+  code: string;
+};
+export type GetAccountSyncResponse = {
+  drive_key: string;
+  email: string;
+};
+export type CreateAccountSyncInfoResponse = {
+  code: string;
+  drive_key: string;
+  email: string;
+};
+
+export const getAccountSyncInfo = createNodeCalloutAsyncThunk<
+  GetAccountSyncRequest,
+  GetAccountSyncResponse
+>(ACCOUNT_SYNC_GET_INFO);
+export const createAccountSyncInfo = createNodeCalloutAsyncThunk<
+  void,
+  CreateAccountSyncInfoResponse
+>(ACCOUNT_CREATE_SYNC_INFO);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { RootStackParams } from '../../Navigator';
+import { RootStackParams } from '../../navigators/Navigator';
 // @ts-ignore
 import envApi from '../../../env_api.json';
 import styles from './styles';

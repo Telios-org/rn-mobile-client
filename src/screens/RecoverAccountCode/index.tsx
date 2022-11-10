@@ -5,26 +5,22 @@ import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
 import { Input } from '../../components/Input';
 import NextButton from '../../components/NextButton';
-import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RegisterStackParams, RootStackParams } from '../../Navigator';
+import { RecoveryAccountStackParams } from '../../navigators/RecoveryAccount';
 
-type RecoverAccountCodeScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<RegisterStackParams, 'recoverAccountCode'>,
-  NativeStackScreenProps<RootStackParams, 'register'>
+type RecoverAccountCodeScreenProps = NativeStackScreenProps<
+  RecoveryAccountStackParams,
+  'recoverAccountCode'
 >;
 
-export default ({ route, navigation }: RecoverAccountCodeScreenProps) => {
+export default ({ route }: RecoverAccountCodeScreenProps) => {
   const { recoveryEmail } = route.params;
   const [code, setCode] = useState('');
   const onSubmit = () => {
     try {
       // TODO verify recovery code
       Alert.alert('Warning', 'Recovery by code is not implemented yet');
-      // navigation.navigate('register', {
-      //   screen: 'enterNewPassword',
-      //   params: { hasValidCode: true },
-      // });
+      // navigation.navigate('register', { hasValidCode: true });
     } catch (e) {
       Alert.alert('Error', 'Invalid code');
     }

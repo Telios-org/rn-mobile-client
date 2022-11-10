@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, ScrollView, Text, ViewStyle, StyleProp } from 'react-native';
-import { MainStackParams, RootStackParams } from '../../Navigator';
+import { MainStackParams, RootStackParams } from '../../navigators/Navigator';
 import { TableCell } from '../../components/TableCell';
 import { colors } from '../../util/colors';
 import { spacing } from '../../util/spacing';

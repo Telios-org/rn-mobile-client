@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHeaderHeight } from '@react-navigation/elements';
 import React from 'react';
 import { View, Text, ScrollView, Linking } from 'react-native';
-import { RegisterStackParams } from '../../Navigator';
+import { RegisterStackParams } from '../../navigators/Navigator';
 import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
 import { colors } from '../../util/colors';

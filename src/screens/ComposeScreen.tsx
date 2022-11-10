@@ -4,7 +4,7 @@ import { formatISO } from 'date-fns';
 import Toast from 'react-native-toast-message';
 
 import { Alert, Text, View } from 'react-native';
-import { RootStackParams } from '../Navigator';
+import { RootStackParams } from '../navigators/Navigator';
 import { TextInput } from 'react-native-gesture-handler';
 import { spacing } from '../util/spacing';
 import { colors } from '../util/colors';

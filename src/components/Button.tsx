@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TextStyle,
   View,
+  StyleSheet,
 } from 'react-native';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
@@ -60,27 +61,39 @@ export const Button = (props: ButtonProps) => {
 
   const textColor = type === 'primary' ? colors.white : colors.primaryBase;
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: getBgColor() || undefined,
+      paddingHorizontal:
+        type === 'text' ? 0 : size === 'small' ? spacing.md : spacing.xl,
+      paddingVertical: size === 'small' ? spacing.sm : spacing.md,
+      borderRadius: 30,
+      opacity: loading ? 0.5 : 1,
+      justifyContent: 'center',
+      alignContent: 'center',
+      flexDirection: 'row',
+      height: size === 'block' || size === 'large' ? 55 : undefined,
+      alignSelf: size === 'block' ? 'stretch' : 'auto',
+      borderWidth: type === 'outline' ? 1 : 0,
+      borderColor: colors.primaryBase,
+    },
+    leftContainer: {
+      position: 'absolute',
+      left: spacing.md,
+      alignSelf: 'center',
+    },
+    centerContainer: {
+      justifyContent: 'center',
+      alignContent: 'center',
+      flexDirection: 'row',
+    },
+    titleContainer: { justifyContent: 'center', alignItems: 'center' },
+  });
+
   return (
     <TouchableOpacity
       disabled={loading || disabled}
-      style={[
-        {
-          backgroundColor: getBgColor() || undefined,
-          paddingHorizontal:
-            type === 'text' ? 0 : size === 'small' ? spacing.md : spacing.xl,
-          paddingVertical: size === 'small' ? spacing.sm : spacing.md,
-          borderRadius: 30,
-          opacity: loading ? 0.5 : 1,
-          justifyContent: 'center',
-          alignContent: 'center',
-          flexDirection: 'row',
-          height: size === 'block' || size === 'large' ? 55 : undefined,
-          alignSelf: size === 'block' ? 'stretch' : 'auto',
-          borderWidth: type === 'outline' ? 1 : 0,
-          borderColor: colors.primaryBase,
-        },
-        style,
-      ]}
+      style={[styles.container, style]}
       onPress={onPress}>
       {iconLeft && (
         <View style={{ marginRight: spacing.sm }}>

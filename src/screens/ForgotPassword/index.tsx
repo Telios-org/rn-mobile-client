@@ -6,15 +6,14 @@ import { fonts } from '../../util/fonts';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RegisterStackParams, RootStackParams } from '../../Navigator';
 import NextButton from '../../components/NextButton';
 import ScrollableContainer from '../../components/ScrollableContainer';
-import { CompositeScreenProps } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { RecoveryAccountStackParams } from '../../navigators/RecoveryAccount';
 
-type Props = CompositeScreenProps<
-  NativeStackScreenProps<RootStackParams, 'register'>,
-  NativeStackScreenProps<RegisterStackParams, 'forgotPassword'>
+type Props = NativeStackScreenProps<
+  RecoveryAccountStackParams,
+  'forgotPassword'
 >;
 
 export default ({ navigation }: Props) => {
@@ -24,10 +23,7 @@ export default ({ navigation }: Props) => {
   const onSubmit = () => {
     Keyboard.dismiss();
     if (recoveryPhrase) {
-      navigation.navigate('register', {
-        screen: 'enterNewPassword',
-        params: { passphrase: recoveryPhrase },
-      });
+      navigation.navigate('enterNewPassword', { passphrase: recoveryPhrase });
     }
   };
 
@@ -65,12 +61,16 @@ export default ({ navigation }: Props) => {
             type="text"
             title="what if I lost my recovery phrase?"
             onPress={() => {
-              navigation.navigate('register', { screen: 'recoverAccount' });
+              navigation.navigate('recoverAccount');
             }}
           />
         </View>
       </KeyboardAvoidingView>
-      <NextButton disabled={!recoveryPhrase} onSubmit={onSubmit} />
+      <NextButton
+        disabled={!recoveryPhrase}
+        onSubmit={onSubmit}
+        useKeyboardAvoidingView={false}
+      />
     </ScrollableContainer>
   );
 };

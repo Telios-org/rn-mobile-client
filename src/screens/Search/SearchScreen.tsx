@@ -21,7 +21,7 @@ import { searchMailbox } from '../../store/thunks/search';
 import { colors } from '../../util/colors';
 import { EmailCell } from '../../components/EmailCell/EmailCell';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainStackParams, RootStackParams } from '../../Navigator';
+import { MainStackParams, RootStackParams } from '../../navigators/Navigator';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { MailSectionHeader } from '../../components/MailSectionHeader/MailSectionHeader';
 

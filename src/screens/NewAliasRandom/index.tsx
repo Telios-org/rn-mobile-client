@@ -8,11 +8,17 @@ import { colors } from '../../util/colors';
 import envApi from '../../../env_api.json';
 import { Button } from '../../components/Button';
 import { randomLetters, randomWords } from '../../util/randomNames';
-import { NewAliasScreenProps } from '../NewAlias/NewAliasScreen';
 import uuid from 'react-native-uuid';
 import { registerAlias } from '../../store/thunks/aliases';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../navigators/Navigator';
 
-export default ({ navigation }: NewAliasScreenProps) => {
+export type NewAliasRandomScreenProps = NativeStackScreenProps<
+  RootStackParams,
+  'newAliasRandom'
+>;
+
+export default ({ navigation }: NewAliasRandomScreenProps) => {
   const dispatch = useAppDispatch();
   const emailPostfix = envApi.postfix;
   const [newRandomAlias, setNewRandomAlias] = useState<string>('');
