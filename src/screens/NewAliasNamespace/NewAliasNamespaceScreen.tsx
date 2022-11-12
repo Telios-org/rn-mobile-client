@@ -6,13 +6,12 @@ import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
-// @ts-ignore
-import envApi from '../../../env_api.json';
 import { Icon } from '../../components/Icon';
 import { randomLetters, randomWords } from '../../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { registerNamespace } from '../../store/thunks/namespaces';
 import { selectMailBoxId } from '../../store/selectors/email';
+import { EMAIL_POSTFIX } from '../../constants/Constants';
 import styles from './styles';
 
 export type NewAliasNamespaceScreenProps = NativeStackScreenProps<
@@ -57,9 +56,6 @@ export const NewAliasNamespaceScreen = (
     setNamespace(randomWords(2));
   };
 
-  // TODO: dev vs prod switch
-  const emailPostfix = envApi.prodMail;
-
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.scrollViewContent}>
@@ -72,7 +68,7 @@ export const NewAliasNamespaceScreen = (
             <Text style={styles.namespaceSampleColor}>
               {namespace ? namespace : 'namespace'}
             </Text>
-            {`#myalias@${emailPostfix}`}
+            {`#myalias@${EMAIL_POSTFIX}`}
           </Text>
         </View>
         <Input

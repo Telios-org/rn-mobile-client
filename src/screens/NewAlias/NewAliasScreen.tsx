@@ -9,8 +9,6 @@ import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
-// @ts-ignore
-import envApi from '../../../env_api.json';
 import { Icon } from '../../components/Icon';
 import { randomLetters, randomWords } from '../../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -21,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { aliasesForwardAddressesSelector } from '../../store/selectors/aliases';
 import styles from './styles';
 import { registerAlias } from '../../store/thunks/aliases';
+import { EMAIL_POSTFIX } from '../../constants/Constants';
 
 type NewAliasFormValues = {
   alias: string;
@@ -47,9 +46,6 @@ export const NewAliasScreen = ({ navigation, route }: NewAliasScreenProps) => {
     aliasesForwardAddressesSelector,
   );
 
-  // TODO: dev vs prod switch
-  const emailPostfix = envApi.devMail;
-
   const inputModalRef = useRef<Modalize>(null);
 
   const [forwardingAddresses, setForwardingAddresses] = useState<string[]>(
@@ -72,13 +68,13 @@ export const NewAliasScreen = ({ navigation, route }: NewAliasScreenProps) => {
     try {
       actions.setSubmitting(true);
 
-      const fullAddress = `${namespace}#${values.alias}@${emailPostfix}`;
+      const fullAddress = `${namespace}#${values.alias}@${EMAIL_POSTFIX}`;
       console.log('registering ', fullAddress);
 
       const response = await dispatch(
         registerAlias({
           namespaceName: namespace,
-          domain: emailPostfix,
+          domain: EMAIL_POSTFIX,
           address: values.alias,
           description: values.description,
           fwdAddresses: values.forwardAddresses || [],
@@ -134,7 +130,7 @@ export const NewAliasScreen = ({ navigation, route }: NewAliasScreenProps) => {
                   <Text style={{ color: colors.primaryBase }}>
                     {values.alias ? '#' + values.alias : '#'}
                   </Text>
-                  {`@${emailPostfix}`}
+                  {`@${EMAIL_POSTFIX}`}
                 </Text>
               </View>
               <View style={styles.shuffleButtons}>

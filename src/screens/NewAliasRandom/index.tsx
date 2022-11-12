@@ -4,14 +4,13 @@ import { Alert, ScrollView, Text, View } from 'react-native';
 import styles from './styles';
 import { fonts } from '../../util/fonts';
 import { colors } from '../../util/colors';
-// @ts-ignore
-import envApi from '../../../env_api.json';
 import { Button } from '../../components/Button';
 import { randomLetters, randomWords } from '../../util/randomNames';
 import uuid from 'react-native-uuid';
 import { registerAlias } from '../../store/thunks/aliases';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParams } from '../../navigators/Navigator';
+import { EMAIL_POSTFIX } from '../../constants/Constants';
 
 export type NewAliasRandomScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -20,7 +19,6 @@ export type NewAliasRandomScreenProps = NativeStackScreenProps<
 
 export default ({ navigation }: NewAliasRandomScreenProps) => {
   const dispatch = useAppDispatch();
-  const emailPostfix = envApi.postfix;
   const [newRandomAlias, setNewRandomAlias] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = async () => {
@@ -28,7 +26,7 @@ export default ({ navigation }: NewAliasRandomScreenProps) => {
       setIsLoading(true);
       await dispatch(
         registerAlias({
-          domain: emailPostfix,
+          domain: EMAIL_POSTFIX,
           address: newRandomAlias,
           fwdAddresses: [],
           disabled: false,
@@ -52,7 +50,7 @@ export default ({ navigation }: NewAliasRandomScreenProps) => {
         <View style={styles.aliasLongName}>
           <Text style={[fonts.small.medium, { color: colors.inkLighter }]}>
             <Text style={{ color: colors.primaryBase }}>{newRandomAlias}</Text>
-            {`@${emailPostfix}`}
+            {`@${EMAIL_POSTFIX}`}
           </Text>
         </View>
         <View style={styles.generateButtons}>

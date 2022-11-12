@@ -9,8 +9,7 @@ import { fonts } from '../../../../util/fonts';
 import { StyleProp, Text, View, ViewStyle } from 'react-native';
 import { useSelector } from 'react-redux';
 import { aliasIdsSelector } from '../../../../store/selectors/aliases';
-// @ts-ignore
-import envApi from '../../../../../env_api.json';
+import { EMAIL_POSTFIX } from '../../../../constants/Constants';
 
 export interface FromDropdownProps {
   mailboxAddress: string | undefined;
@@ -25,9 +24,8 @@ export default ({
   onSelect,
   mailboxAddress,
 }: FromDropdownProps) => {
-  const emailPostfix = envApi.postfix;
   const aliases = useSelector(aliasIdsSelector);
-  const fullAliases = aliases.map(alias => alias + '@' + emailPostfix);
+  const fullAliases = aliases.map(alias => alias + '@' + EMAIL_POSTFIX);
 
   return (
     <View style={[styles.container, style]}>

@@ -10,12 +10,12 @@ import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
 import { colors } from '../../util/colors';
 import { Result } from '../../util/types';
-// @ts-ignore
-import envApi from '../../../env_api.json';
 import { debounce } from 'lodash';
 import { validateTeliosEmail } from '../../util/regexHelpers';
 import NextButton from '../../components/NextButton';
 import styles from './styles';
+import { API_MAIL_AVAILABILITY } from '../../constants/Path';
+import { EMAIL_POSTFIX } from '../../constants/Constants';
 
 export type RegisterUsernameScreenProps = NativeStackScreenProps<
   RegisterStackParams,
@@ -27,14 +27,12 @@ export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
   const headerHeight = useHeaderHeight();
   const modalizeRef = useRef<Modalize>(null);
 
-  const emailPostfix = envApi.postfix;
-
   const [username, setUsername] = useState('');
   const [error, setError] = useState<string | undefined>();
   const [loadingVerify, setLoadingVerify] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
 
-  const getEmail = (username: string) => `${username}@${emailPostfix}`;
+  const getEmail = (username: string) => `${username}@${EMAIL_POSTFIX}`;
 
   const onVerify = async (value: string) => {
     const email = getEmail(value);
@@ -120,7 +118,7 @@ export const RegisterUsernameScreen = (props: RegisterUsernameScreenProps) => {
             returnKeyType="done"
             renderCustomRightView={() => (
               <View style={styles.postfixContainer}>
-                <Text style={fonts.regular.bold}>{`@${emailPostfix}`}</Text>
+                <Text style={fonts.regular.bold}>{`@${EMAIL_POSTFIX}`}</Text>
               </View>
             )}
           />
@@ -169,7 +167,7 @@ const getEmailAvailability = async (
   email: string,
 ): Promise<Result<{ isAvailable: boolean }>> => {
   try {
-    const response = await fetch(`${envApi.dev}/mailbox/addresses/${email}`, {
+    const response = await fetch(`${API_MAIL_AVAILABILITY}/${email}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

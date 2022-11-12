@@ -1,8 +1,6 @@
 import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-// @ts-ignore
-import envApi from '../../../env_api.json';
 import { MailListHeader } from '../../components/MailListHeader';
 import { MainStackParams, RootStackParams } from '../../navigators/Navigator';
 import { CompositeScreenProps } from '@react-navigation/native';
@@ -21,6 +19,7 @@ import {
   selectUnreadMailsByAliasId,
 } from '../../store/selectors/email';
 import ComposeButton from '../../components/ComposeButton/ComposeButton';
+import { EMAIL_POSTFIX } from '../../constants/Constants';
 
 export type AliasInboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'aliasInbox'>,
@@ -45,7 +44,7 @@ export const AliasInboxScreen = ({ route }: AliasInboxScreenProps) => {
         renderTitle={
           <MailListHeader
             title={`# ${alias?.name}`}
-            subtitle={`${alias?.aliasId}@${envApi.postfix}`}
+            subtitle={`${alias?.aliasId}@${EMAIL_POSTFIX}`}
             showCurrentStatus
             canCopySubtitle
             isActive={!alias?.disabled}
@@ -82,7 +81,7 @@ export const AliasInboxScreen = ({ route }: AliasInboxScreenProps) => {
           ).unwrap();
         }}
       />
-      <ComposeButton from={`${alias.aliasId}@${envApi.postfix}`} />
+      <ComposeButton from={`${alias.aliasId}@${EMAIL_POSTFIX}`} />
     </>
   );
 };
