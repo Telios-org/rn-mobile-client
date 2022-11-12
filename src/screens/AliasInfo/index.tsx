@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { RootStackParams } from '../../navigators/Navigator';
 // @ts-ignore
 import envApi from '../../../env_api.json';
@@ -17,6 +17,7 @@ import CurrentStateSection from './components/CurrentStateSection';
 import { removeAliasFlow } from '../../store/thunks/aliases';
 import { aliasSelectors } from '../../store/adapters/aliases';
 import { format } from 'date-fns';
+import { showToast } from '../../util/toasts';
 
 export type AliasInfoScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -44,15 +45,14 @@ export const AliasInfoScreen = ({
       try {
         await dispatch(
           removeAliasFlow({
-            aliasId: alias.aliasId,
+            aliasId: alias._id,
             address: alias.name,
             domain: emailPostfix,
             namespaceName: alias.namespaceKey,
           }),
         );
-        // TODO remove messages under this alias, they aren't deleted automatically
       } catch (e) {
-        Alert.alert('Error', 'Failed to delete alias');
+        showToast('error', 'Failed to delete alias');
       }
       setIsDeleteLoading(false);
     }
