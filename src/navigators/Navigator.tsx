@@ -12,7 +12,7 @@ import { LoginScreen } from '../screens/LoginScreen';
 import { InboxScreen } from '../screens/Inbox/InboxScreen';
 import { useAppSelector, useIsAuthenticated } from '../hooks';
 import { DrawerContent } from '../components/DraweContent/DrawerContent';
-import { ComposeScreen } from '../screens/ComposeScreen';
+import { ComposeScreen } from '../screens/Compose/ComposeScreen';
 import { TestScreen } from '../screens/TestScreen';
 import { colors } from '../util/colors';
 import { RegisterConsentScreen } from '../screens/RegisterConsent/RegisterConsentScreen';
@@ -54,7 +54,8 @@ export type RootStackParams = {
         to?: string[];
         from?: string;
         subject?: string;
-        body?: string;
+        bodyAsText?: string;
+        bodyAsHTML?: string;
         cc?: string[];
         bcc?: string[];
       }

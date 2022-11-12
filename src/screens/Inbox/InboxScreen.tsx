@@ -17,6 +17,7 @@ import {
   getMailByFolderRead,
   getMailByFolderUnread,
 } from '../../store/thunks/email';
+import ComposeButton from '../../components/ComposeButton/ComposeButton';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -29,27 +30,30 @@ export const InboxScreen = () => {
   const folderId = FoldersId.inbox;
 
   return (
-    <MailWithFiltersContainer
-      folderId={folderId}
-      renderTitle={<MailListHeader title="Inbox" subtitle={mailboxAddress} />}
-      allMailSelector={state => selectAllMailsByFolder(state, folderId)}
-      readMailSelector={state => selectReadMailsByFolder(state, folderId)}
-      unreadMailSelector={state => selectUnreadMailsByFolder(state, folderId)}
-      getAllMails={async (offset, perPage) => {
-        return await dispatch(
-          getAllMailByFolder({ id: folderId, offset, limit: perPage }),
-        ).unwrap();
-      }}
-      getUnreadMails={async (offset, perPage) => {
-        return await dispatch(
-          getMailByFolderUnread({ id: folderId, offset, limit: perPage }),
-        ).unwrap();
-      }}
-      getReadMails={async (offset, perPage) => {
-        return await dispatch(
-          getMailByFolderRead({ id: folderId, offset, limit: perPage }),
-        ).unwrap();
-      }}
-    />
+    <>
+      <MailWithFiltersContainer
+        folderId={folderId}
+        renderTitle={<MailListHeader title="Inbox" subtitle={mailboxAddress} />}
+        allMailSelector={state => selectAllMailsByFolder(state, folderId)}
+        readMailSelector={state => selectReadMailsByFolder(state, folderId)}
+        unreadMailSelector={state => selectUnreadMailsByFolder(state, folderId)}
+        getAllMails={async (offset, perPage) => {
+          return await dispatch(
+            getAllMailByFolder({ id: folderId, offset, limit: perPage }),
+          ).unwrap();
+        }}
+        getUnreadMails={async (offset, perPage) => {
+          return await dispatch(
+            getMailByFolderUnread({ id: folderId, offset, limit: perPage }),
+          ).unwrap();
+        }}
+        getReadMails={async (offset, perPage) => {
+          return await dispatch(
+            getMailByFolderRead({ id: folderId, offset, limit: perPage }),
+          ).unwrap();
+        }}
+      />
+      <ComposeButton />
+    </>
   );
 };

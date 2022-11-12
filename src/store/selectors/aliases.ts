@@ -21,6 +21,10 @@ export const aliasesForwardAddressesSelector = createDeepEqualSelector(
   },
 );
 
+export const aliasIdsSelector = createSelector(aliasesSelector, aliases =>
+  aliases.map(alias => alias.aliasId),
+);
+
 export const filterAliasesByNamespaceSelector = createDeepEqualSelector(
   [
     aliasesSelector,

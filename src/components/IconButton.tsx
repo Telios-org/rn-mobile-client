@@ -15,10 +15,11 @@ export type IconButtonProps = {
   color?: string;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 };
 export const IconButton = (props: IconButtonProps) => (
   <Pressable
-    disabled={props.loading}
+    disabled={props.disabled || props.loading}
     onPress={props.onPress}
     style={props.style}>
     {props.loading ? (

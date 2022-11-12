@@ -13,7 +13,7 @@ import { fonts } from '../util/fonts';
 import { Portal } from 'react-native-portalize';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '@react-navigation/core/src/types';
-import { RootStackParams } from '../Navigator';
+import { RootStackParams } from '../navigators/Navigator';
 
 const styles = StyleSheet.create({
   rowContainer: {
@@ -66,11 +66,12 @@ interface InboxActionsProps {
   from?: string;
   cc?: string[];
   bcc?: string[];
-  body?: string;
+  bodyAsText?: string;
+  bodyAsHTML?: string;
   subject?: string;
 }
 
-export default ({ to, from, cc, bcc, body, subject }: InboxActionsProps) => {
+export default ({ to, from, cc, bodyAsHTML, subject }: InboxActionsProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const modalizeRef = useRef<Modalize>();
   const openModal = () => {
@@ -82,17 +83,32 @@ export default ({ to, from, cc, bcc, body, subject }: InboxActionsProps) => {
 
   const onReply = () => {
     closeModal();
-    navigation.navigate('compose', { to, from, subject, body });
+    navigation.navigate('compose', {
+      to,
+      from,
+      subject: `Re: ${subject}`,
+      bodyAsHTML: `<div>---- Original message ----</div>${bodyAsHTML}`,
+    });
   };
 
   const onReplyAll = () => {
     closeModal();
-    navigation.navigate('compose', { to, from, cc, bcc, subject, body });
+    navigation.navigate('compose', {
+      to,
+      from,
+      cc,
+      subject: `Re: ${subject}`,
+      bodyAsHTML: `<div>---- Original message ----</div>${bodyAsHTML}`,
+    });
   };
 
   const onForward = () => {
     closeModal();
-    navigation.navigate('compose', { from, subject, body });
+    navigation.navigate('compose', {
+      from,
+      subject: `Fwd: ${subject}`,
+      bodyAsHTML: `<div>---- Original message ----</div>${bodyAsHTML}`,
+    });
   };
 
   const actions: ActionRowProps[] = [

@@ -306,6 +306,8 @@ PODS:
     - glog
   - react-native-date-picker (4.2.5):
     - React-Core
+  - react-native-document-picker (8.1.2):
+    - React-Core
   - react-native-image-picker (4.10.0):
     - React-Core
   - react-native-keep-awake (1.1.0):
@@ -458,6 +460,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
+  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-keep-awake (from `../node_modules/@sayem314/react-native-keep-awake`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -564,6 +567,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
+  react-native-document-picker:
+    :path: "../node_modules/react-native-document-picker"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-keep-awake:
@@ -658,6 +663,7 @@ SPEC CHECKSUMS:
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
   react-native-date-picker: 55193347d8d0f40948f441ffd4e5db6f0a8fbe13
+  react-native-document-picker: f5ec1a712ca2a975c233117f044817bb8393cad4
   react-native-image-picker: 4bc9ed38c8be255b515d8c88babbaf74973f91a8
   react-native-keep-awake: acbee258db16483744910f0da3ace39eb9ab47fd
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
