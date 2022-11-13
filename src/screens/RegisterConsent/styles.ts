@@ -9,4 +9,7 @@ export default StyleSheet.create({
   },
   scrollViewContentContainer: { flexGrow: 1 },
   content: { margin: spacing.lg, flex: 1 },
+  headerBackButton: {
+    marginLeft: -22,
+  },
 });
