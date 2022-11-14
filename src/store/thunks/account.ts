@@ -21,6 +21,7 @@ import {
   ACCOUNT_CREATE_SYNC_INFO,
   ACCOUNT_SYNC_GET_INFO,
   INIT_MESSAGE_LISTENER,
+  SEND_RECOVERY_CODE,
 } from '../types/events';
 import nodejs from 'nodejs-mobile-react-native';
 
@@ -91,6 +92,7 @@ export const registerFlow = createAsyncThunk(
     thunkAPI.dispatch(getNewMailFlow());
   },
 );
+
 export const recoveryPassFlow = createAsyncThunk<void, RecoveryPasswordRequest>(
   'flow/recoveryPass',
   async (data, thunkAPI) => {
@@ -168,6 +170,14 @@ export const accountLogin = createNodeCalloutAsyncThunk<
   AccountLoginResponse
 >('account:login');
 
+export type SendRecoveryCodeRequest = {
+  email: string;
+  recoveryEmail: string;
+};
+export const sendRecoveryCode = createNodeCalloutAsyncThunk<
+  SendRecoveryCodeRequest,
+  void
+>(SEND_RECOVERY_CODE);
 export type AccountUpdateRequest = {
   accountId: string;
   displayName: string;

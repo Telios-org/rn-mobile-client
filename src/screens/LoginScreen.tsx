@@ -68,7 +68,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
   };
 
   const onForgotPassword = () => {
-    props.navigation.navigate('recoveryAccount');
+    props.navigation.navigate('forgotPassword');
   };
 
   const onRegisterNewAccount = () => {

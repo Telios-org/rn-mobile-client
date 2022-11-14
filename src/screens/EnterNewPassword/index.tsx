@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, Alert } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
@@ -17,7 +17,8 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import ScrollableContainer from '../../components/ScrollableContainer';
 import NextButton from '../../components/NextButton';
 import { recoveryPassFlow } from '../../store/thunks/account';
-import { RecoveryAccountStackParams } from '../../navigators/RecoveryAccount';
+import { ForgotPasswordStackParams } from '../../navigators/ForgotPassword';
+import { showToast } from '../../util/toasts';
 
 const zxcvbn = require('zxcvbn');
 
@@ -47,7 +48,7 @@ const RegisterPasswordFormSchema = Yup.object().shape({
 });
 
 export type RegisterPasswordScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<RecoveryAccountStackParams, 'enterNewPassword'>,
+  NativeStackScreenProps<ForgotPasswordStackParams, 'enterNewPassword'>,
   NativeStackScreenProps<RootStackParams>
 >;
 
@@ -80,7 +81,7 @@ export default ({ route, navigation }: RegisterPasswordScreenProps) => {
         formRef.current.setSubmitting(false);
         navigation.navigate('login');
       } catch (e: any) {
-        Alert.alert('Error', 'Your passphrase was invalid, please try again.');
+        showToast('error', 'Your passphrase was invalid, please try again.');
         navigation.goBack();
         formRef.current.setSubmitting(false);
       }

@@ -10,27 +10,40 @@ import ScrollableContainer from '../../components/ScrollableContainer';
 import NextButton from '../../components/NextButton';
 import styles from './styles';
 import { validateEmail } from '../../util/regexHelpers';
-import { RecoveryAccountStackParams } from '../../navigators/RecoveryAccount';
+import { useAppDispatch } from '../../hooks';
+import { sendRecoveryCode } from '../../store/thunks/account';
+import { showToast } from '../../util/toasts';
+import { SyncStackParams } from '../../navigators/Sync';
 
 type RecoverAccountProps = NativeStackScreenProps<
-  RecoveryAccountStackParams,
-  'recoverAccount'
+  SyncStackParams,
+  'syncRecoverAccount'
 >;
 
 export default ({ navigation }: RecoverAccountProps) => {
   const emailPostfix = envApi.devMail;
+  const dispatch = useAppDispatch();
 
   const [username, setUsername] = useState('');
   const [recoveryEmail, setRecoveryEmail] = useState('');
   const isValid = recoveryEmail && validateEmail(recoveryEmail);
+  const [isLoading, setIsLoading] = useState(false);
 
   const teliosEmail = `${username}@${emailPostfix}`;
-  console.log(teliosEmail);
 
-  const onSubmit = () => {
-    // TODO send email with recovery code
+  const onSubmit = async () => {
     if (recoveryEmail) {
-      navigation.navigate('recoverAccountCode', { recoveryEmail });
+      try {
+        setIsLoading(true);
+        await dispatch(
+          sendRecoveryCode({ email: teliosEmail, recoveryEmail }),
+        ).unwrap();
+        setIsLoading(false);
+        navigation.navigate('syncRecoverAccountCode', { recoveryEmail });
+      } catch (e: any) {
+        setIsLoading(false);
+        showToast('error', e.message);
+      }
     }
   };
 
@@ -75,7 +88,12 @@ export default ({ navigation }: RecoverAccountProps) => {
         returnKeyType="done"
       />
 
-      <NextButton onSubmit={onSubmit} disabled={!username || !recoveryEmail} />
+      <NextButton
+        onSubmit={onSubmit}
+        loading={isLoading}
+        disabled={!username || !recoveryEmail}
+        useKeyboardAvoidingView={false}
+      />
     </ScrollableContainer>
   );
 };

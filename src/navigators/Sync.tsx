@@ -12,6 +12,9 @@ import SyncQrCode from '../screens/SyncQrCode';
 import SyncPending from '../screens/SyncPending';
 import SyncPublicCode from '../screens/SyncPublicCode';
 import SyncMasterPassword from '../screens/SyncMasterPassword';
+import RecoverAccount from '../screens/RecoverAccount';
+import RecoverAccountCode from '../screens/RecoverAccountCode';
+import showBackArrow from './utils/backArrow';
 
 export interface SyncData {
   driveKey: string;
@@ -30,6 +33,8 @@ export type SyncStackParams = {
   };
   syncSuccess: { email: string; masterPassword: string };
   syncPublicCode: undefined;
+  syncRecoverAccount: undefined;
+  syncRecoverAccountCode: { recoveryEmail: string };
 };
 
 export const SyncStack = createNativeStackNavigator<SyncStackParams>();
@@ -107,6 +112,16 @@ export default () => (
       name="syncMasterPassword"
       component={SyncMasterPassword}
       options={backOutline}
+    />
+    <SyncStack.Screen
+      name="syncRecoverAccount"
+      component={RecoverAccount}
+      options={showBackArrow}
+    />
+    <SyncStack.Screen
+      name="syncRecoverAccountCode"
+      component={RecoverAccountCode}
+      options={showBackArrow}
     />
   </SyncStack.Navigator>
 );

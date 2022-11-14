@@ -1,28 +1,41 @@
 import React, { useState } from 'react';
-import { Alert, Text } from 'react-native';
+import { Text } from 'react-native';
 import ScrollableContainer from '../../components/ScrollableContainer';
 import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
 import { Input } from '../../components/Input';
 import NextButton from '../../components/NextButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RecoveryAccountStackParams } from '../../navigators/RecoveryAccount';
+import { SyncStackParams } from '../../navigators/Sync';
+import { getAccountSyncInfo } from '../../store/thunks/account';
+import { useAppDispatch } from '../../hooks';
+import { showToast } from '../../util/toasts';
 
 type RecoverAccountCodeScreenProps = NativeStackScreenProps<
-  RecoveryAccountStackParams,
-  'recoverAccountCode'
+  SyncStackParams,
+  'syncRecoverAccountCode'
 >;
 
-export default ({ route }: RecoverAccountCodeScreenProps) => {
+export default ({ route, navigation }: RecoverAccountCodeScreenProps) => {
   const { recoveryEmail } = route.params;
+  const dispatch = useAppDispatch();
   const [code, setCode] = useState('');
-  const onSubmit = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const onSubmit = async () => {
     try {
-      // TODO verify recovery code
-      Alert.alert('Warning', 'Recovery by code is not implemented yet');
-      // navigation.navigate('register', { hasValidCode: true });
+      if (code) {
+        setIsLoading(true);
+        const syncData: any = await dispatch(getAccountSyncInfo({ code }));
+        setIsLoading(false);
+        navigation.navigate('syncMasterPassword', {
+          syncData: {
+            driveKey: syncData.payload.drive_key,
+            email: syncData.payload.email,
+          },
+        });
+      }
     } catch (e) {
-      Alert.alert('Error', 'Invalid code');
+      showToast('error', 'Invalid code.');
     }
   };
   return (
@@ -44,7 +57,7 @@ export default ({ route }: RecoverAccountCodeScreenProps) => {
         returnKeyType="done"
       />
 
-      <NextButton onSubmit={onSubmit} disabled={!code} />
+      <NextButton onSubmit={onSubmit} disabled={!code} loading={isLoading} />
     </ScrollableContainer>
   );
 };

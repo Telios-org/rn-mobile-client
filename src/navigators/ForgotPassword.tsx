@@ -1,29 +1,16 @@
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { colors } from '../util/colors';
 import ForgotPassword from '../screens/ForgotPassword';
 import EnterNewPassword from '../screens/EnterNewPassword';
-import RecoverAccount from '../screens/RecoverAccount';
-import RecoverAccountCode from '../screens/RecoverAccountCode';
-import React from 'react';
-import { NavIconButton } from '../components/NavIconButton';
+import showBackArrow from './utils/backArrow';
 
-export type RecoveryAccountStackParams = {
+export type ForgotPasswordStackParams = {
   forgotPassword: undefined;
   enterNewPassword: { passphrase?: string; hasValidCode?: boolean };
-  recoverAccount: undefined;
-  recoverAccountCode: { recoveryEmail: string };
 };
 export const RecoveryAccountStack =
-  createNativeStackNavigator<RecoveryAccountStackParams>();
-
-const showBackArrow = ({ navigation }: any) => ({
-  headerLeft: () => (
-    <NavIconButton
-      icon={{ name: 'chevron-back', size: 28 }}
-      onPress={() => navigation.goBack()}
-    />
-  ),
-});
+  createNativeStackNavigator<ForgotPasswordStackParams>();
 
 export default () => (
   <RecoveryAccountStack.Navigator
@@ -42,16 +29,6 @@ export default () => (
     <RecoveryAccountStack.Screen
       name="enterNewPassword"
       component={EnterNewPassword}
-      options={showBackArrow}
-    />
-    <RecoveryAccountStack.Screen
-      name="recoverAccount"
-      component={RecoverAccount}
-      options={showBackArrow}
-    />
-    <RecoveryAccountStack.Screen
-      name="recoverAccountCode"
-      component={RecoverAccountCode}
       options={showBackArrow}
     />
   </RecoveryAccountStack.Navigator>

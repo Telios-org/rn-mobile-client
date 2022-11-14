@@ -33,7 +33,7 @@ import { EmailDetailScreen } from '../screens/EmailDetails/EmailDetailScreen';
 import { AliasInboxScreen } from '../screens/AliasInbox';
 import { AliasInfoScreen } from '../screens/AliasInfo';
 import NewAliasRandom from '../screens/NewAliasRandom';
-import RecoveryAccount, { RecoveryAccountStackParams } from './RecoveryAccount';
+import ForgotPassword, { ForgotPasswordStackParams } from './ForgotPassword';
 import { ProfileRoot } from './Profile';
 import Sync, { SyncStackParams } from './Sync';
 import backArrow from './utils/backArrow';
@@ -71,9 +71,7 @@ export type RootStackParams = {
   newAlias: { namespace: string };
   newAliasRandom: undefined;
   aliasInfo: { aliasId: string; aliasName: string };
-  recoveryAccount:
-    | NavigatorScreenParams<RecoveryAccountStackParams>
-    | undefined;
+  forgotPassword: NavigatorScreenParams<ForgotPasswordStackParams> | undefined;
   sync: NavigatorScreenParams<SyncStackParams> | undefined;
   emailDetail: { emailId: string; isUnread: boolean; isTrash?: boolean };
 };
@@ -279,8 +277,8 @@ function CoreScreen() {
             options={{ title: 'Test' }}
           />
           <Stack.Screen
-            name="recoveryAccount"
-            component={RecoveryAccount}
+            name="forgotPassword"
+            component={ForgotPassword}
             options={navigation => ({
               ...backArrow(navigation),
               headerShown: false,

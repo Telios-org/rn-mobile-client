@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { Text, Keyboard, KeyboardAvoidingView } from 'react-native';
 import styles from './styles';
 import { colors } from '../../util/colors';
 import { fonts } from '../../util/fonts';
 import { Input } from '../../components/Input';
-import { Button } from '../../components/Button';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import NextButton from '../../components/NextButton';
 import ScrollableContainer from '../../components/ScrollableContainer';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { RecoveryAccountStackParams } from '../../navigators/RecoveryAccount';
+import { ForgotPasswordStackParams } from '../../navigators/ForgotPassword';
 
 type Props = NativeStackScreenProps<
-  RecoveryAccountStackParams,
+  ForgotPasswordStackParams,
   'forgotPassword'
 >;
 
@@ -54,17 +53,6 @@ export default ({ navigation }: Props) => {
           returnKeyType="next"
           blurOnSubmit
         />
-
-        <View style={styles.infoBtn}>
-          <Button
-            size="small"
-            type="text"
-            title="what if I lost my recovery phrase?"
-            onPress={() => {
-              navigation.navigate('recoverAccount');
-            }}
-          />
-        </View>
       </KeyboardAvoidingView>
       <NextButton
         disabled={!recoveryPhrase}
