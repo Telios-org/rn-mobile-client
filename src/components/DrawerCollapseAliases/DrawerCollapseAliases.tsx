@@ -1,25 +1,30 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Route, View } from 'react-native';
 import { DrawerCell } from '../DrawerCell/DrawerCell';
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import styles from './styles';
-import { Alias } from '../../store/types';
 import { CommonActions } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { filterAliasesByNamespace } from '../../store/selectors/aliases';
 
 interface DrawerCollapseItemProps {
   navigation: DrawerNavigationHelpers;
   selectedRoute: Route;
-  aliases: Alias[];
   namespaceKey: string;
 }
 
 export const DrawerCollapseNamespace = (
-  { navigation, selectedRoute, aliases, namespaceKey }: DrawerCollapseItemProps,
+  { navigation, selectedRoute, namespaceKey }: DrawerCollapseItemProps,
   key: string,
 ) => {
   const [expanded, setExpanded] = useState(false);
-  const [filteredAliases, setFilteredAliases] = useState<Alias[]>([]);
+  const aliasesByNamespace = useSelector(filterAliasesByNamespace);
+  const filteredAliases = aliasesByNamespace[namespaceKey];
   const isRandom = namespaceKey === 'random';
+
+  const totalUnreadCount = useMemo(() => {
+    return filteredAliases.reduce((acc, alias) => acc + alias.count, 0);
+  }, [filteredAliases]);
 
   const onPressNamespace = () => {
     setExpanded(!expanded);
@@ -39,24 +44,6 @@ export const DrawerCollapseNamespace = (
     });
     navigation.navigate('aliasInbox', { aliasId, namespaceKey });
   };
-
-  const totalUnreadCount = useMemo(() => {
-    return filteredAliases.reduce((acc, alias) => acc + alias.count, 0);
-  }, [filteredAliases]);
-
-  useEffect(() => {
-    if (expanded) {
-      if (isRandom) {
-        setFilteredAliases(
-          aliases.filter(alias => alias.namespaceKey === undefined),
-        );
-      } else {
-        setFilteredAliases(
-          aliases.filter(alias => alias.namespaceKey === namespaceKey),
-        );
-      }
-    }
-  }, [expanded, aliases]);
 
   return (
     <View>
