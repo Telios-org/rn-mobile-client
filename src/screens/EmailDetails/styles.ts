@@ -38,4 +38,5 @@ export default StyleSheet.create({
     color: colors.black,
   },
   loadingContainer: { margin: spacing.lg },
+  flex1: { flex: 1 },
 });

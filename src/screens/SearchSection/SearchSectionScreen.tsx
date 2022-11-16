@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { MailSectionHeader } from '../../components/MailSectionHeader/MailSectionHeader';
 import { searchedElementsByGroupId } from '../../store/selectors/search';
-import { Email } from '../../store/types';
+import { Email, ToFrom } from '../../store/types';
 import { EmailCell } from '../../components/EmailCell/EmailCell';
 import styles from './styles';
 
@@ -36,10 +36,15 @@ export const SearchSectionScreen = ({
     });
   }, [route]);
 
-  const onSelectEmail = (emailId: string, isUnread: boolean) => {
+  const onSelectEmail = (
+    emailId: string,
+    isUnread: boolean,
+    folderId: number,
+  ) => {
     navigation.navigate('emailDetail', {
       emailId: emailId,
       isUnread,
+      folderId,
     });
   };
 
@@ -52,13 +57,22 @@ export const SearchSectionScreen = ({
     />
   );
 
-  const renderItem = ({ item }: { item: Email }) => (
-    <EmailCell
-      email={item}
-      onPress={() => onSelectEmail?.(item.emailId, item.unread)}
-      isUnread={item.unread}
-    />
-  );
+  const renderItem = ({ item }: { item: Email }) => {
+    const fromJSON: ToFrom = JSON.parse(item.fromJSON)[0];
+    return (
+      <EmailCell
+        emailId={item.emailId}
+        emailDate={item.date}
+        bodyAsText={item.bodyAsText}
+        subject={item.subject}
+        recipient={fromJSON.name || fromJSON.address}
+        onPress={() =>
+          onSelectEmail?.(item.emailId, item.unread, item.folderId)
+        }
+        isUnread={item.unread}
+      />
+    );
+  };
 
   return (
     <View style={styles.container}>

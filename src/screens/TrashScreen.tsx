@@ -4,11 +4,14 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParams, RootStackParams } from '../navigators/Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { selectAllMailsByFolder } from '../store/selectors/email';
-import { deleteMailFromTrash, getAllMailByFolder } from '../store/thunks/email';
+import {
+  deleteMailFromFolder,
+  getAllMailByFolder,
+} from '../store/thunks/email';
 import { FoldersId } from '../store/types/enums/Folders';
 import MailContainer from '../components/MailContainer';
 import { Email } from '../store/types';
-import { Alert } from 'react-native';
+import { showToast } from '../util/toasts';
 
 export type TrashScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'trash'>,
@@ -25,15 +28,20 @@ export const TrashScreen = (props: TrashScreenProps) => {
     props.navigation.navigate('emailDetail', {
       emailId: emailId,
       isUnread: false,
-      isTrash: true,
+      folderId: FoldersId.trash,
     });
   };
 
   const onDeleteEmail = async (email: Email) => {
     try {
-      await dispatch(deleteMailFromTrash({ messageIds: [email.emailId] }));
+      await dispatch(
+        deleteMailFromFolder({
+          messageIds: [email.emailId],
+          folderId: FoldersId.trash,
+        }),
+      );
     } catch (e: any) {
-      Alert.alert('Error', e.message);
+      showToast('error', e.message);
     }
   };
 

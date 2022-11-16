@@ -15,9 +15,10 @@ interface MailContainerProps {
   getMoreData: (offset: number, perPage: number) => Promise<Email[]>;
   resetData?: () => void;
   onPressItem: (id: string) => void;
-  onRightActionPress?: (itemId: Email) => void;
+  onRightActionPress?: (item: Email) => void;
   rightActionTitle?: string;
   showBottomSeparator?: boolean;
+  showRecipient?: boolean;
 }
 export default ({
   mails,
@@ -29,6 +30,7 @@ export default ({
   showBottomSeparator,
   onRightActionPress,
   rightActionTitle,
+  showRecipient,
 }: MailContainerProps) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -63,6 +65,7 @@ export default ({
             items={mails}
             getMoreData={getMoreData}
             resetData={resetData}
+            showRecipient={showRecipient}
             // headerAnimatedValue={headerTitleAnimation}
             onItemPress={onPressItem}
             onRightActionPress={onRightActionPress}

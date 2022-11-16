@@ -24,7 +24,7 @@ import { SearchScreen } from '../screens/Search/SearchScreen';
 import { SearchSectionScreen } from '../screens/SearchSection/SearchSectionScreen';
 import { NavIconButton } from '../components/NavIconButton';
 import { DraftsScreen } from '../screens/DraftsScreen';
-import { SentScreen } from '../screens/SentScreen';
+import { SentScreen } from '../screens/Sent/SentScreen';
 import { TrashScreen } from '../screens/TrashScreen';
 import { AliasManageScreen } from '../screens/AliasManage/AliasManageScreen';
 import { NewAliasNamespaceScreen } from '../screens/NewAliasNamespace/NewAliasNamespaceScreen';
@@ -75,7 +75,11 @@ export type RootStackParams = {
     | NavigatorScreenParams<RecoveryAccountStackParams>
     | undefined;
   sync: NavigatorScreenParams<SyncStackParams> | undefined;
-  emailDetail: { emailId: string; isUnread: boolean; isTrash?: boolean };
+  emailDetail: {
+    emailId: string;
+    folderId: number;
+    isUnread: boolean;
+  };
 };
 
 export type RegisterStackParams = {

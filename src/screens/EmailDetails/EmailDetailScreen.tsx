@@ -20,7 +20,7 @@ import { useAppDispatch } from '../../hooks';
 import { fonts } from '../../util/fonts';
 import { NavIconButton } from '../../components/NavIconButton';
 import {
-  deleteMailFromTrash,
+  deleteMailFromFolder,
   getMessageById,
   markAsUnreadFlow,
   moveMailToTrash,
@@ -32,31 +32,51 @@ import useInboxActions from '../../hooks/useInboxActions';
 import { Icon } from '../../components/Icon';
 import styles from './styles';
 import BodyWebView from '../../components/BodyWebView';
+import { FoldersId } from '../../store/types/enums/Folders';
+import { showToast } from '../../util/toasts';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
   RootStackParams,
   'emailDetail'
 >;
 
-export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
-  const { emailId, isUnread, isTrash } = props.route.params; // we need stored email to check if it was unread, getMessageById automatically marks it as read on backend;
+export const EmailDetailScreen = ({
+  route,
+  navigation,
+}: EmailDetailScreenProps) => {
+  const { emailId, isUnread, folderId } = route.params; // we need stored email to check if it was unread, getMessageById automatically marks it as read on backend;
   const [email, setEmail] = useState<Email>();
   const [loading, setLoading] = useState(false);
-
+  const showMarkAsUnread =
+    folderId === FoldersId.inbox || folderId === FoldersId.aliases;
   const fromArray = email?.fromJSON
     ? (JSON.parse(email.fromJSON) as Array<ToFrom>)
     : undefined;
   const from = fromArray?.[0];
+  const to = email?.toJSON ? JSON.parse(email.toJSON)[0].address : undefined;
+  const shouldSwapFromTo =
+    folderId !== FoldersId.sent && folderId !== FoldersId.drafts;
+  let toRecipients: string[] = [];
+  if (shouldSwapFromTo) {
+    if (from?.address) {
+      toRecipients = [from.address];
+    }
+  } else {
+    if (to) {
+      toRecipients = [to];
+    }
+  }
+  const fromRecipients = shouldSwapFromTo ? to : from?.address;
 
   const { openModal, onReply, actionsModal } = useInboxActions({
-    to: from?.address ? [from.address] : undefined,
-    from: email?.toJSON ? JSON.parse(email.toJSON)[0].address : undefined,
+    to: toRecipients,
+    from: fromRecipients,
     subject: email?.subject,
     cc: email?.ccJSON
       ? (JSON.parse(email.ccJSON) as Array<ToFrom>).map(cc => cc.address)
       : undefined,
     bcc: email?.bccJSON
-      ? (JSON.parse(email.bccJSON) as Array<ToFrom>).map(cc => cc.address)
+      ? (JSON.parse(email.bccJSON) as Array<ToFrom>).map(bcc => bcc.address)
       : undefined,
     bodyAsHTML: email?.bodyAsHtml,
   });
@@ -65,37 +85,33 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
 
   const onDelete = useCallback(async () => {
     try {
-      if (isTrash) {
-        // permanently delete if already in trash
-        await dispatch(
-          deleteMailFromTrash({
-            messageIds: [emailId],
-          }),
-        );
-        props.navigation.goBack();
-      } else {
+      if (folderId === FoldersId.inbox) {
         if (email) {
           await dispatch(moveMailToTrash({ messages: [email] })).unwrap();
           Toast.show({
             type: 'info',
             text1: 'Email moved to trash',
           });
-          props.navigation.goBack();
+          navigation.goBack();
         }
+      } else {
+        await dispatch(
+          deleteMailFromFolder({
+            messageIds: [emailId],
+            folderId,
+          }),
+        );
+        navigation.goBack();
       }
     } catch (e) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Failed to delete mail',
-      });
+      showToast('error', 'Failed to delete mail');
     }
   }, [email?.emailId]);
 
   const onToggleUnread = () => {
     if (email) {
       dispatch(markAsUnreadFlow({ email: email }));
-      props.navigation.goBack();
+      navigation.goBack();
     }
   };
 
@@ -114,11 +130,11 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
   }, []);
 
   useLayoutEffect(() => {
-    props.navigation.setOptions({
+    navigation.setOptions({
       headerShadowVisible: false,
       headerRight: () => (
         <View style={{ flexDirection: 'row' }}>
-          {!isTrash && (
+          {showMarkAsUnread && (
             <NavIconButton
               icon={{
                 name: 'mail-unread-outline',
@@ -137,7 +153,7 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
         </View>
       ),
     });
-  }, [props.navigation, email?.emailId, onDelete]);
+  }, [navigation, email?.emailId, onDelete]);
 
   useEffect(() => {
     if (isUnread && email) {
@@ -169,15 +185,15 @@ export const EmailDetailScreen = (props: EmailDetailScreenProps) => {
       <View style={styles.container}>
         <Text style={fonts.title3}>{email.subject}</Text>
         <View style={[styles.rowDirectionCentered, styles.senderContainer]}>
-          <View style={styles.rowDirectionCentered}>
+          <View style={[styles.rowDirectionCentered, styles.flex1]}>
             <Avatar
               variant="extraSmall"
               displayName={from?.name}
               email={from?.address}
               style={styles.avatar}
             />
-            <View>
-              <Text style={styles.senderName}>
+            <View style={styles.flex1}>
+              <Text style={styles.senderName} numberOfLines={1}>
                 {from?.name || from?.address}
               </Text>
               <Text style={styles.receiveDate}>{fullDateText}</Text>

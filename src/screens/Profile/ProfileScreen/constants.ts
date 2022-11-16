@@ -32,12 +32,6 @@ export const menuItems: MenuItem[] = [
     icon: 'ios-arrow-up-circle-outline',
   },
   {
-    label: 'Statistics',
-    key: 'statistics',
-    screenName: 'statistics',
-    icon: 'stats-chart-outline',
-  },
-  {
     label: 'Notifications',
     key: 'notifications',
     screenName: 'notifications',

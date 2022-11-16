@@ -171,6 +171,15 @@ export const deleteMailFromTrash = createAsyncThunk<
   return arg;
 });
 
+export const deleteMailFromFolder = createAsyncThunk<
+  DeleteMailRequest & { folderId: number },
+  DeleteMailRequest & { folderId: number }
+>('flow/deleteMail', (arg, thunkAPI) => {
+  const { folderId, ...restArg } = arg;
+  thunkAPI.dispatch(removeMessages(restArg));
+  return arg;
+});
+
 // TODO: prevent duplicate emails from being added to DB
 // no logic to prevent that today, and it could happen
 // if there is any interruption between inserting into DB and 'mark as synced' call succeeding
@@ -354,7 +363,7 @@ export const getMessageById = createNodeCalloutAsyncThunk<
 >('email:getMessageById');
 
 export type SendEmailRequest = { email: EmailContent };
-export type SendEmailResponse = {}; // TODO;
+export type SendEmailResponse = Email;
 export const sendEmail = createNodeCalloutAsyncThunk<
   SendEmailRequest,
   SendEmailResponse

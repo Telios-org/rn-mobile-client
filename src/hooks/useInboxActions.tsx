@@ -71,7 +71,14 @@ interface InboxActionsProps {
   subject?: string;
 }
 
-export default ({ to, from, cc, bodyAsHTML, subject }: InboxActionsProps) => {
+export default ({
+  to,
+  from,
+  cc,
+  bcc,
+  bodyAsHTML,
+  subject,
+}: InboxActionsProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const modalizeRef = useRef<Modalize>();
   const openModal = () => {
@@ -97,6 +104,7 @@ export default ({ to, from, cc, bodyAsHTML, subject }: InboxActionsProps) => {
       to,
       from,
       cc,
+      bcc,
       subject: `Re: ${subject}`,
       bodyAsHTML: `<div>---- Original message ----</div>${bodyAsHTML}`,
     });
