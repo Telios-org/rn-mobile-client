@@ -1,6 +1,6 @@
+import React, { useLayoutEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHeaderHeight } from '@react-navigation/elements';
-import React from 'react';
 import { View, Text, ScrollView, Linking } from 'react-native';
 import { RegisterStackParams } from '../../navigators/Navigator';
 import { fonts } from '../../util/fonts';
@@ -9,6 +9,7 @@ import { colors } from '../../util/colors';
 import { CheckmarkRow } from './components/CheckMarkRow';
 import styles from './styles';
 import NextButton from '../../components/NextButton';
+import backArrow from '../../navigators/utils/backArrow';
 
 const urlTermsOfService =
   'https://docs.google.com/document/u/1/d/e/2PACX-1vQXqRRpBkB-7HqwLd2XtsWVDLjCUnBUIeNQADb56FuKHdj_IF9wbmsl4G7RLxR2_yKYMhnSO1M-X39H/pub';
@@ -27,6 +28,17 @@ export const RegisterConsentScreen = (props: RegisterConsentScreenProps) => {
   const [selected2, setSelected2] = React.useState(false);
 
   const isValid = selected1 && selected2;
+
+  useLayoutEffect(() => {
+    props.navigation.setOptions({
+      ...backArrow({
+        navigation: props.navigation,
+        color: colors.primaryDark,
+        size: 32,
+        style: styles.headerBackButton,
+      }),
+    });
+  }, []);
 
   const onSubmit = () => {
     if (!isValid) {
