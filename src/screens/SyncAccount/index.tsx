@@ -24,7 +24,7 @@ export default ({ navigation }: SyncAccountScreenProps) => {
   };
 
   const onPressNotLoggedIn = () => {
-    navigation.navigate('recoveryAccount');
+    navigation.navigate('syncRecoverAccount');
   };
 
   return (

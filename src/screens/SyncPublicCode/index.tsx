@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Text } from 'react-native';
+import { Text } from 'react-native';
 import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
 import ScrollableContainer from '../../components/ScrollableContainer';
@@ -9,6 +9,7 @@ import NextButton from '../../components/NextButton';
 import { Input } from '../../components/Input';
 import { useAppDispatch } from '../../hooks';
 import { getAccountSyncInfo } from '../../store/thunks/account';
+import { showToast } from '../../util/toasts';
 
 type SyncPublicKeyScreenProps = NativeStackScreenProps<
   SyncStackParams,
@@ -27,6 +28,7 @@ export default ({ navigation }: SyncPublicKeyScreenProps) => {
         const syncData: any = await dispatch(
           getAccountSyncInfo({ code: publicCode }),
         );
+        setIsLoading(false);
         navigation.navigate('syncMasterPassword', {
           syncData: {
             driveKey: syncData.payload.drive_key,
@@ -35,7 +37,7 @@ export default ({ navigation }: SyncPublicKeyScreenProps) => {
         });
       }
     } catch (error) {
-      Alert.alert('Error', 'Something went wrong, please try again.');
+      showToast('error', 'Something went wrong, please try again.');
       setIsLoading(false);
     }
   };
