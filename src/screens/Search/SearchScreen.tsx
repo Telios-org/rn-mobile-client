@@ -8,9 +8,10 @@ import {
   Keyboard,
   TextInput,
 } from 'react-native';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Icon } from '../../components/Icon';
 import { NavIconButton } from '../../components/NavIconButton';
-
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { resetSearch } from '../../store/search';
 import {
@@ -20,11 +21,9 @@ import {
 import { searchMailbox } from '../../store/thunks/search';
 import { colors } from '../../util/colors';
 import { EmailCell } from '../../components/EmailCell/EmailCell';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParams, RootStackParams } from '../../navigators/Navigator';
-import { CompositeScreenProps } from '@react-navigation/native';
 import { MailSectionHeader } from '../../components/MailSectionHeader/MailSectionHeader';
-
+import { ToFrom } from '../../store/types';
 import styles from './styles';
 
 export type SearchProps = CompositeScreenProps<
@@ -46,10 +45,15 @@ export const SearchScreen = ({ navigation }: SearchProps) => {
     };
   }, [searchText]);
 
-  const onSelectEmail = (emailId: string, isUnread: boolean) => {
+  const onSelectEmail = (
+    emailId: string,
+    isUnread: boolean,
+    folderId: number,
+  ) => {
     navigation.navigate('emailDetail', {
       emailId: emailId,
       isUnread,
+      folderId,
     });
   };
 
@@ -75,13 +79,22 @@ export const SearchScreen = ({ navigation }: SearchProps) => {
   const handleClose = () => Keyboard.dismiss();
 
   // @ts-ignore
-  const renderItem = ({ item, section }) => (
-    <EmailCell.Search
-      email={item}
-      onPress={() => onSelectEmail(item.emailId, section.id.unread)}
-      isUnread={item.unread}
-    />
-  );
+  const renderItem = ({ item, section }) => {
+    const fromJSON: ToFrom = JSON.parse(item.fromJSON)[0];
+    return (
+      <EmailCell.Search
+        emailId={item.emailId}
+        emailDate={item.date}
+        bodyAsText={item.bodyAsText}
+        subject={item.subject}
+        recipient={fromJSON.name || fromJSON.address}
+        onPress={() =>
+          onSelectEmail(item.emailId, section.id.unread, item.folderId)
+        }
+        isUnread={item.unread}
+      />
+    );
+  };
 
   const noResultRender = () => {
     if (isLoading) {

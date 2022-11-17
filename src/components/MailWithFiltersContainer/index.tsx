@@ -66,7 +66,11 @@ export default ({
   }, []);
 
   const onSelectEmail = (emailId: string, isUnread: boolean) => {
-    navigation.navigate('emailDetail', { emailId: emailId, isUnread });
+    navigation.navigate('emailDetail', {
+      emailId: emailId,
+      isUnread,
+      folderId: folderId,
+    });
   };
 
   const onDeleteEmail = async (item: Email) => {

@@ -89,7 +89,7 @@ export type EmailContent = {
   from: Array<ToFrom>;
   subject?: string;
   bodyAsText?: string;
-  bodyAsHTML?: string;
+  bodyAsHtml?: string;
 };
 
 export type Stats = {

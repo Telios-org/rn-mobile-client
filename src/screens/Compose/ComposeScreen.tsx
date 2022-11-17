@@ -1,7 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { formatISO } from 'date-fns';
-import Toast from 'react-native-toast-message';
 import {
   Alert,
   View,
@@ -21,6 +20,7 @@ import useToInput from './components/ToRecipient/useToInput';
 import useSubjectInput from './components/SubjectField/useSubjectInput';
 import useAttachments from './components/useAttachments';
 import BodyContent from './components/BodyContent';
+import { showToast } from '../../util/toasts';
 
 export type ComposeScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -67,17 +67,15 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
           subject: subject,
           date: formatISO(Date.now()),
           bodyAsText,
+          bodyAsHtml: bodyAsHTMLRef.current,
         }),
       );
 
       if (saveResponse.type === saveDraft.fulfilled.type) {
-        Toast.show({
-          type: 'info',
-          text1: 'Draft Saved',
-        });
+        showToast('info', 'Draft saved');
       }
     } catch (e) {
-      Alert.alert('Error', 'Failed to save draft');
+      showToast('error', 'Failed to save draft');
     }
   };
 
@@ -123,7 +121,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
       bcc: bcc.map(address => ({ address })),
       subject: subject,
       bodyAsText,
-      bodyAsHTML: bodyAsHTMLRef.current,
+      bodyAsHtml: bodyAsHTMLRef.current,
       attachments,
     };
 

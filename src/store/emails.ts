@@ -13,7 +13,8 @@ import {
   saveMailbox,
   saveMailToDB,
   moveMailToTrash,
-  deleteMailFromTrash,
+  deleteMailFromFolder,
+  sendEmail,
 } from './thunks/email';
 import { accountLogout } from './thunks/accountLogout';
 import { emailAdapter } from './adapters/emails';
@@ -173,10 +174,12 @@ export const emailSlice = createSlice({
         );
       }
     });
-
-    builder.addCase(deleteMailFromTrash.fulfilled, (state, action) => {
+    builder.addCase(sendEmail.fulfilled, (state, action) => {
+      emailAdapter.setOne(state.byFolderId[FoldersId.sent].all, action.payload);
+    });
+    builder.addCase(deleteMailFromFolder.fulfilled, (state, action) => {
       emailAdapter.removeMany(
-        state.byFolderId[FoldersId.trash].all,
+        state.byFolderId[action.payload.folderId].all,
         action.payload.messageIds,
       );
     });

@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ProfileScreen } from '../screens/Profile/ProfileScreen';
 import { NotificationsScreen } from '../screens/Profile/NotificationsScreen';
-import { StatisticsScreen } from '../screens/Profile/StatisticsScreen';
 import React from 'react';
 import { ProfileStackParams } from './Navigator';
 import SyncNewDevice from '../screens/SyncNewDevice';
@@ -48,11 +47,6 @@ export const ProfileRoot = () => (
       name={'notifications'}
       component={NotificationsScreen}
       options={{ title: 'NotificationsScreen' }}
-    />
-    <ProfileStack.Screen
-      name={'statistics'}
-      component={StatisticsScreen}
-      options={{ title: 'StatisticsScreen' }}
     />
     <ProfileStack.Screen
       name={'planAndUsage'}
