@@ -38,7 +38,7 @@ const Avatar = ({
   );
 
   const firstCharacters = useMemo(() => {
-    const text = isEmpty(`${displayName}`.trim()) ? email : displayName;
+    const text = isEmpty(displayName?.trim()) ? email : displayName;
     return getFirstCharactersFromGivenName(text);
   }, [displayName, email]);
 

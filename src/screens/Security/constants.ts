@@ -1,4 +1,16 @@
-export const sections = [
+export type Section = {
+  title: string;
+  description: string;
+  fields: Array<SectionField>;
+};
+
+export type SectionField = {
+  title: string;
+  key: string;
+  shouldHide: boolean;
+};
+
+export const sections: Array<Section> = [
   {
     title: 'Device Signature',
     description:
@@ -6,17 +18,17 @@ export const sections = [
     fields: [
       {
         title: 'Device Id',
-        key: 'deviceId',
+        key: 'deviceInfo.deviceId',
         shouldHide: false,
       },
       {
         title: 'Signing Public Key',
-        key: 'deviceSigningPubKey',
+        key: 'deviceInfo.keyPair.publicKey',
         shouldHide: false,
       },
       {
         title: 'Signing Private Key',
-        key: 'deviceSigningPrivKey',
+        key: 'deviceInfo.keyPair.secretKey',
         shouldHide: true,
       },
     ],
