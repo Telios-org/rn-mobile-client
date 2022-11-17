@@ -80,7 +80,9 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
             },
           ]}>
           <View style={styles.profileAddress}>
-            <Text style={styles.displayName}>{displayName}</Text>
+            {!!displayName && (
+              <Text style={styles.displayName}>{displayName}</Text>
+            )}
             <Text style={styles.mailbox}>{mailboxAddress}</Text>
           </View>
           <Avatar
