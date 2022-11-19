@@ -31,17 +31,21 @@ export default (
   const [isCcVisible, setIsCcVisible] = useState(initialCc.length > 0);
   const ccButtons = (
     <View style={styles.flexDirectionRow}>
-      <Pressable
-        hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
-        onPress={() => setIsCcVisible(!isCcVisible)}
-        style={styles.actionBtnSpacing}>
-        <Text>Cc</Text>
-      </Pressable>
-      <Pressable
-        hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
-        onPress={() => setIsBccVisible(!isBccVisible)}>
-        <Text>Bcc</Text>
-      </Pressable>
+      {!isCcVisible && (
+        <Pressable
+          hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+          onPress={() => setIsCcVisible(!isCcVisible)}
+          style={styles.actionBtnSpacing}>
+          <Text>Cc</Text>
+        </Pressable>
+      )}
+      {!isBccVisible && (
+        <Pressable
+          hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+          onPress={() => setIsBccVisible(!isBccVisible)}>
+          <Text>Bcc</Text>
+        </Pressable>
+      )}
     </View>
   );
 

@@ -26,18 +26,9 @@ export default StyleSheet.create({
   namespaceInput: { marginTop: spacing.xl },
   shuffleButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     marginTop: spacing.sm,
-  },
-  shuffleBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  shuffleBtnTitle: {
-    ...fonts.small.medium,
-    color: colors.inkLighter,
-    marginLeft: spacing.sm,
   },
   wordsAndLettersContainer: { flexDirection: 'row' },
   shuffleWordsBtn: { marginLeft: spacing.sm },
@@ -52,4 +43,21 @@ export default StyleSheet.create({
     marginTop: spacing.lg,
   },
   createBtn: { marginTop: spacing.sm },
+  moreInfoTxt: {
+    ...fonts.regular.medium,
+    lineHeight: 22,
+    color: colors.skyDark,
+    marginBottom: spacing.sm,
+  },
+  moreInfoBold: {
+    fontWeight: 'bold',
+  },
+  modal: {
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.xl,
+    marginBottom: spacing.lg,
+  },
+  moreInfoModalBtn: {
+    marginTop: spacing.lg,
+  },
 });

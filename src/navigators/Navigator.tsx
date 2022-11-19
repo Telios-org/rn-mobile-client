@@ -39,7 +39,6 @@ import Sync, { SyncStackParams } from './Sync';
 import backArrow from './utils/backArrow';
 
 export type CoreStackProps = {
-  register: NavigatorScreenParams<RegisterStackParams> | undefined;
   core: NavigatorScreenParams<RootStackParams> | undefined;
 };
 
@@ -47,8 +46,8 @@ export type RootStackParams = {
   test: undefined;
   intro: undefined;
   login: undefined;
-  main: NavigatorScreenParams<MainStackParams> | undefined;
   register: NavigatorScreenParams<RegisterStackParams> | undefined;
+  main: NavigatorScreenParams<MainStackParams> | undefined;
   compose:
     | {
         to?: string[];
@@ -251,7 +250,7 @@ function CoreScreen() {
             <Stack.Screen
               name="emailDetail"
               component={EmailDetailScreen}
-              options={({ navigation, route }) => ({
+              options={({ navigation }) => ({
                 title: '',
                 headerLeft: () => (
                   <NavIconButton
@@ -295,6 +294,14 @@ function CoreScreen() {
               ...backArrow(navigation),
               headerShown: false,
             })}
+          />
+          <Stack.Screen
+            name="register"
+            component={Register}
+            options={{
+              presentation: 'containedModal',
+              headerShown: false,
+            }}
           />
         </>
       )}
@@ -406,14 +413,6 @@ export const Navigator = () => {
         }
       }}>
       <CoreStack.Navigator initialRouteName="core">
-        <CoreStack.Screen
-          name="register"
-          component={Register}
-          options={{
-            presentation: 'containedModal',
-            headerShown: false,
-          }}
-        />
         <CoreStack.Screen
           name="core"
           component={CoreScreen}
