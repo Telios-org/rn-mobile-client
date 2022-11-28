@@ -19,7 +19,7 @@ async function run() {
   console.log('Clearing duplicate sodium-native and utp-native modules');
   const DUPLICATE_FOLDERS = [
     'sodium-universal/node_modules/sodium-native',
-    '@telios/nebula-drive/node_modules/sodium-native',
+    '@telios/nebula-migrate/node_modules/sodium-native',
     'hmac-blake2b/node_modules/sodium-native',
     'blake2b-universal/node_modules/sodium-native',
     'xsalsa20-universal/node_modules/sodium-native',

@@ -8,7 +8,7 @@ import 'intl/locale-data/jsonp/en';
 const bridge = require('rn-bridge');
 const Hypercore = require('hypercore');
 const HypercoreInTelios1 = require('./node_modules/@telios/nebula/node_modules/corestore/node_modules/hypercore/index');
-const HypercoreInTelios2 = require('./node_modules/@telios/nebula-drive/node_modules/hypercore/index');
+const HypercoreInTelios2 = require('./node_modules/@telios/nebula-migrate/node_modules/corestore/node_modules/hypercore/index');
 
 const { ClientBackend } = require('@telios/telios-client-backend');
 
