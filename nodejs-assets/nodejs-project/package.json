@@ -6,10 +6,11 @@
   "author": "rangermauve <ranger@mauve.moe> (https://mauve.moe/)",
   "license": "MIT",
   "dependencies": {
-    "@hyperswarm/dht": "^5.0.11",
-    "@telios/telios-client-backend": "5.2.1",
+    "@telios/telios-client-backend": "github:Telios-org/telios-client-backend#core_upgrades",
     "intl": "^1.2.5",
     "sodium-native-nodejs-mobile": "^3.2.0-2",
-    "utp-native-nodejs-mobile": "github:rangermauve/utp-native-nodejs-mobile#ios-support"
+    "utp-native-nodejs-mobile": "github:rangermauve/utp-native-nodejs-mobile#ios-support",
+    "@telios/client-sdk": "^6.2.5",
+    "nebula": "git+https://github.com/Telios-org/nebula#v3.4.14"
   }
 }
