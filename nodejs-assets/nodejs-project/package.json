@@ -9,6 +9,6 @@
     "@telios/telios-client-backend": "github:Telios-org/telios-client-backend#core_upgrades",
     "intl": "^1.2.5",
     "sodium-native-nodejs-mobile": "^3.2.0-2",
-    "udx-native-nodejs-mobile": "^1.5.1-1"
+    "udx-native-nodejs-mobile": "^1.5.1-2"
   }
 }

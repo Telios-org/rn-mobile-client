@@ -19,14 +19,11 @@ async function run() {
     'udx-native-nodejs-mobile',
     'sodium-native',
     'udx-native',
-    'sequelize',
     'fd-lock',
     'leveldown',
     'nodemailer',
     'fsctl',
-    'sqlite3',
-    'crc32-universal',
-    '@journeyapps',
+    'crc32-universal'
   ];
 
   const moduleNames = await readdir(MODULE_FOLDER);
