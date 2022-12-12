@@ -22,7 +22,9 @@ export const store = configureStore({
     search: searchReducer,
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware()
+    getDefaultMiddleware({
+      serializableCheck: false,
+    })
       .concat(eventListenerMiddleware)
       .concat(fileFetchedMiddleware),
 });

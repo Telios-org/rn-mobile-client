@@ -2,7 +2,14 @@ import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, RootState } from '../../store';
 import nodejs from 'nodejs-mobile-react-native';
-import { Alias, Email, EmailContent, Folder, Mailbox } from '../types';
+import {
+  Alias,
+  Attachment,
+  Email,
+  EmailContent,
+  Folder,
+  Mailbox,
+} from '../types';
 import { registerOneTimeListener } from '../../middlewares/eventListenerMiddleware';
 import { incrementFolderCounter, updateFolderCountFlow } from './folders';
 import { FoldersId } from '../types/enums/Folders';
@@ -391,3 +398,14 @@ export const getUnreadMessagesByAliasId = createNodeCalloutAsyncThunk<
   GetMessagesByAliasIdRequest,
   GetMessagesByAliasIdResponse
 >('email:getUnreadMessagesByAliasId');
+
+type SaveFileRequest = {
+  filepath: string;
+  attachments: Attachment[];
+  recursive?: boolean;
+};
+
+export const saveFile = createNodeCalloutAsyncThunk<
+  SaveFileRequest,
+  SaveFileRequest
+>('email:saveFiles');

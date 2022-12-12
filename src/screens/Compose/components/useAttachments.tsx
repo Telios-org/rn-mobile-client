@@ -16,15 +16,17 @@ interface AttachmentOptions {
 
 const styles = StyleSheet.create({
   attachmentContainer: {
+    flexWrap: 'wrap',
     flexDirection: 'row',
     marginTop: 3,
     paddingHorizontal: spacing.md,
-    flexWrap: 'wrap',
   },
 });
 
-export default (): AttachmentOptions => {
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
+export default (initialAttachments?: Attachment[]): AttachmentOptions => {
+  const [attachments, setAttachments] = useState<Attachment[]>(
+    initialAttachments || [],
+  );
 
   const handlePickerError = (error: any) => {
     if (DocumentPicker.isCancel(error)) {

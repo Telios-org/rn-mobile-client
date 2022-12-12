@@ -389,6 +389,8 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.17.10):
     - React-Core
+  - RNFileViewer (2.1.5):
+    - React-Core
   - RNGestureHandler (2.8.0):
     - React-Core
   - RNReanimated (1.13.4):
@@ -484,6 +486,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - RNFileViewer (from `../node_modules/react-native-file-viewer`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -612,6 +615,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-bootsplash"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNFileViewer:
+    :path: "../node_modules/react-native-file-viewer"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -690,6 +695,7 @@ SPEC CHECKSUMS:
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   RNBootSplash: 4f34ccf1a0c2573cb4ba918ab7f69d51d610827f
   RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
+  RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
   RNReanimated: c1b56d030d1616239861534d9adb531f8cffab68
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d

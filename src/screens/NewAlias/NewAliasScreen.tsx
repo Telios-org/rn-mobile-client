@@ -134,15 +134,6 @@ export const NewAliasScreen = ({ navigation, route }: NewAliasScreenProps) => {
                 </Text>
               </View>
               <View style={styles.shuffleButtons}>
-                <View style={styles.shuffleBtn}>
-                  <Icon
-                    name="shuffle-outline"
-                    size={20}
-                    color={colors.inkLighter}
-                  />
-                  <Text style={styles.shuffleBtnTitle}>Shuffle</Text>
-                </View>
-
                 <View style={styles.wordsAndLettersContainer}>
                   <Button
                     type="outline"
