@@ -4,8 +4,7 @@ import { View, Text } from 'react-native';
 import { Input } from '../../components/Input';
 import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
-// @ts-ignore
-import envApi from '../../../env_api.json';
+import { EMAIL_POSTFIX } from '../../constants/Constants';
 import ScrollableContainer from '../../components/ScrollableContainer';
 import NextButton from '../../components/NextButton';
 import styles from './styles';
@@ -21,7 +20,6 @@ type RecoverAccountProps = NativeStackScreenProps<
 >;
 
 export default ({ navigation }: RecoverAccountProps) => {
-  const emailPostfix = envApi.devMail;
   const dispatch = useAppDispatch();
 
   const [username, setUsername] = useState('');
@@ -29,7 +27,7 @@ export default ({ navigation }: RecoverAccountProps) => {
   const isValid = recoveryEmail && validateEmail(recoveryEmail);
   const [isLoading, setIsLoading] = useState(false);
 
-  const teliosEmail = `${username}@${emailPostfix}`;
+  const teliosEmail = `${username}@${EMAIL_POSTFIX}`;
 
   const onSubmit = async () => {
     if (recoveryEmail) {
@@ -67,7 +65,7 @@ export default ({ navigation }: RecoverAccountProps) => {
         returnKeyType="done"
         renderCustomRightView={() => (
           <View style={styles.emailPostfix}>
-            <Text style={fonts.regular.bold}>{`@${emailPostfix}`}</Text>
+            <Text style={fonts.regular.bold}>{`@${EMAIL_POSTFIX}`}</Text>
           </View>
         )}
       />

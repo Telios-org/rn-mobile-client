@@ -5,6 +5,10 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 platform :ios, '12.0'
 
 target 'TeliosMobile' do
+  project 'TeliosMobile',
+  'DevDebug' => :debug,
+  'DevRelease' => :release
+  
   use_expo_modules!
   post_integrate do |installer|
     begin

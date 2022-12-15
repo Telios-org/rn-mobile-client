@@ -8,7 +8,7 @@ import 'intl/locale-data/jsonp/en';
 const bridge = require('rn-bridge');
 const Hypercore = require('hypercore');
 const HypercoreInTelios1 = require('./node_modules/@telios/nebula/node_modules/corestore/node_modules/hypercore/index');
-const HypercoreInTelios2 = require('./node_modules/@telios/nebula-drive/node_modules/hypercore/index');
+// const HypercoreInTelios2 = require('./node_modules/@telios/nebula-drive/node_modules/hypercore/index');
 
 const { ClientBackend } = require('@telios/telios-client-backend');
 
@@ -25,10 +25,10 @@ const originalStorageInTelios1 = HypercoreInTelios1.defaultStorage;
 HypercoreInTelios1.defaultStorage = (storage: any, opts = {}) => {
   return originalStorageInTelios1(storage, { ...opts, lock: -1 });
 };
-const originalStorageInTelios2 = HypercoreInTelios2.defaultStorage;
-HypercoreInTelios2.defaultStorage = (storage: any, opts = {}) => {
-  return originalStorageInTelios2(storage, { ...opts, lock: -1 });
-};
+// const originalStorageInTelios2 = HypercoreInTelios2.defaultStorage;
+// HypercoreInTelios2.defaultStorage = (storage: any, opts = {}) => {
+//   return originalStorageInTelios2(storage, { ...opts, lock: -1 });
+// };
 
 // const channel = bridge.channel;
 
