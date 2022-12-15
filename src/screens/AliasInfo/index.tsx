@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { RootStackParams } from '../../navigators/Navigator';
-// @ts-ignore
-import envApi from '../../../env_api.json';
+import { EMAIL_POSTFIX } from '../../constants/Constants';
 import styles from './styles';
 import { fonts } from '../../util/fonts';
 import { colors } from '../../util/colors';
@@ -37,8 +36,6 @@ export const AliasInfoScreen = ({
     aliasSelectors.selectById(state.aliases, aliasId),
   );
 
-  const emailPostfix = envApi.postfix;
-
   const onPressDeleteAlias = async () => {
     if (alias) {
       setIsDeleteLoading(true);
@@ -47,7 +44,7 @@ export const AliasInfoScreen = ({
           removeAliasFlow({
             aliasId: alias._id,
             address: alias.name,
-            domain: emailPostfix,
+            domain: EMAIL_POSTFIX,
             namespaceName: alias.namespaceKey,
           }),
         );
@@ -74,14 +71,14 @@ export const AliasInfoScreen = ({
               <Text style={{ color: colors.primaryBase }}>
                 {alias.namespaceKey ? `#${alias.name}` : alias.name}
               </Text>
-              {`@${emailPostfix}`}
+              {`@${EMAIL_POSTFIX}`}
             </Text>
           </View>
           <Pressable
             onPress={() => {
               const aliasFull = alias.namespaceKey
-                ? `${alias.namespaceKey}#${alias.name}@${emailPostfix}`
-                : `${alias.name}@${emailPostfix}`;
+                ? `${alias.namespaceKey}#${alias.name}@${EMAIL_POSTFIX}`
+                : `${alias.name}@${EMAIL_POSTFIX}`;
               Clipboard.setString(aliasFull);
             }}>
             <Icon name="copy-outline" size={24} color={colors.inkLighter} />
@@ -90,7 +87,7 @@ export const AliasInfoScreen = ({
         {!!alias.namespaceKey && (
           <DescriptionSection
             aliasId={alias.aliasId}
-            domain={emailPostfix}
+            domain={EMAIL_POSTFIX}
             aliasDescription={alias.description}
           />
         )}
@@ -104,13 +101,13 @@ export const AliasInfoScreen = ({
       <View style={styles.sectionContainer}>
         <CurrentStateSection
           aliasId={alias.aliasId}
-          domain={emailPostfix}
+          domain={EMAIL_POSTFIX}
           aliasDisabled={alias.disabled}
         />
       </View>
       <SeparatorLine />
       <ForwardAddressesSection
-        domain={emailPostfix}
+        domain={EMAIL_POSTFIX}
         aliasId={alias.aliasId}
         aliasFwdAddresses={alias.fwdAddresses || []}
       />

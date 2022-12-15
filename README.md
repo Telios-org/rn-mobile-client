@@ -13,6 +13,7 @@ A mobile client for [telios](https://telios.io).
   - common troubleshooting for build failures in Xcode is to check logs for `"Running node: $(node -v)"` and make sure version is 12.19.x
 - set up [node-gyp](https://www.npmjs.com/package/node-gyp) with `npm install -g node-gyp`
 - `yarn` to install deps
+- add .env.development and .env.production env files to the root directory for different schemas. You can see example variables in the .env.example.
 - Android:
   - set up Android studio
   - Install NDK 21.4 via the SDK manager

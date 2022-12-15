@@ -5,8 +5,7 @@ import { RootStackParams } from '../../navigators/Navigator';
 import { fonts } from '../../util/fonts';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
-// @ts-ignore
-import envApi from '../../../env_api.json';
+import { EMAIL_POSTFIX } from '../../constants/Constants';
 import { randomLetters, randomWords } from '../../util/randomNames';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { registerNamespace } from '../../store/thunks/namespaces';
@@ -55,9 +54,6 @@ export const NewAliasNamespaceScreen = (
     setNamespace(randomWords(2));
   };
 
-  // TODO: dev vs prod switch
-  const emailPostfix = envApi.prodMail;
-
   const moreInfoModal = (
     <Modalize
       adjustToContentHeight
@@ -100,7 +96,7 @@ export const NewAliasNamespaceScreen = (
               <Text style={styles.namespaceSampleColor}>
                 {namespace ? namespace : 'namespace'}
               </Text>
-              {`#myalias@${emailPostfix}`}
+              {`#myalias@${EMAIL_POSTFIX}`}
             </Text>
           </View>
           <Input

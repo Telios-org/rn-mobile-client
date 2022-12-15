@@ -11,7 +11,7 @@ import { useAppSelector } from '../../hooks';
 import { humanFileSize } from '../../util/attachment';
 import { colors } from '../../util/colors';
 import { Result } from '../../util/types';
-import envApi from '../../../env_api.json';
+import { API_MEMBERSHIP_PLANS } from '../../constants/Path';
 
 import styles from './styles';
 
@@ -155,9 +155,8 @@ const PlanAndUsage = () => {
 export default PlanAndUsage;
 
 const getAvailablePlans = async (): Promise<Result<{ plans: Array<Plan> }>> => {
-  const emailPostfix = envApi.dev;
   try {
-    const response = await fetch(`${emailPostfix}/stripe/plans`, {
+    const response = await fetch(API_MEMBERSHIP_PLANS, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

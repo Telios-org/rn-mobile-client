@@ -68,3 +68,9 @@ nodejs-assets/build-native-modules-MacOS-helper-script-npm.sh
 
 # Compiled jniLibs for Android
 android/app/src/main/jniLibs
+
+# react-native-config codegen
+ios/tmp.xcconfig
+.env
+.env.development
+.env.production
