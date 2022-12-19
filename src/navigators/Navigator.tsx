@@ -37,6 +37,7 @@ import ForgotPassword, { ForgotPasswordStackParams } from './ForgotPassword';
 import { ProfileRoot } from './Profile';
 import Sync, { SyncStackParams } from './Sync';
 import backArrow from './utils/backArrow';
+import { Attachment } from '../store/types';
 
 export type CoreStackProps = {
   core: NavigatorScreenParams<RootStackParams> | undefined;
@@ -57,6 +58,7 @@ export type RootStackParams = {
         bodyAsHTML?: string;
         cc?: string[];
         bcc?: string[];
+        attachments?: Attachment[];
       }
     | undefined;
   search: undefined;

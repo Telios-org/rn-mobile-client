@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '../../util/colors';
 import { borderRadius, spacing } from '../../util/spacing';
-import { fonts } from '../../util/fonts';
 
 export default StyleSheet.create({
   scrollView: {
@@ -20,18 +19,9 @@ export default StyleSheet.create({
   },
   shuffleButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     marginTop: spacing.sm,
-  },
-  shuffleBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  shuffleBtnTitle: {
-    ...fonts.small.medium,
-    color: colors.inkLighter,
-    marginLeft: spacing.sm,
   },
   wordsAndLettersContainer: { flexDirection: 'row' },
   shuffleWordsBtn: { marginLeft: spacing.sm },

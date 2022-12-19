@@ -14,6 +14,7 @@ import { Portal } from 'react-native-portalize';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '@react-navigation/core/src/types';
 import { RootStackParams } from '../navigators/Navigator';
+import { Attachment } from '../store/types';
 
 const styles = StyleSheet.create({
   rowContainer: {
@@ -69,6 +70,7 @@ interface InboxActionsProps {
   bodyAsText?: string;
   bodyAsHTML?: string;
   subject?: string;
+  attachments?: Attachment[];
 }
 
 export default ({
@@ -78,6 +80,7 @@ export default ({
   bcc,
   bodyAsHTML,
   subject,
+  attachments,
 }: InboxActionsProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const modalizeRef = useRef<Modalize>();
@@ -95,6 +98,7 @@ export default ({
       from,
       subject: `Re: ${subject}`,
       bodyAsHTML: `<div>---- Original message ----</div>${bodyAsHTML}`,
+      attachments,
     });
   };
 
@@ -107,6 +111,7 @@ export default ({
       bcc,
       subject: `Re: ${subject}`,
       bodyAsHTML: `<div>---- Original message ----</div>${bodyAsHTML}`,
+      attachments,
     });
   };
 
@@ -116,6 +121,7 @@ export default ({
       from,
       subject: `Fwd: ${subject}`,
       bodyAsHTML: `<div>---- Original message ----</div>${bodyAsHTML}`,
+      attachments,
     });
   };
 

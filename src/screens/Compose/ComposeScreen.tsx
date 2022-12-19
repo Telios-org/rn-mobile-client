@@ -35,6 +35,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   const initialBodyAsHtml = props.route.params?.bodyAsHTML;
   const initialBodyAsText = props.route.params?.bodyAsText;
   const initialSubject = props.route.params?.subject;
+  const initialAttachments = props.route.params?.attachments;
   const dispatch = useAppDispatch();
   const bodyInputRef = useRef<TextInput>(null);
   const [bodyAsText, setBodyAsText] = useState(initialBodyAsText || '');
@@ -53,7 +54,8 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
       bodyInputRef.current?.focus();
     },
   );
-  const { attachments, attachmentsTags, attachmentIcon } = useAttachments();
+  const { attachments, attachmentsTags, attachmentIcon } =
+    useAttachments(initialAttachments);
   const [isSending, setIsSending] = useState(false);
 
   const onSaveDraft = async () => {
@@ -176,10 +178,10 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.main}>
-        {attachmentsTags}
         {fromInput}
         {toInputs}
         {subjectInput}
+        {attachmentsTags}
         <BodyContent
           initialBodyAsText={bodyAsText}
           bodyAsHtml={initialBodyAsHtml}

@@ -40,7 +40,7 @@ export type Email = {
   bccJSON?: string;
   bodyAsText?: string;
   bodyAsHtml?: string;
-  attachments?: string;
+  attachments?: Attachment[];
   path?: string;
   count?: any;
   key: string;
@@ -73,6 +73,7 @@ export type Mailbox = {
 export type ToFrom = { address: string; name?: string };
 
 export type Attachment = {
+  name?: string;
   filename: string;
   content?: string;
   mimetype?: string;

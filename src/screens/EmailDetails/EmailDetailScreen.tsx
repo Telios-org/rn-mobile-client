@@ -34,6 +34,7 @@ import styles from './styles';
 import BodyWebView from '../../components/BodyWebView';
 import { FoldersId } from '../../store/types/enums/Folders';
 import { showToast } from '../../util/toasts';
+import AttachmentViewer from '../../components/AttachmentViewer';
 
 export type EmailDetailScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -79,6 +80,7 @@ export const EmailDetailScreen = ({
       ? (JSON.parse(email.bccJSON) as Array<ToFrom>).map(bcc => bcc.address)
       : undefined,
     bodyAsHTML: email?.bodyAsHtml,
+    attachments: email?.attachments,
   });
 
   const dispatch = useAppDispatch();
@@ -212,6 +214,7 @@ export const EmailDetailScreen = ({
             </Pressable>
           </View>
         </View>
+        <AttachmentViewer attachments={email?.attachments || []} />
         {email.bodyAsHtml ? (
           <BodyWebView bodyAsHtml={email.bodyAsHtml} />
         ) : (
