@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   getAsyncStorageLastUsername,
   getAsyncStorageSavedUsernames,
@@ -7,7 +7,6 @@ import {
 } from '../../util/asyncStorage';
 import { getFoldersNamespacesAliasesFlow } from './namespaces';
 import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
-import { LoginAccount, SignupAccount } from '../account';
 import {
   getMailboxes,
   GetMailboxesResponse,
@@ -16,7 +15,7 @@ import {
   saveMailbox,
   SaveMailboxResponse,
 } from './email';
-import { Stats } from '../types';
+import { LoginAccount, SignupAccount, Stats } from '../types';
 import {
   ACCOUNT_CREATE_SYNC_INFO,
   ACCOUNT_SYNC_GET_INFO,
@@ -84,6 +83,11 @@ export const registerFlow = createAsyncThunk(
     await storeAsyncStorageSavedUsername(data.email);
     await storeAsyncStorageLastUsername(data.email);
 
+    thunkAPI.dispatch(getStoredUsernames()); // that is needed to update redux latestAccount and localUsernames, needs refactor.
+    // Hint: use redux persistent slice
+
+    initMessageListener();
+
     if (mailboxId) {
       thunkAPI.dispatch(getFoldersNamespacesAliasesFlow({ mailboxId }));
     }
@@ -115,6 +119,7 @@ export const loginFlow = createAsyncThunk(
     if (loginResponse.type === accountLogin.rejected.type) {
       throw new Error(JSON.stringify(loginResponse.payload));
     }
+    thunkAPI.dispatch(updateIsSignedIn(true));
 
     initMessageListener();
 
@@ -207,6 +212,10 @@ export type CreateAccountSyncInfoResponse = {
   drive_key: string;
   email: string;
 };
+
+export const updateIsSignedIn = createAction<boolean>(
+  'local/account:isSignedIn',
+);
 
 export const getAccountSyncInfo = createNodeCalloutAsyncThunk<
   GetAccountSyncRequest,

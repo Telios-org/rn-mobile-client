@@ -5,54 +5,15 @@ import {
   accountUpdate,
   getStoredUsernames,
   registerNewAccount,
+  updateIsSignedIn,
 } from './thunks/account';
 import { accountLogout } from './thunks/accountLogout';
-import { Stats } from './types';
-
-export type SignupAccount = {
-  deviceId: string;
-  mnemonic: string;
-  secretBoxKeypair: {
-    publicKey: string;
-    privateKey: string;
-  };
-  sig: string;
-  signedAcct: {
-    account_key: string;
-    device_drive_key: string;
-    device_id: string;
-    device_signing_key: string;
-    recovery_email: string;
-  };
-  signingKeypair: {
-    mnemonic: string;
-    privateKey: string;
-    publicKey: string;
-    seedKey: string;
-  };
-  uid: string;
-};
-
-export type LoginAccount = {
-  accountId: string;
-  avatar?: any;
-  createdAt: string;
-  deviceId: string;
-  deviceSigningPrivKey: string;
-  deviceSigningPubKey: string;
-  displayName?: string;
-  driveEncryptionKey: string;
-  secretBoxPrivKey: string;
-  secretBoxPubKey: string;
-  serverSig: string;
-  uid: string;
-  updatedAt: string;
-  _id: string;
-};
+import { LoginAccount, SignupAccount, Stats } from './types';
 
 interface AccountState {
   localUsernames: string[];
   lastUsername?: string;
+  isSignedIn: boolean;
   signupAccount?: SignupAccount;
   loginAccount?: LoginAccount;
   isProfileUpdating?: boolean;
@@ -61,6 +22,7 @@ interface AccountState {
 
 const initialState: AccountState = {
   localUsernames: [],
+  isSignedIn: false,
 };
 
 export const accountSlice = createSlice({
@@ -68,6 +30,9 @@ export const accountSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(updateIsSignedIn, (state, action) => {
+      state.isSignedIn = action.payload;
+    });
     builder.addCase(getStoredUsernames.fulfilled, (state, action) => {
       state.localUsernames = action.payload.usernames;
       state.lastUsername = action.payload.lastUsername;

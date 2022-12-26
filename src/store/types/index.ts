@@ -129,3 +129,42 @@ export type Contact = {
   website?: string;
   _id?: string;
 };
+export type SignupAccount = {
+  deviceId: string;
+  mnemonic: string;
+  secretBoxKeypair: {
+    publicKey: string;
+    privateKey: string;
+  };
+  sig: string;
+  signedAcct: {
+    account_key: string;
+    device_drive_key: string;
+    device_id: string;
+    device_signing_key: string;
+    recovery_email: string;
+  };
+  signingKeypair: {
+    mnemonic: string;
+    privateKey: string;
+    publicKey: string;
+    seedKey: string;
+  };
+  uid: string;
+};
+export type LoginAccount = {
+  accountId: string;
+  avatar?: any;
+  createdAt: string;
+  deviceId: string;
+  deviceSigningPrivKey: string;
+  deviceSigningPubKey: string;
+  displayName?: string;
+  driveEncryptionKey: string;
+  secretBoxPrivKey: string;
+  secretBoxPubKey: string;
+  serverSig: string;
+  uid: string;
+  updatedAt: string;
+  _id: string;
+};

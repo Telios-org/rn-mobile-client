@@ -1,6 +1,7 @@
 import { RootState } from '../../store';
 
 export const accountSelector = (state: RootState) => state.account;
+export const selectIsSignedIn = (state: RootState) => state.account.isSignedIn;
 
 export const loginAccountSelector = (state: RootState) =>
   state.account.loginAccount;
