@@ -7,10 +7,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import RNBootSplash from 'react-native-bootsplash';
 import { Platform } from 'react-native';
+import { useSelector } from 'react-redux';
 import { IntroScreen } from '../screens/IntroScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { InboxScreen } from '../screens/Inbox/InboxScreen';
-import { useAppSelector, useIsAuthenticated } from '../hooks';
+import { useAppSelector, useUserSelector } from '../hooks';
 import { DrawerContent } from '../components/DraweContent/DrawerContent';
 import { ComposeScreen } from '../screens/Compose/ComposeScreen';
 import { TestScreen } from '../screens/TestScreen';
@@ -37,6 +38,7 @@ import ForgotPassword, { ForgotPasswordStackParams } from './ForgotPassword';
 import { ProfileRoot } from './Profile';
 import Sync, { SyncStackParams } from './Sync';
 import backArrow from './utils/backArrow';
+import { selectIsSignedIn } from '../store/selectors/account';
 import { Attachment } from '../store/types';
 
 export type CoreStackProps = {
@@ -153,11 +155,12 @@ const InboxRoot = () => (
 function CoreScreen() {
   const localUsernames = useAppSelector(state => state.account.localUsernames);
   const hasLocalAccount = localUsernames.length > 0;
-  const isAuthenticated = useIsAuthenticated();
+  const hasUser = useUserSelector();
+  const isSignedIn = useSelector(selectIsSignedIn);
 
   return (
     <Stack.Navigator initialRouteName={hasLocalAccount ? 'login' : 'intro'}>
-      {isAuthenticated ? (
+      {hasUser && isSignedIn ? (
         <>
           <Stack.Group>
             <Stack.Screen

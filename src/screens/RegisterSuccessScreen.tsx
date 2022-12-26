@@ -9,8 +9,9 @@ import { CoreStackProps, RegisterStackParams } from '../navigators/Navigator';
 import { fonts } from '../util/fonts';
 import { borderRadius, spacing } from '../util/spacing';
 import { colors } from '../util/colors';
-import { useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { CompositeScreenProps } from '@react-navigation/native';
+import { updateIsSignedIn } from '../store/thunks/account';
 
 export type RegisterSuccessScreenProps = CompositeScreenProps<
   NativeStackScreenProps<RegisterStackParams, 'registerSuccess'>,
@@ -18,6 +19,7 @@ export type RegisterSuccessScreenProps = CompositeScreenProps<
 >;
 
 export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
+  const dispatch = useAppDispatch();
   const headerHeight = useHeaderHeight();
 
   const account = useAppSelector(state => state.account.signupAccount);
@@ -28,8 +30,8 @@ export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
     }
   };
 
-  const onDone = () => {
-    props.navigation.navigate('core');
+  const onDone = async () => {
+    await dispatch(updateIsSignedIn(true));
   };
 
   return (
