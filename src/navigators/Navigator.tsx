@@ -40,6 +40,7 @@ import Sync, { SyncStackParams } from './Sync';
 import backArrow from './utils/backArrow';
 import { selectIsSignedIn } from '../store/selectors/account';
 import { Attachment } from '../store/types';
+import { spacing } from '../util/spacing';
 
 export type CoreStackProps = {
   core: NavigatorScreenParams<RootStackParams> | undefined;
@@ -356,9 +357,17 @@ function Main() {
       <Drawer.Screen
         name={'aliasInbox'}
         component={AliasInboxScreen}
-        options={{
+        options={({ navigation }) => ({
           title: '',
-        }}
+          headerTintColor: colors.inkDarker,
+          headerRight: () => (
+            <NavIconButton
+              icon={{ name: 'search-outline' }}
+              onPress={() => navigation.navigate('search')}
+              style={{ alignSelf: 'flex-end', paddingRight: spacing.lg }}
+            />
+          ),
+        })}
       />
       <Drawer.Screen
         name={'aliasManage'}
