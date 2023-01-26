@@ -40,7 +40,7 @@ export type Email = {
   bccJSON?: string;
   bodyAsText?: string;
   bodyAsHtml?: string;
-  attachments?: Attachment[];
+  attachments?: Attachment[] | string;
   path?: string;
   count?: any;
   key: string;

@@ -1,5 +1,6 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useState, useImperativeHandle } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
+
 import { spacing } from '../../../../util/spacing';
 import { colors } from '../../../../util/colors';
 import { textStyles } from '../../../../util/fonts';
@@ -12,24 +13,22 @@ interface BodyContentProps {
   onEndEditing?: (subject: string) => void;
 }
 
-const styles = StyleSheet.create({
-  input: {
-    paddingHorizontal: spacing.md,
-    marginVertical: spacing.md,
-    backgroundColor: colors.white,
-    color: textStyles.defaultColor,
-    fontSize: textStyles.sizes.regular,
-    fontWeight: textStyles.weights.regular,
-  },
-  bodyWebView: { marginHorizontal: spacing.md },
-});
+export type BodyContentHandle = {
+  getText: () => string | undefined;
+};
 
-export default forwardRef<TextInput, BodyContentProps>(
+export default forwardRef<BodyContentHandle, BodyContentProps>(
   (
     { initialBodyAsText, bodyAsHtml, onHTMLChange, onEndEditing },
     bodyInputRef,
   ) => {
-    const [bodyText, setBodyText] = useState(initialBodyAsText);
+    const [bodyText, setBodyText] = useState<string | undefined>(
+      initialBodyAsText,
+    );
+    useImperativeHandle(bodyInputRef, () => ({
+      getText: () => bodyText,
+    }));
+
     return (
       <>
         {bodyAsHtml ? (
@@ -41,7 +40,6 @@ export default forwardRef<TextInput, BodyContentProps>(
           />
         ) : (
           <TextInput
-            ref={bodyInputRef}
             multiline={true}
             value={bodyText}
             onChangeText={setBodyText}
@@ -53,3 +51,15 @@ export default forwardRef<TextInput, BodyContentProps>(
     );
   },
 );
+
+const styles = StyleSheet.create({
+  input: {
+    paddingHorizontal: spacing.md,
+    marginVertical: spacing.md,
+    backgroundColor: colors.white,
+    color: textStyles.defaultColor,
+    fontSize: textStyles.sizes.regular,
+    fontWeight: textStyles.weights.regular,
+  },
+  bodyWebView: { marginHorizontal: spacing.md },
+});
