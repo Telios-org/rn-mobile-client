@@ -70,7 +70,11 @@ const EmailCellRender = ({
   } else {
     return (
       <RectButton activeOpacity={0} onPress={onPress} style={styles.container}>
-        <Avatar displayName={recipient} style={styles.avatar} />
+        <Avatar
+          displayName={recipient}
+          style={styles.avatar}
+          email={recipient}
+        />
         <View style={styles.flex1}>
           <View style={styles.row}>
             <View style={styles.flex1}>

@@ -24,7 +24,7 @@ import { RegisterSuccessScreen } from '../screens/RegisterSuccessScreen';
 import { SearchScreen } from '../screens/Search/SearchScreen';
 import { SearchSectionScreen } from '../screens/SearchSection/SearchSectionScreen';
 import { NavIconButton } from '../components/NavIconButton';
-import { DraftsScreen } from '../screens/DraftsScreen';
+import { DraftsScreen } from '../screens/Drafts/DraftsScreen';
 import { SentScreen } from '../screens/Sent/SentScreen';
 import { TrashScreen } from '../screens/TrashScreen';
 import { AliasManageScreen } from '../screens/AliasManage/AliasManageScreen';

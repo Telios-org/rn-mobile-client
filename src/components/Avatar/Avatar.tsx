@@ -1,6 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { Pressable, Text, View, Image, ActivityIndicator } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
+import isArray from 'lodash/isArray';
 
 import {
   getFirstCharactersFromGivenName,
@@ -38,8 +39,12 @@ const Avatar = ({
   );
 
   const firstCharacters = useMemo(() => {
-    const text = isEmpty(displayName?.trim()) ? email : displayName;
-    return getFirstCharactersFromGivenName(text);
+    let tempDisplayName: string | undefined = displayName;
+    if (isArray(displayName)) {
+      tempDisplayName = displayName?.[0];
+    }
+    const text = isEmpty(tempDisplayName?.trim()) ? email : tempDisplayName;
+    return text ? getFirstCharactersFromGivenName(text) : '';
   }, [displayName, email]);
 
   return (

@@ -19,7 +19,7 @@ import useFromInput from './components/FromDropdown/useFromInput';
 import useToInput from './components/ToRecipient/useToInput';
 import useSubjectInput from './components/SubjectField/useSubjectInput';
 import useAttachments from './components/useAttachments';
-import BodyContent from './components/BodyContent';
+import BodyContent, { BodyContentHandle } from './components/BodyContent';
 import { showToast } from '../../util/toasts';
 
 export type ComposeScreenProps = NativeStackScreenProps<
@@ -47,6 +47,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
     initialCc,
     styles.rowContainer,
   );
+
   const { subject, subjectInput } = useSubjectInput(
     initialSubject,
     styles.rowContainer,
@@ -57,8 +58,10 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   const { attachments, attachmentsTags, attachmentIcon } =
     useAttachments(initialAttachments);
   const [isSending, setIsSending] = useState(false);
+  const bodyContentRef = useRef<BodyContentHandle>(null);
 
   const onSaveDraft = async () => {
+    const bodyText: string = bodyContentRef?.current?.getText() || '';
     try {
       const saveResponse = await dispatch(
         saveDraft({
@@ -68,11 +71,11 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
           bcc: bcc.map(address => ({ address })),
           subject: subject,
           date: formatISO(Date.now()),
-          bodyAsText,
+          bodyAsText: bodyText,
           bodyAsHtml: bodyAsHTMLRef.current,
+          attachments: attachments,
         }),
       );
-
       if (saveResponse.type === saveDraft.fulfilled.type) {
         showToast('info', 'Draft saved');
       }
@@ -82,7 +85,8 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   };
 
   const onClose = () => {
-    const shouldPromptSaveDraft = to || subject || bodyAsText;
+    const bodyText: string = bodyContentRef?.current?.getText() || '';
+    const shouldPromptSaveDraft = to?.length || subject || bodyText;
     if (shouldPromptSaveDraft) {
       Alert.alert('Save Draft', 'Unsaved drafts will be lost', [
         {
@@ -183,6 +187,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
         {subjectInput}
         {attachmentsTags}
         <BodyContent
+          ref={bodyContentRef}
           initialBodyAsText={bodyAsText}
           bodyAsHtml={initialBodyAsHtml}
           onEndEditing={setBodyAsText}

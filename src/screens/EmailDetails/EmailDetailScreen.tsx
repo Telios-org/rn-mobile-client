@@ -54,7 +54,7 @@ export const EmailDetailScreen = ({
     ? (JSON.parse(email.fromJSON) as Array<ToFrom>)
     : undefined;
   const from = fromArray?.[0];
-  const to = email?.toJSON ? JSON.parse(email.toJSON)[0].address : undefined;
+  const to = email?.toJSON ? JSON.parse(email.toJSON)?.[0]?.address : undefined;
   const shouldSwapFromTo =
     folderId !== FoldersId.sent && folderId !== FoldersId.drafts;
   let toRecipients: string[] = [];
