@@ -16,9 +16,9 @@ async function run() {
   console.log('Deleting unnecessary modules and build-specific files');
   const TO_PRESERVE = [
     'sodium-native-nodejs-mobile',
-    'utp-native-nodejs-mobile',
+    'udx-native-nodejs-mobile',
     'sodium-native',
-    'utp-native',
+    'udx-native',
     'sequelize',
     'fd-lock',
     'leveldown',

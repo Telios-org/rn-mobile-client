@@ -63,7 +63,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   const onSaveDraft = async () => {
     const bodyText: string = bodyContentRef?.current?.getText() || '';
     try {
-      const saveResponse = await dispatch(
+      await dispatch(
         saveDraft({
           from: [{ address: from }],
           to: to.map(address => ({ address })),
@@ -75,10 +75,8 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
           bodyAsHtml: bodyAsHTMLRef.current,
           attachments: attachments,
         }),
-      );
-      if (saveResponse.type === saveDraft.fulfilled.type) {
-        showToast('info', 'Draft saved');
-      }
+      ).unwrap();
+      showToast('info', 'Draft saved');
     } catch (e) {
       showToast('error', 'Failed to save draft');
     }

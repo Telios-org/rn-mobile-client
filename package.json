@@ -33,7 +33,7 @@
     "formik": "^2.2.9",
     "hypercore": "^10.0.0-alpha.18",
     "lodash": "^4.17.21",
-    "nodejs-mobile-react-native": "^0.6.2",
+    "nodejs-mobile-react-native": "^0.8.2",
     "patch-package": "^6.4.7",
     "postinstall-postinstall": "^2.1.0",
     "random-word-slugs": "^0.1.6",

@@ -60,6 +60,7 @@ Run either `yarn android` or `yarn ios` to run on the respective platforms. iOS 
 - If using android, try clearing `android/app/build`
 - Try running the app from within Android Studio or XCode
 - Use `console.trace` inside the node_modules to track stuff down inside nodejs-mobile threads
+- Please make sure 'usr/local/bin/node' is pointing to the correct version of node.js (12.19.1)
 
 ## Distribution
 
