@@ -103,7 +103,7 @@ PODS:
   - fmt (6.2.1)
   - glog (0.3.5)
   - libevent (2.1.12)
-  - nodejs-mobile-react-native (0.6.4):
+  - nodejs-mobile-react-native (0.8.2):
     - React-Core
   - OpenSSL-Universal (1.1.180)
   - RCT-Folly (2021.06.28.00-v2):
@@ -660,7 +660,7 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  nodejs-mobile-react-native: db6dc27f067984dfc7081ec0a015d5b09aa47a0b
+  nodejs-mobile-react-native: f2e7843e1896a1d0eff0fc9a084303f815af8390
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 4bf86c70714490bca4bf2696148638284622644b

@@ -1,7 +1,7 @@
 import { createNodeCalloutAsyncThunk } from '../../util/nodeActions';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AppDispatch, RootState } from '../../store';
 import nodejs from 'nodejs-mobile-react-native';
+import { AppDispatch, RootState } from '../../store';
 import {
   Alias,
   Attachment,
@@ -10,9 +10,9 @@ import {
   Folder,
   Mailbox,
 } from '../types';
-import { registerOneTimeListener } from '../../middlewares/eventListenerMiddleware';
-import { incrementFolderCounter, updateFolderCountFlow } from './folders';
+import { incrementFolderCounter } from './folders';
 import { FoldersId } from '../types/enums/Folders';
+import { SAVE_MESSAGE_TO_DB } from '../types/events';
 
 export const getNewMailFlow = createAsyncThunk(
   'flow/getNewMail',
@@ -92,19 +92,16 @@ export const getMessage = createNodeCalloutAsyncThunk<
 >('messageHandler:newMessage');
 export type SaveDraftRequest = EmailContent;
 export const saveDraft = createAsyncThunk<
-  SaveMailToDBResponse,
+  void,
   SaveDraftRequest,
   { state: RootState; dispatch: AppDispatch }
->('flow/saveDraft', async (data, thunkAPI) => {
-  const response = await thunkAPI.dispatch(
-    saveMailToDB({ type: 'Draft', messages: [data] }),
-  );
-  if (response.type === saveMailToDB.fulfilled.type) {
-    thunkAPI.dispatch(
-      updateFolderCountFlow({ id: FoldersId.drafts.toString(), amount: 1 }),
-    );
-    return response.payload as SaveMailToDBResponse;
-  } else {
+>('flow/saveDraft', data => {
+  try {
+    nodejs.channel.send({
+      event: SAVE_MESSAGE_TO_DB,
+      payload: { type: 'Draft', messages: [data] },
+    });
+  } catch (e) {
     throw new Error('Unable to save draft');
   }
 });
@@ -192,92 +189,33 @@ export const deleteMailFromFolder = createAsyncThunk<
 // if there is any interruption between inserting into DB and 'mark as synced' call succeeding
 export type SaveMailToDBRequest = {
   type: 'Incoming' | 'Draft';
-  messages: Array<EmailContent>;
-  requestId?: string;
+  data: { msgArr: Array<Email>; newAliases?: Array<any> };
 };
 export type SaveMailToDBResponse = {
   msgArr: Array<Email>;
-  newAliases: Array<any>;
-  requestId?: string;
+  newAliases?: Array<any>;
 };
-const SaveMailToDBEventName = 'email:saveMessageToDB';
+
 export const saveMailToDB = createAsyncThunk<
   SaveMailToDBResponse,
   SaveMailToDBRequest,
-  { state: RootState; dispatch: AppDispatch }
->(
-  `local/${SaveMailToDBEventName}`,
-  async (data, thunkAPI): Promise<SaveMailToDBResponse> => {
-    return new Promise((resolve, reject) => {
-      // const state: RootState = thunkAPI.getState();
-      // const inboxMailIds = state?.mail.byFolderId[FoldersId.inbox]?.ids;
-      // if (firstEmailId && inboxMailIds.includes(firstEmailId)) {
-      //   return;
-      // }
-      nodejs.channel.send({
-        event: SaveMailToDBEventName,
-        payload: { ...data, requestId: thunkAPI.requestId }, // requestId is not visible in debugger
+  { state: RootState; dispatch: AppDispatch; rejectValue: any }
+>(`local/${SAVE_MESSAGE_TO_DB}`, async (arg, thunkAPI) => {
+  try {
+    if (arg.type === 'Incoming') {
+      const emailIds: string[] = arg.data.msgArr.map(item => item._id);
+      await thunkAPI.dispatch(updateMailAsSynced({ msgArray: emailIds }));
+    }
+    if (arg.type === 'Draft' || arg.type === 'Incoming') {
+      arg.data.msgArr.forEach((email: Email) => {
+        thunkAPI.dispatch(incrementFolderCounter({ email }));
       });
-
-      if (data.type === 'Incoming') {
-        // use a custom predicate for our listener
-        // to match up specific request / responses
-        // -- this is necessary because often when receiving emails, we get many concurrent running
-        // requests to save to DB, and we need a way to match up each request/response pair.
-        registerOneTimeListener(
-          {
-            eventName: `node/${SaveMailToDBEventName}:callback`,
-            customPredicate: action =>
-              action.data?.requestId === thunkAPI.requestId,
-          },
-          async event => {
-            if (event.error) {
-              reject(event.error);
-            } else {
-              // TODO: break this part out into a separate flow
-              // TODO: batch these up, rather than call for every single item inserted to DB.
-
-              try {
-                // newMessage events don't contain _id. There is no need to mark as synced
-                const firstEmailId = data.messages[0]?._id;
-                // _id field of incoming emails is different from _id returned
-                // by saveMailToDB:callback, that's why we need to use data.messages here
-                if (firstEmailId) {
-                  const emailIds: any[] = data.messages.map(item => item._id);
-                  await thunkAPI.dispatch(
-                    updateMailAsSynced({ msgArray: emailIds }),
-                  );
-                }
-                event.data.msgArr.forEach((email: Email) => {
-                  thunkAPI.dispatch(incrementFolderCounter({ email }));
-                });
-                resolve(event.data);
-              } catch (e) {
-                reject(e);
-              }
-            }
-          },
-        );
-      } else {
-        // the email we're saving has no _id, as a user saves a Draft, for instance.
-        registerOneTimeListener(
-          {
-            eventName: `node/${SaveMailToDBEventName}:callback`,
-            customPredicate: action =>
-              action.data?.requestId === thunkAPI.requestId,
-          },
-          event => {
-            if (event.error) {
-              reject(event.error);
-            } else {
-              resolve(event.data);
-            }
-          },
-        );
-      }
-    });
-  },
-);
+    }
+    return { msgArr: arg.data.msgArr, newAliases: arg.data.newAliases };
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e);
+  }
+});
 export type UpdateMailAsSyncedRequest = { msgArray: string[] };
 export type UpdateMailAsSyncedResponse = string[];
 export const updateMailAsSynced = createNodeCalloutAsyncThunk<

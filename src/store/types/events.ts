@@ -8,3 +8,5 @@ export const ACCOUNT_COLLECTION_UPDATED = 'account:collection:updated';
 export const INIT_MESSAGE_LISTENER = 'messageHandler:initMessageListener';
 export const SEND_RECOVERY_CODE = 'account:recover';
 export const SEND_RECOVERY_CODE_CALLBACK = `${SEND_RECOVERY_CODE}:callback`;
+export const SAVE_MESSAGE_TO_DB = 'email:saveMessageToDB';
+export const SAVE_MESSAGE_TO_DB_CALLBACK = `${SAVE_MESSAGE_TO_DB}:callback`;
