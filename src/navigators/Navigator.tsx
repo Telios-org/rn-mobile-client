@@ -419,13 +419,18 @@ function Register() {
 }
 
 export const Navigator = () => {
+  console.log('Navigator');
   return (
     <NavigationContainer
       onReady={() => {
         if (Platform.OS === 'android') {
           RNBootSplash.hide({ fade: true });
         }
-      }}>
+      }}
+      onStateChange={(state) =>
+        console.log('navigator state change', state)
+        // AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+      }>
       <CoreStack.Navigator initialRouteName="core">
         <CoreStack.Screen
           name="core"

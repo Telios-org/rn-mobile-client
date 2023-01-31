@@ -6,13 +6,14 @@ import AppLoading from 'expo-app-loading';
 import { Host } from 'react-native-portalize';
 import Toast from 'react-native-toast-message';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { store } from './store';
 import { Provider } from 'react-redux';
 import { ListenerContainer } from './ListenerContainer';
 import { Navigator } from './navigators/Navigator';
 import { StatusBar } from 'react-native';
-import { getStoredUsernames } from './store/thunks/account';
+import { getStoredUsernames, updateIsSignedIn } from './store/thunks/account';
+import useAppState from './hooks/useAppState';
 
 setTimeout(() => {
   console.log('starting nodejs bundle...');
@@ -20,13 +21,19 @@ setTimeout(() => {
 }, 1);
 
 export default function App() {
-  const [isReady, setIsReady] = React.useState(false);
+  const [isReady, setIsReady] = useState(false);
 
+  const onAppPause = () => {
+    nodejs.channel.send({ event: 'account:logout' });
+    store.dispatch(updateIsSignedIn(false));
+  };
+
+  useAppState({ onPause: onAppPause, isReady });
   const startupActions = async () => {
     await store.dispatch(getStoredUsernames());
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     startupActions()
       .then(() => {
         setIsReady(true);
