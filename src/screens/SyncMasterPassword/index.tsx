@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text } from 'react-native';
+import {Text, View} from 'react-native';
 import { fonts } from '../../util/fonts';
 import { spacing } from '../../util/spacing';
 import ScrollableContainer from '../../components/ScrollableContainer';
@@ -24,25 +24,27 @@ export default ({ navigation, route }: SyncMasterPasswordScreenProps) => {
   };
   return (
     <ScrollableContainer>
-      <Text style={fonts.title2}>Enter Master Key</Text>
-      {syncData?.email && (
-        <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
-          {`Please enter master password of ${syncData.email} account.`}
-        </Text>
-      )}
-      <Input
-        style={{ marginTop: spacing.md }}
-        onChangeText={setPassword}
-        value={password}
-        label="Master Password"
-        autoCapitalize="none"
-        autoCorrect={false}
-        autoFocus
-        autoComplete="password"
-        secureTextEntry={true}
-        iconLeft={{ name: 'lock-closed-outline' }}
-      />
-      <NextButton onSubmit={onPressNext} disabled={!(password.length > 5)} />
+      <View>
+        <Text style={fonts.title2}>Enter Master Key</Text>
+        {syncData?.email && (
+          <Text style={[fonts.regular.regular, { marginTop: spacing.sm }]}>
+            {`Please enter master password of ${syncData.email} account.`}
+          </Text>
+        )}
+        <Input
+          style={{ marginTop: spacing.md }}
+          onChangeText={setPassword}
+          value={password}
+          label="Master Password"
+          autoCapitalize="none"
+          autoCorrect={false}
+          autoFocus
+          autoComplete="password"
+          secureTextEntry={true}
+          iconLeft={{ name: 'lock-closed-outline' }}
+        />
+        <NextButton onSubmit={onPressNext} disabled={!(password.length > 5)} />
+      </View>
     </ScrollableContainer>
   );
 };

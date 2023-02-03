@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
+import { store } from '../store';
 
 interface AppStateListener {
   onPause?: () => void;
@@ -9,7 +10,7 @@ interface AppStateListener {
 export default ({ onPause, onResume, isReady }: AppStateListener) => {
   const appState = useRef(AppState.currentState);
   useEffect(() => {
-    console.log('app state effect', isReady);
+    console.log('app state effect', isReady, store.getState());
     if (isReady) {
       const subscription = AppState.addEventListener('change', nextAppState => {
         console.log('app state change', nextAppState, appState.current);

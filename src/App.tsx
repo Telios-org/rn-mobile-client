@@ -12,8 +12,7 @@ import { Provider } from 'react-redux';
 import { ListenerContainer } from './ListenerContainer';
 import { Navigator } from './navigators/Navigator';
 import { StatusBar } from 'react-native';
-import { getStoredUsernames, updateIsSignedIn } from './store/thunks/account';
-import useAppState from './hooks/useAppState';
+import { getStoredUsernames } from './store/thunks/account';
 
 setTimeout(() => {
   console.log('starting nodejs bundle...');
@@ -23,12 +22,6 @@ setTimeout(() => {
 export default function App() {
   const [isReady, setIsReady] = useState(false);
 
-  const onAppPause = () => {
-    nodejs.channel.send({ event: 'account:logout' });
-    store.dispatch(updateIsSignedIn(false));
-  };
-
-  useAppState({ onPause: onAppPause, isReady });
   const startupActions = async () => {
     await store.dispatch(getStoredUsernames());
   };

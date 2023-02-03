@@ -2,11 +2,13 @@ import React from 'react';
 import {
   NavigationContainer,
   NavigatorScreenParams,
+  useNavigation,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import RNBootSplash from 'react-native-bootsplash';
 import { Platform } from 'react-native';
+import nodejs from 'nodejs-mobile-react-native';
 import { useSelector } from 'react-redux';
 import { IntroScreen } from '../screens/IntroScreen';
 import { LoginScreen } from '../screens/LoginScreen';
@@ -41,6 +43,8 @@ import backArrow from './utils/backArrow';
 import { selectIsSignedIn } from '../store/selectors/account';
 import { Attachment } from '../store/types';
 import { spacing } from '../util/spacing';
+import AskPasswordScreen from '../screens/AskPassword/AskPasswordScreen';
+import useAppState from '../hooks/useAppState';
 
 export type CoreStackProps = {
   core: NavigatorScreenParams<RootStackParams> | undefined;
@@ -82,6 +86,7 @@ export type RootStackParams = {
     folderId: number;
     isUnread: boolean;
   };
+  askMasterPassword: undefined;
 };
 
 export type RegisterStackParams = {
@@ -158,6 +163,15 @@ function CoreScreen() {
   const hasLocalAccount = localUsernames.length > 0;
   const hasUser = useUserSelector();
   const isSignedIn = useSelector(selectIsSignedIn);
+  const navigation = useNavigation();
+
+  const onAppPause = () => {
+    nodejs.channel.send({ event: 'account:logout' });
+    // @ts-ignore
+    navigation.navigate('askMasterPassword');
+  };
+
+  useAppState({ onPause: onAppPause, isReady: true });
 
   return (
     <Stack.Navigator initialRouteName={hasLocalAccount ? 'login' : 'intro'}>
@@ -265,6 +279,13 @@ function CoreScreen() {
                   />
                 ),
               })}
+            />
+            <Stack.Screen
+              name="askMasterPassword"
+              component={AskPasswordScreen}
+              options={{
+                headerShown: false,
+              }}
             />
           </Stack.Group>
         </>
@@ -427,8 +448,8 @@ export const Navigator = () => {
           RNBootSplash.hide({ fade: true });
         }
       }}
-      onStateChange={(state) =>
-        console.log('navigator state change', state)
+      onStateChange={
+        state => console.log('navigator state change', state)
         // AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
       }>
       <CoreStack.Navigator initialRouteName="core">
