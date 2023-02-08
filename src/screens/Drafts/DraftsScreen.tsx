@@ -1,5 +1,5 @@
 import React from 'react';
-import { CompositeScreenProps, useNavigation } from '@react-navigation/native';
+import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import isString from 'lodash/isString';
 import { MainStackParams, RootStackParams } from '../../navigators/Navigator';
@@ -11,7 +11,6 @@ import {
 } from '../../store/thunks/email';
 import { FoldersId } from '../../store/types/enums/Folders';
 import { Email } from '../../store/types';
-
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { showToast } from '../../util/toasts';
 
@@ -20,8 +19,7 @@ export type DraftsScreenProps = CompositeScreenProps<
   NativeStackScreenProps<RootStackParams>
 >;
 
-export const DraftsScreen = () => {
-  const navigation = useNavigation<any>();
+export const DraftsScreen = ({ navigation }: DraftsScreenProps) => {
   const dispatch = useAppDispatch();
   const draftsMails = useAppSelector(state =>
     selectAllMailsByFolder(state, FoldersId.drafts),
@@ -33,13 +31,14 @@ export const DraftsScreen = () => {
     );
 
     if (selectedDraftMail) {
+      const from =
+        selectedDraftMail.fromJSON &&
+        JSON.parse(selectedDraftMail.fromJSON)?.[0]?.address;
       navigation.navigate('compose', {
         to:
           selectedDraftMail.toJSON &&
           JSON.parse(selectedDraftMail.toJSON)?.map(item => item.address),
-        from:
-          selectedDraftMail.fromJSON &&
-          JSON.parse(selectedDraftMail.fromJSON)?.map(item => item.address),
+        from,
         subject: selectedDraftMail.subject,
         bodyAsText: selectedDraftMail.bodyAsText,
         bodyAsHTML: selectedDraftMail.bodyAsHtml,

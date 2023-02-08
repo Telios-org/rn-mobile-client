@@ -13,7 +13,7 @@ export default StyleSheet.create({
   },
   text: {
     ...fonts.regular.medium,
-    minHeight: 55,
+    minHeight: 25,
   },
   label: {
     color: colors.inkLight,
