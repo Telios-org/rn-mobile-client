@@ -5,7 +5,6 @@ import {
 } from '@react-navigation/drawer';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Image, Text, View } from 'react-native';
-import { IconButton } from '../IconButton';
 import { colors } from '../../util/colors';
 import Avatar from '../Avatar/Avatar';
 import DrawerAliasesSection from '../DrawerAliasesSection/DrawerAliasesSection';
@@ -23,6 +22,7 @@ import {
   selectAccountAvatar,
   selectAccountDisplayName,
 } from '../../store/selectors/account';
+import RefreshSpinner from '../RefreshSpinner';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
   const dispatch = useAppDispatch();
@@ -60,11 +60,7 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
           style={styles.logo}
           resizeMode={'contain'}
         />
-        <IconButton
-          name="refresh-outline"
-          color={colors.primaryBase}
-          onPress={onRefresh}
-        />
+        <RefreshSpinner onPress={onRefresh} />
       </View>
       <TouchableOpacity
         onPress={() => props.navigation.navigate('profile')}
