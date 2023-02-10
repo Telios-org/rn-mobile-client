@@ -109,10 +109,27 @@ export type Stats = {
   storageSpaceUsed: number;
 };
 
-export type Organization = { name: string };
+export type Organization = { name: string; jobTitle?: string };
+
+export type Address = {
+  formatted?: string;
+  street: string;
+  street2?: string;
+  city: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  type?: string;
+};
+export type PhoneType = 'Cell' | 'Home' | 'Work' | 'Other';
+
+export type Phone = {
+  value: string;
+  type?: PhoneType;
+};
 
 export type Contact = {
-  address?: string;
+  address?: Address[];
   author?: string;
   birthday?: string;
   contactId: string;
@@ -124,7 +141,7 @@ export type Contact = {
   notes?: string;
   organization?: Array<Organization>;
   pgpPublicKey?: string;
-  phone?: string;
+  phone?: Phone[];
   publicKey?: string;
   website?: string;
   _id?: string;

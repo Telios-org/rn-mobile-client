@@ -35,16 +35,21 @@ export interface LabelProps extends Omit<TextInputProps, 'style'> {
   labelStyle?: StyleProp<TextStyle>;
 }
 
-export const Label = ({ label, labelStyle }: LabelProps) => (
-  <Text
-    style={[
-      fonts.regular.medium,
-      { color: colors.inkDarkest, marginBottom: spacing.sm },
-      labelStyle,
-    ]}>
-    {label}
-  </Text>
-);
+export const Label = ({ label, labelStyle }: LabelProps) => {
+  if (!label) {
+    return null;
+  }
+  return (
+    <Text
+      style={[
+        fonts.regular.bold,
+        { color: colors.inkDarkest, marginBottom: spacing.sm },
+        labelStyle,
+      ]}>
+      {label}
+    </Text>
+  );
+};
 
 export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
   const {

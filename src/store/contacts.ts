@@ -18,9 +18,6 @@ interface ContactState {
     loading: boolean;
     error: any;
   };
-  contactById: {
-    data?: Contact;
-  };
 }
 
 const contactInitialState = {
@@ -35,9 +32,6 @@ const contactInitialState = {
     entities: {},
     loading: false,
     error: undefined,
-  },
-  contactById: {
-    data: undefined,
   },
 } as ContactState;
 
@@ -58,7 +52,7 @@ export const contactsSlice = createSlice({
     });
 
     builder.addCase(getContactById.fulfilled, (state, action) => {
-      state.contactById.data = action.payload;
+      contactsAdapter.setOne(state.contacts, action.payload);
     });
 
     builder.addCase(searchContact.pending, state => {

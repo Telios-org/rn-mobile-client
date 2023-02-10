@@ -5,12 +5,10 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
-
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FormikProps } from 'formik';
-
 import {
   ProfileStackParams,
   RootStackParams,
@@ -23,12 +21,10 @@ import {
   removeContact,
   updateContact,
 } from '../../store/thunks/contacts';
-
-import { selectedContactSelector } from '../../store/selectors/contacts';
+import { selectContactById } from '../../store/selectors/contacts';
 import { ContactHeader } from './components/ContactHeader';
 import { ContactForm } from '../../components/ContactForm';
 import { Button } from '../../components/Button';
-
 import { isIOS } from '../../util/platform';
 import styles from './styles';
 import { showToast } from '../../util/toasts';
@@ -46,8 +42,8 @@ export const ContactDetail = ({ navigation, route }: ContactDetailProps) => {
   const formRef = createRef<FormikProps<Contact>>();
   const [isEditing, setIsEditing] = useState<boolean>(!!editContent);
 
-  const contactData: Contact | undefined = useAppSelector(
-    selectedContactSelector,
+  const contactData: Contact | undefined = useAppSelector(state =>
+    selectContactById(state.contacts.contacts, contactId),
   );
 
   useEffect(() => {
@@ -108,7 +104,7 @@ export const ContactDetail = ({ navigation, route }: ContactDetailProps) => {
         contentContainerStyle={styles.flex1}
         keyboardVerticalOffset={headerHeight}
         behavior={isIOS ? 'padding' : 'height'}>
-        <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="handled">
           <View>
             <ContactForm
               innerRef={formRef}

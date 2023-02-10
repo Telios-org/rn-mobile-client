@@ -72,10 +72,10 @@ export const NewContact = ({ navigation }: NewContactProps) => {
         contentContainerStyle={styles.flex1}
         keyboardVerticalOffset={headerHeight}
         behavior={isIOS ? 'padding' : 'height'}>
-        <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="handled">
           <View>
             <ContactForm
-              isEditing={true}
+              isEditing
               innerRef={formRef}
               contact={{
                 email: '',

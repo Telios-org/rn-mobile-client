@@ -7,5 +7,4 @@ export const contactsSelector = (state: RootState) =>
 export const searchContactsSelector = (state: RootState) =>
   contactsSelectors.selectAll(state.contacts.search);
 
-export const selectedContactSelector = (state: RootState) =>
-  state.contacts?.contactById?.data;
+export const selectContactById = contactsSelectors.selectById;
