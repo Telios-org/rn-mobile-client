@@ -111,8 +111,8 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
       return;
     }
     setIsSending(true);
-    const subject = bodyContentRef?.current?.getText();
-    const bodyAsText: string = bodyContentRef?.current?.getText() || '';
+    const subject = subjectInputRef?.current?.getText();
+    const bodyText: string = bodyContentRef?.current?.getText() || '';
     const email: EmailContent = {
       from: [{ address: from }],
       to: to.map(address => ({ address })),
@@ -120,7 +120,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
       cc: cc.map(address => ({ address })),
       bcc: bcc.map(address => ({ address })),
       subject,
-      bodyAsText,
+      bodyAsText: bodyText,
       bodyAsHtml: bodyAsHTMLRef.current,
       attachments,
     };
