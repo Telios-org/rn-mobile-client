@@ -10,7 +10,7 @@ import {
   getAllMailByFolder,
 } from '../../store/thunks/email';
 import { FoldersId } from '../../store/types/enums/Folders';
-import { Email } from '../../store/types';
+import { Email, ToFrom } from '../../store/types';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { showToast } from '../../util/toasts';
 
@@ -37,17 +37,23 @@ export const DraftsScreen = ({ navigation }: DraftsScreenProps) => {
       navigation.navigate('compose', {
         to:
           selectedDraftMail.toJSON &&
-          JSON.parse(selectedDraftMail.toJSON)?.map(item => item.address),
+          JSON.parse(selectedDraftMail.toJSON)?.map(
+            (item: ToFrom) => item.address,
+          ),
         from,
         subject: selectedDraftMail.subject,
         bodyAsText: selectedDraftMail.bodyAsText,
         bodyAsHTML: selectedDraftMail.bodyAsHtml,
         cc:
           selectedDraftMail.ccJSON &&
-          JSON.parse(selectedDraftMail.ccJSON)?.map(item => item.address),
+          JSON.parse(selectedDraftMail.ccJSON)?.map(
+            (item: ToFrom) => item.address,
+          ),
         bcc:
           selectedDraftMail.bccJSON &&
-          JSON.parse(selectedDraftMail.bccJSON)?.map(item => item.address),
+          JSON.parse(selectedDraftMail.bccJSON)?.map(
+            (item: ToFrom) => item.address,
+          ),
         attachments:
           selectedDraftMail.attachments &&
           isString(selectedDraftMail.attachments)

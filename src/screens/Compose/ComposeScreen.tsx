@@ -17,10 +17,10 @@ import { EmailContent } from '../../store/types';
 import styles from './styles';
 import useFromInput from './components/FromDropdown/useFromInput';
 import useToInput from './components/ToRecipient/useToInput';
-import useSubjectInput from './components/SubjectField/useSubjectInput';
 import useAttachments from './components/useAttachments';
 import BodyContent, { BodyContentHandle } from './components/BodyContent';
 import { showToast } from '../../util/toasts';
+import SubjectField, { SubjectFieldHandle } from './components/SubjectField';
 
 export type ComposeScreenProps = NativeStackScreenProps<
   RootStackParams,
@@ -38,6 +38,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   const initialAttachments = props.route.params?.attachments;
   const dispatch = useAppDispatch();
   const bodyInputRef = useRef<TextInput>(null);
+  const subjectInputRef = useRef<SubjectFieldHandle>(null);
   const [bodyAsText, setBodyAsText] = useState(initialBodyAsText || '');
   let bodyAsHTMLRef = useRef(initialBodyAsHtml);
   const { from, fromInput } = useFromInput(initialFrom, styles.rowContainer);
@@ -47,20 +48,13 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
     initialCc,
     styles.rowContainer,
   );
-
-  const { subject, subjectInput } = useSubjectInput(
-    initialSubject,
-    styles.rowContainer,
-    () => {
-      bodyInputRef.current?.focus();
-    },
-  );
   const { attachments, attachmentsTags, attachmentIcon } =
     useAttachments(initialAttachments);
   const [isSending, setIsSending] = useState(false);
   const bodyContentRef = useRef<BodyContentHandle>(null);
 
   const onSaveDraft = async () => {
+    const subject = subjectInputRef?.current?.getText();
     const bodyText: string = bodyContentRef?.current?.getText() || '';
     try {
       await dispatch(
@@ -83,6 +77,7 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
   };
 
   const onClose = () => {
+    const subject = subjectInputRef?.current?.getText();
     const bodyText: string = bodyContentRef?.current?.getText() || '';
     const shouldPromptSaveDraft = to?.length || subject || bodyText;
     if (shouldPromptSaveDraft) {
@@ -111,19 +106,20 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
     if (!from || isSending) {
       Alert.alert(
         'Error',
-        `missing one of: to-${to} sub-${subject} body-${bodyAsText} mailbox-${!!from} isSending-${isSending}`,
+        `missing one of: to-${to} mailbox-${!!from} isSending-${isSending}`,
       );
       return;
     }
     setIsSending(true);
-
+    const subject = bodyContentRef?.current?.getText();
+    const bodyAsText: string = bodyContentRef?.current?.getText() || '';
     const email: EmailContent = {
       from: [{ address: from }],
       to: to.map(address => ({ address })),
       date: formatISO(new Date()),
       cc: cc.map(address => ({ address })),
       bcc: bcc.map(address => ({ address })),
-      subject: subject,
+      subject,
       bodyAsText,
       bodyAsHtml: bodyAsHTMLRef.current,
       attachments,
@@ -166,23 +162,19 @@ export const ComposeScreen = (props: ComposeScreenProps) => {
         </View>
       ),
     });
-  }, [
-    to,
-    cc,
-    bcc,
-    from,
-    attachments,
-    bodyAsHTMLRef.current,
-    subject,
-    isSending,
-  ]);
+  }, [to, cc, bcc, from, attachments, bodyAsHTMLRef.current, isSending]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.main}>
         {fromInput}
         {toInputs}
-        {subjectInput}
+        <SubjectField
+          ref={subjectInputRef}
+          initialSubject={initialSubject}
+          containerStyle={styles.rowContainer}
+          onSubmitEditing={() => bodyInputRef.current?.focus()}
+        />
         {attachmentsTags}
         <BodyContent
           ref={bodyContentRef}
