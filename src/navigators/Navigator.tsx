@@ -111,7 +111,6 @@ export type ProfileStackParams = {
   contacts: undefined;
   contactDetail: { contactId: string; editContent?: boolean };
   newContact: undefined;
-  notifications: undefined;
   statistics: undefined;
   syncNewDevice: undefined;
   security: undefined;
