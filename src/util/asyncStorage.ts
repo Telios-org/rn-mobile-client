@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const storage = {
   savedUsernames: '@saved_usernames_json',
   lastUsername: '@last_used_username_string',
+  biometricUseStatus: '@biometric_use_status',
 };
 
 export const getAsyncStorageSavedUsernames = async () => {
@@ -46,4 +47,35 @@ export const getAsyncStorageLastUsername = async () => {
 // @throwable
 export const storeAsyncStorageLastUsername = async (email: string) => {
   await AsyncStorage.setItem(storage.lastUsername, email);
+};
+
+export const getAsyncStorageBiometricUseStatus = async (): Promise<{
+  [key: string]: boolean;
+}> => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(storage.biometricUseStatus);
+    const biometricUseStatus =
+      jsonValue != null
+        ? (JSON.parse(jsonValue) as {
+            [key: string]: boolean;
+          })
+        : {};
+    return biometricUseStatus;
+  } catch (e) {
+    // error reading value
+    console.log('ERROR GETTING BIOMETRIC USE STATUS: ', e);
+    return {};
+  }
+};
+
+export const storeAsyncStorageBiometricUseStatus = async (
+  email: string,
+  usingStatus: boolean,
+) => {
+  const biometricUseStatus: {
+    [key: string]: boolean;
+  } = await getAsyncStorageBiometricUseStatus();
+  biometricUseStatus[email] = usingStatus;
+  const jsonValue = JSON.stringify(biometricUseStatus);
+  await AsyncStorage.setItem(storage.biometricUseStatus, jsonValue);
 };

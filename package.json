@@ -30,6 +30,8 @@
     "expo-barcode-scanner": "~11.2.0",
     "expo-clipboard": "~2.1.0",
     "expo-constants": "~13.0.1",
+    "expo-local-authentication": "~12.1.0",
+    "expo-secure-store": "~11.1.0",
     "formik": "^2.2.9",
     "hypercore": "^10.0.0-alpha.18",
     "lodash": "^4.17.21",

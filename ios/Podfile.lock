@@ -24,11 +24,15 @@ PODS:
     - React-Core
   - EXKeepAwake (10.0.2):
     - ExpoModulesCore
+  - EXLocalAuthentication (12.1.1):
+    - ExpoModulesCore
   - Expo (44.0.6):
     - ExpoModulesCore
   - ExpoModulesCore (0.6.5):
     - React-Core
     - ReactCommon/turbomodule/core
+  - EXSecureStore (11.1.1):
+    - ExpoModulesCore
   - EXSplashScreen (0.14.2):
     - ExpoModulesCore
     - React-Core
@@ -423,8 +427,10 @@ DEPENDENCIES:
   - EXFont (from `../node_modules/expo-font/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - EXLocalAuthentication (from `../node_modules/expo-local-authentication/ios`)
   - Expo (from `../node_modules/expo/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
+  - EXSecureStore (from `../node_modules/expo-secure-store/ios`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
@@ -535,10 +541,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-image-loader/ios"
   EXKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
+  EXLocalAuthentication:
+    :path: "../node_modules/expo-local-authentication/ios"
   Expo:
     :path: "../node_modules/expo/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core/ios"
+  EXSecureStore:
+    :path: "../node_modules/expo-secure-store/ios"
   EXSplashScreen:
     :path: "../node_modules/expo-splash-screen/ios"
   FBLazyVector:
@@ -643,8 +653,10 @@ SPEC CHECKSUMS:
   EXFont: 2597c10ac85a69d348d44d7873eccf5a7576ef5e
   EXImageLoader: 347b72c2ec2df65120ccec40ea65a4c4f24317ff
   EXKeepAwake: bf48d7f740a5cd2befed6cf9a49911d385c6c47d
+  EXLocalAuthentication: 3c5f368ee954b79c3778158eb8000cbce4e2f8a2
   Expo: 534e51e607aba8229293297da5585f4b26f50fa1
   ExpoModulesCore: 32c0ccb47f477d330ee93db72505380adf0de09a
+  EXSecureStore: b80c74c5ee29d0160c2aace3fd9a24a5edc20015
   EXSplashScreen: 21669e598804ee810547dbb6692c8deb5dd8dbf3
   FBLazyVector: e5569e42a1c79ca00521846c223173a57aca1fe1
   FBReactNativeSpec: fe08c1cd7e2e205718d77ad14b34957cce949b58

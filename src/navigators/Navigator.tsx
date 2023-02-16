@@ -36,6 +36,7 @@ import { AliasInfoScreen } from '../screens/AliasInfo';
 import NewAliasRandom from '../screens/NewAliasRandom';
 import ForgotPassword, { ForgotPasswordStackParams } from './ForgotPassword';
 import { ProfileRoot } from './Profile';
+import BiometricSettings from '../screens/BiometricSettings/BiometricSettings';
 import Sync, { SyncStackParams } from './Sync';
 import backArrow from './utils/backArrow';
 import { selectIsSignedIn } from '../store/selectors/account';
@@ -82,6 +83,7 @@ export type RootStackParams = {
     folderId: number;
     isUnread: boolean;
   };
+  biometricSettings: undefined;
 };
 
 export type RegisterStackParams = {
@@ -115,6 +117,7 @@ export type ProfileStackParams = {
   statistics: undefined;
   syncNewDevice: undefined;
   security: undefined;
+  biometricSettings: undefined;
   planAndUsage: undefined;
 };
 
@@ -267,6 +270,14 @@ function CoreScreen() {
               })}
             />
           </Stack.Group>
+          <Stack.Screen
+            name="biometricSettings"
+            component={BiometricSettings}
+            options={({ navigation }) => ({
+              title: 'Biometric Settings',
+              ...backArrow({ navigation, color: colors.primaryDark }),
+            })}
+          />
         </>
       ) : (
         <>

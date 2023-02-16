@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useHeaderHeight } from '@react-navigation/elements';
 import * as Clipboard from 'expo-clipboard';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { Button } from '../components/Button';
 import { CoreStackProps, RegisterStackParams } from '../navigators/Navigator';
@@ -11,7 +11,8 @@ import { borderRadius, spacing } from '../util/spacing';
 import { colors } from '../util/colors';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { CompositeScreenProps } from '@react-navigation/native';
-import { updateIsSignedIn } from '../store/thunks/account';
+import { updateSignInStatus } from '../store/thunks/account';
+import { SignInStatus } from '../store/types/enums/SignInStatus';
 
 export type RegisterSuccessScreenProps = CompositeScreenProps<
   NativeStackScreenProps<RegisterStackParams, 'registerSuccess'>,
@@ -31,7 +32,7 @@ export const RegisterSuccessScreen = (props: RegisterSuccessScreenProps) => {
   };
 
   const onDone = async () => {
-    await dispatch(updateIsSignedIn(true));
+    await dispatch(updateSignInStatus(SignInStatus.FIRST_SIGNED_IN));
   };
 
   return (
