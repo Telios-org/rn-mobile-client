@@ -8,6 +8,8 @@ import { NewContact } from '../screens/NewContact/NewContact';
 import Security from '../screens/Security/Security';
 import { ContactScreen } from '../screens/Contacts/Contacts';
 import PlanAndUsage from '../screens/PlanAndUsage/PlanAndUsage';
+import backArrow from './utils/backArrow';
+import { colors } from '../util/colors';
 
 export const ProfileStack = createNativeStackNavigator<ProfileStackParams>();
 export const ProfileRoot = () => (
@@ -23,10 +25,11 @@ export const ProfileRoot = () => (
     <ProfileStack.Screen
       name={'contacts'}
       component={ContactScreen}
-      options={{
+      options={({ navigation }) => ({
         title: '',
+        ...backArrow({ navigation, color: colors.primaryDark }),
         headerTransparent: true,
-      }}
+      })}
     />
     <ProfileStack.Screen
       name={'contactDetail'}
@@ -45,17 +48,26 @@ export const ProfileRoot = () => (
     <ProfileStack.Screen
       name={'planAndUsage'}
       component={PlanAndUsage}
-      options={{ title: 'Plan & Usage' }}
+      options={({ navigation }) => ({
+        title: 'Plan & Usage',
+        ...backArrow({ navigation, color: colors.primaryDark }),
+      })}
     />
     <ProfileStack.Screen
       name={'security'}
       component={Security}
-      options={{ title: 'Security' }}
+      options={({ navigation }) => ({
+        title: 'Security',
+        ...backArrow({ navigation, color: colors.primaryDark }),
+      })}
     />
     <ProfileStack.Screen
       name={'syncNewDevice'}
       component={SyncNewDevice}
-      options={{ title: 'Sync New Device' }}
+      options={({ navigation }) => ({
+        title: 'Sync New Device',
+        ...backArrow({ navigation, color: colors.primaryDark }),
+      })}
     />
   </ProfileStack.Navigator>
 );

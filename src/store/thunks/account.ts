@@ -1,7 +1,9 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import {
+  getAsyncStorageBiometricUseStatus,
   getAsyncStorageLastUsername,
   getAsyncStorageSavedUsernames,
+  storeAsyncStorageBiometricUseStatus,
   storeAsyncStorageLastUsername,
   storeAsyncStorageSavedUsername,
 } from '../../util/asyncStorage';
@@ -23,13 +25,24 @@ import {
   SEND_RECOVERY_CODE,
 } from '../types/events';
 import nodejs from 'nodejs-mobile-react-native';
+import { SignInStatus } from '../types/enums/SignInStatus';
+import { StoredAuthenticationValues } from '../../screens/LoginScreen';
+import {
+  ACCOUNT_AUTHENTICATION_KEY,
+  setStoreData,
+} from '../../util/secureStore';
 
 export const getStoredUsernames = createAsyncThunk(
   'system/getStoredUsernames',
-  async (): Promise<{ usernames: string[]; lastUsername?: string }> => {
+  async (): Promise<{
+    usernames: string[];
+    lastUsername?: string;
+    biometricUseStatus: { [key: string]: boolean };
+  }> => {
     const usernames = await getAsyncStorageSavedUsernames();
     const lastUsername = await getAsyncStorageLastUsername();
-    return { usernames, lastUsername };
+    const biometricUseStatus = await getAsyncStorageBiometricUseStatus();
+    return { usernames, lastUsername, biometricUseStatus };
   },
 );
 
@@ -82,6 +95,7 @@ export const registerFlow = createAsyncThunk(
 
     await storeAsyncStorageSavedUsername(data.email);
     await storeAsyncStorageLastUsername(data.email);
+    await storeAsyncStorageBiometricUseStatus(data.email, false);
 
     thunkAPI.dispatch(getStoredUsernames()); // that is needed to update redux latestAccount and localUsernames, needs refactor.
     // Hint: use redux persistent slice
@@ -94,6 +108,14 @@ export const registerFlow = createAsyncThunk(
 
     // getNewMailFlow is non-blocking
     thunkAPI.dispatch(getNewMailFlow());
+
+    const authenticationData: StoredAuthenticationValues = {
+      [data.email]: {
+        email: data.email,
+        password: data.masterPassword,
+      },
+    };
+    setStoreData(ACCOUNT_AUTHENTICATION_KEY, authenticationData);
   },
 );
 
@@ -119,7 +141,7 @@ export const loginFlow = createAsyncThunk(
     if (loginResponse.type === accountLogin.rejected.type) {
       throw new Error(JSON.stringify(loginResponse.payload));
     }
-    thunkAPI.dispatch(updateIsSignedIn(true));
+    thunkAPI.dispatch(updateSignInStatus(SignInStatus.SIGNED_IN));
 
     initMessageListener();
 
@@ -213,8 +235,8 @@ export type CreateAccountSyncInfoResponse = {
   email: string;
 };
 
-export const updateIsSignedIn = createAction<boolean>(
-  'local/account:isSignedIn',
+export const updateSignInStatus = createAction<SignInStatus>(
+  'local/account:updateSignInStatus',
 );
 
 export const getAccountSyncInfo = createNodeCalloutAsyncThunk<

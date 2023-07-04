@@ -18,6 +18,7 @@ import {
   getMailByFolderUnread,
 } from '../../store/thunks/email';
 import ComposeButton from '../../components/ComposeButton/ComposeButton';
+import useFirstLogin from '../../hooks/useFirstLogin';
 
 export type InboxScreenProps = CompositeScreenProps<
   NativeStackScreenProps<MainStackParams, 'inbox'>,
@@ -28,6 +29,7 @@ export const InboxScreen = () => {
   const mailboxAddress = useAppSelector(selectMailBoxAddress);
   const dispatch = useAppDispatch();
   const folderId = FoldersId.inbox;
+  useFirstLogin();
 
   return (
     <>

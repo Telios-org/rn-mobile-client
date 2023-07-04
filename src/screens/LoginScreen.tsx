@@ -1,5 +1,5 @@
-import { Formik, FormikHelpers } from 'formik';
-import React from 'react';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, ScrollView, Image, Alert } from 'react-native';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
@@ -13,14 +13,30 @@ import { RootStackParams } from '../navigators/Navigator';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { colors } from '../util/colors';
 import { fonts } from '../util/fonts';
+import { checkIsBiometricAvailable } from '../util/biometric';
 import { SingleSelectInput } from '../components/SingleSelectInput';
 import { loginFlow } from '../store/thunks/account';
+import * as LocalAuthentication from 'expo-local-authentication';
+import { SignInStatus } from '../store/types/enums/SignInStatus';
+import {
+  ACCOUNT_AUTHENTICATION_KEY,
+  getStoredValue,
+  setStoreData,
+} from '../util/secureStore';
+import { selectBiometricUseStatus } from '../store/selectors/account';
 
 const SYNC_EXISTING = 'sync_existing';
 
 type LoginFormValues = {
   email: string;
   password: string;
+};
+
+export type StoredAuthenticationValues = {
+  [key: string]: {
+    password: string;
+    email: string;
+  };
 };
 
 const LoginFormSchema = Yup.object().shape({
@@ -33,10 +49,43 @@ export type LoginScreenProps = NativeStackScreenProps<RootStackParams, 'login'>;
 export const LoginScreen = (props: LoginScreenProps) => {
   const dispatch = useAppDispatch();
   const headerHeight = useHeaderHeight();
+  const formRef = useRef<FormikProps<any>>(null);
 
-  const { localUsernames, lastUsername } = useAppSelector(
+  const biometricUseStatus = useAppSelector(selectBiometricUseStatus);
+  const { localUsernames, lastUsername, signInStatus } = useAppSelector(
     state => state.account,
   );
+
+  useEffect(() => {
+    (async () => {
+      if (signInStatus === SignInStatus.INITIAL) {
+        const isBiometricAvailable = await checkIsBiometricAvailable();
+
+        if (
+          isBiometricAvailable &&
+          lastUsername &&
+          biometricUseStatus?.[lastUsername]
+        ) {
+          await LocalAuthentication.authenticateAsync({
+            promptMessage: 'To use Telios, identity verification required',
+            cancelLabel: 'Cancel',
+            disableDeviceFallback: false,
+          }).then(async res => {
+            if (res?.success) {
+              const authenticationData: StoredAuthenticationValues =
+                await getStoredValue(ACCOUNT_AUTHENTICATION_KEY);
+              const lastUserAuthData = authenticationData?.[lastUsername || ''];
+              formRef?.current?.setFieldValue(
+                'password',
+                lastUserAuthData.password,
+              );
+              formRef?.current?.handleSubmit?.();
+            }
+          });
+        }
+      }
+    })();
+  }, []);
 
   const onSubmit = async (
     values: LoginFormValues,
@@ -51,6 +100,14 @@ export const LoginScreen = (props: LoginScreenProps) => {
       if (loginResponse.type === loginFlow.rejected.type) {
         actions.setSubmitting(false);
         Alert.alert('Login Failed', 'Invalid login credentials');
+      } else if (loginResponse.type === loginFlow.fulfilled.type) {
+        const authenticationData: StoredAuthenticationValues = {
+          [values.email]: {
+            email: values.email,
+            password: values.password,
+          },
+        };
+        setStoreData(ACCOUNT_AUTHENTICATION_KEY, authenticationData);
       }
     } catch (error) {
       console.log('onSubmit error caught', error);
@@ -95,6 +152,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
             email: lastUsername || '',
             password: '',
           }}
+          innerRef={formRef}
           validationSchema={LoginFormSchema}
           onSubmit={onSubmit}>
           {({

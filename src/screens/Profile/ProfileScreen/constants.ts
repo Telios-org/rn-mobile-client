@@ -38,6 +38,12 @@ export const menuItems: MenuItem[] = [
     icon: 'ios-shield-checkmark-outline',
   },
   {
+    label: 'Biometric Settings',
+    key: 'biometricSettings',
+    screenName: 'biometricSettings',
+    icon: 'ios-scan',
+  },
+  {
     label: 'Log Out',
     key: 'log-out',
     screenName: 'login',
